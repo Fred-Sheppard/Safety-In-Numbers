@@ -17,7 +17,7 @@ public class MetEir {
     public static void main(String[] args) {
         JSONObject json = PApplet.loadJSONObject(new File("src/Vars.json"));
         lat = json.getString("lat");
-        lon = json.getString("long");
+        lon = json.getString("lon");
         try {
             request();
         } catch (Exception e) {
