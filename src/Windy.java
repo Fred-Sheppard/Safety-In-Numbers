@@ -1,3 +1,5 @@
+//No longer needed, API is too expensive
+
 import processing.core.PApplet;
 
 import java.io.File;
