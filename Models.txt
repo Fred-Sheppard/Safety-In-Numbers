@@ -1,0 +1,21 @@
+Free:
+ECMWF - Met Eireann
+Harmonie - Met Eireann
+WeatherBit
+Accuweather
+
+Paid:
+Windy
+EURO1k - Meteomatics
+
+Other:
+GFS - NOAA (Requires AWS)
+Icon-EU - Opendata (Requires work) https://opendata.dwd.de/weather/nwp/icon-eu/grib/
+
+NoApi:
+WRF
+HIRLAM - deprecated
+
+ToRetry: AROME
+
+OpenWeather - Awaiting API key activation
