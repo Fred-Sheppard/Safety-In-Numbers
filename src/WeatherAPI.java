@@ -11,15 +11,22 @@ import java.net.http.HttpResponse;
 
 public class WeatherAPI {
 
+    static float lat, lon;
+    static String accuKey;
 
     public static void main(String[] args) {
         JSONObject json = PApplet.loadJSONObject(new File("data/Vars.json"));
-        float lat = json.getFloat("lat");
-        float lon = json.getFloat("lon");
+        lat = json.getFloat("lat");
+        lon = json.getFloat("lon");
+        accuKey = json.getString("accuKey");
 
         String url1 = String.format("http://metwdb-openaccess.ichec.ie/metno-wdb2ts/locationforecast?lat=%f&long=%f", lat, lon);
         String url2 = String.format("https://api.weatherbit.io/v2.0/forecast/daily?&lat=%f&lon=%f&key=a5db704eb5ec4fb9b98149eb8811f575", lat, lon);
         String url3 = "https://api.windy.com/api/point-forecast/v2";
+        String url4 = "https://nomads.ncep.noaa.gov/pub/data/nccf/com/rap/prod/";
+        String url5 = String.format(
+                "http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/%s?apikey=1cfVw9AtSxOswPYM5eTwhfSqqlLKSeWt&details=true&metric=true", accuKey);
+        String url6 = String.format("https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=%f&lon=%f&appid=b0bc23b3a0dfc76f6a3247b879e740cc", lat, lon);
         String inputJson3 = String.format("""
                 {
                     "lat": %f,
@@ -32,14 +39,40 @@ public class WeatherAPI {
         Model metEir = new Model("MetEir.xml", url1);
         Model weatherBit = new Model("WeatherBit.json", url2);
         Model windy = new Model("Windy.json", url3, inputJson3);
+        Model noaa = new Model("NOAA.txt", url4);
+        Model accu = new Model("Accu.json", url5);
+        Model openWeather = new Model("openWeather.json", url6);
 
+        Model[] models = {openWeather};
         try {
-            metEir.request();
-            weatherBit.request();
-            windy.request();
+            for (Model m : models) {
+                m.request();
+            }
         } catch (Exception e) {
             System.out.println(e);
         }
+
+    }
+
+    static void checkAccuKey() {
+        String url = String.format(
+                "http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=1cfVw9AtSxOswPYM5eTwhfSqqlLKSeWt&q=%f%%2C%f",
+                lat, lon);
+        Model m = new Model("temp.json", url);
+        try {
+            m.request();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        File temp = new File("output/temp.json");
+        JSONObject json = PApplet.loadJSONObject(temp);
+        String key = json.getString("Key");
+        if (!key.equals(accuKey)) {
+            System.out.println("Accuweather key changed. New Location key is: " + key);
+        } else {
+            System.out.println("Accuweather: Key is good");
+        }
+        temp.delete();
     }
 
     static class Model {
