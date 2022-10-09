@@ -26,7 +26,7 @@ public class WeatherAPI {
         String url4 = "https://nomads.ncep.noaa.gov/pub/data/nccf/com/rap/prod/";
         String url5 = String.format(
                 "http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/%s?apikey=ACCUWEATHER_KEY&details=true&metric=true", accuKey);
-        String url6 = String.format("https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=%f&lon=%f&appid=OPEN_WEATHER_KEY2", lat, lon);
+        String url6 = String.format("https://api.openweathermap.org/data/2.5/forecast?lat=%f&lon=%f&units=metric&appid=OPEN_WEATHER_KEY", lat, lon);
         String inputJson3 = String.format("""
                 {
                     "lat": %f,
@@ -41,7 +41,7 @@ public class WeatherAPI {
         Model windy = new Model("Windy.json", url3, inputJson3);
         Model noaa = new Model("NOAA.txt", url4);
         Model accu = new Model("Accu.json", url5);
-        Model openWeather = new Model("openWeather.json", url6);
+        Model openWeather = new Model("OpenWeather.json", url6);
 
         Model[] models = {openWeather};
         try {

@@ -4,15 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Move Model to single class&#10;&#10;&#10;- Change from individual files for each model&#10;to single class with variable inputs&#10;- These files have yet to be deleted">
-      <change afterPath="$PROJECT_DIR$/Models.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/FTP.java" afterDir="false" />
+    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add Models.txt&#10;&#10;&#10;- Models.txt is a list of all tried models, both working and otherwise&#10;- Added several new APIs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Vars.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/Vars.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MetEir.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Models.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/WeatherBit.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Windy.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +88,14 @@
       <option name="project" value="LOCAL" />
       <updated>1664924018083</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Add Models.txt&#10;&#10;&#10;- Models.txt is a list of all tried models, both working and otherwise&#10;- Added several new APIs">
+      <created>1665264587750</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1665264587750</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -140,6 +142,7 @@
     <MESSAGE value="Update .gitignore" />
     <MESSAGE value="Fix typo" />
     <MESSAGE value="Move Model to single class&#10;&#10;&#10;- Change from individual files for each model&#10;to single class with variable inputs&#10;- These files have yet to be deleted" />
-    <option name="LAST_COMMIT_MESSAGE" value="Move Model to single class&#10;&#10;&#10;- Change from individual files for each model&#10;to single class with variable inputs&#10;- These files have yet to be deleted" />
+    <MESSAGE value="Add Models.txt&#10;&#10;&#10;- Models.txt is a list of all tried models, both working and otherwise&#10;- Added several new APIs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Models.txt&#10;&#10;&#10;- Models.txt is a list of all tried models, both working and otherwise&#10;- Added several new APIs" />
   </component>
 </project>
