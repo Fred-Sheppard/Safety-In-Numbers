@@ -1,8 +1,22 @@
-Free:
+Using:
 ECMWF - Met Eireann
+  54h to 90h in one hour intervals: named as ec_n1280_1hr
+  90h to 144h in three hour intervals: named as ec_n1280_3hr
+  144h to end of forecast in six hour intervals: named as ec_n1280_6hr
+
 Harmonie - Met Eireann
+  1h in 54h
+
 WeatherBit
+  1h in 2-10 days
+  1 day in 16 days
+
 Accuweather
+  1h in 72h
+  1 day in 15 days
+
+OpenWeather
+  5h in 3 days
 
 Paid:
 Windy
@@ -17,5 +31,3 @@ WRF
 HIRLAM - deprecated
 
 ToRetry: AROME
-
-OpenWeather - Awaiting API key activation
