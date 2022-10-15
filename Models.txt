@@ -18,9 +18,36 @@ Accuweather
 OpenWeather
   5h in 3 days
 
+RapidAPI
+  https://rapidapi.com/developer/analytics/ISE-Portfolio
+
+Aeris
+  100/day
+  any
+
+ClimaCell
+  500/day
+  https://docs.tomorrow.io/reference/data-layers-overview
+  https://docs.tomorrow.io/reference/data-layers-core
+  1h in 15 days
+  1d in 15 days
+  1 day	[-7d,+15d]
+  1h	1 hour	[-168h,+360h] 15 days
+  30m	30 minutes	[-6h,+6h]
+  15m	15 minutes	[-6h,+6h]
+  5m	5 minutes	[-6h,+6h]
+  1m	1 minute	[-6h,+6h]
+
+Visual Crossing
+  500/month
+  1h in 7d
+  12h in 7d
+  1d in 7d
+
 Paid:
 Windy
 EURO1k - Meteomatics
+Dark Sky: 100/month
 
 Other:
 GFS - NOAA (Requires AWS)
@@ -29,5 +56,7 @@ Icon-EU - Opendata (Requires work) https://opendata.dwd.de/weather/nwp/icon-eu/g
 NoApi:
 WRF
 HIRLAM - deprecated
+Weather2020
+OpenWeatherMap
 
 ToRetry: AROME
