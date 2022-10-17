@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add info on api intervals">
+    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add configuration files to git">
+      <change afterPath="$PROJECT_DIR$/src/Refactor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Scratch1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Models.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -18,6 +20,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="HTML File" />
+        <option value="Processing" />
         <option value="Class" />
       </list>
     </option>
@@ -41,24 +44,28 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "DefaultHtmlFileTemplate": "HTML File",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "last_opened_file_path": "C:/MyPrograms/processing-4.0b8/core/library/core.jar",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.0",
+    "project.structure.last.edited": "Global Libraries",
+    "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.settings.ide.settings.web.browsers"
+    "settings.editor.selected.configurable": "Errors"
   },
   "keyToStringList": {
     "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "JAVA"
+      "JAVA",
+      "PDE"
     ]
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Personal\Code\WeatherAPI\output\Refactor" />
+      <recent name="C:\Personal\Code\WeatherAPI\output\GET" />
       <recent name="C:\Personal\Code\WeatherAPI\" />
       <recent name="C:\Personal\Code\WeatherAPI\data" />
     </key>
@@ -107,7 +114,21 @@
       <option name="project" value="LOCAL" />
       <updated>1665353439673</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Add several RapidAPI APIs&#10;&#10;&#10;- Add enum to Model to handle various API types&#10;- Add getRapid() function for RapidAPI">
+      <created>1665872288738</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1665872288738</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Add configuration files to git">
+      <created>1665872348904</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1665872348904</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -156,6 +177,12 @@
     <MESSAGE value="Move Model to single class&#10;&#10;&#10;- Change from individual files for each model&#10;to single class with variable inputs&#10;- These files have yet to be deleted" />
     <MESSAGE value="Add Models.txt&#10;&#10;&#10;- Models.txt is a list of all tried models, both working and otherwise&#10;- Added several new APIs" />
     <MESSAGE value="Add info on api intervals" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add info on api intervals" />
+    <MESSAGE value="Add several RapidAPI APIs&#10;&#10;&#10;- Add enum to Model to handle various API types&#10;- Add getRapid() function for RapidAPI" />
+    <MESSAGE value="Add configuration files to git" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add configuration files to git" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

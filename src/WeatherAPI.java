@@ -20,8 +20,6 @@ public class WeatherAPI {
         RAPIDAPI
     }
 
-    ;
-
     public static void main(String[] args) {
         JSONObject json = PApplet.loadJSONObject(new File("data/Vars.json"));
         lat = json.getFloat("lat");
@@ -32,30 +30,24 @@ public class WeatherAPI {
                 lat, lon);
         String url2 = String.format("https://api.weatherbit.io/v2.0/forecast/daily?&lat=%f&lon=%f" +
                 "&key=WEATHERBIT_KEY", lat, lon);
-        String url4 = "https://nomads.ncep.noaa.gov/pub/data/nccf/com/rap/prod/";
-        String url5 = String.format(
+        String url3 = String.format(
                 "http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/%s?apikey=ACCUWEATHER_KEY&details=true&metric=true", accuKey);
-        String url6 = String.format("https://api.openweathermap.org/data/2.5/forecast?lat=%f&lon=%f" +
+        String url4 = String.format("https://api.openweathermap.org/data/2.5/forecast?lat=%f&lon=%f" +
                 "&units=metric&appid=OPEN_WEATHER_KEY", lat, lon);
-        String url7 = String.format("https://aerisweather1.p.rapidapi.com/forecasts/%f,%%20%f?" +
+        String url5 = String.format("https://aerisweather1.p.rapidapi.com/forecasts/%f,%%20%f?" +
                 "from=2022-10-16&filter=4hr&to=2022-10-17", lat, lon);
-        String url8 = String.format("https://climacell-microweather-v1.p.rapidapi.com/weather/forecast/hourly?lat=%f&lon=%f" +
+        String url6 = String.format("https://climacell-microweather-v1.p.rapidapi.com/weather/forecast/hourly?lat=%f&lon=%f" +
                 "&fields=windSpeed%%2CwindDirection&unit_system=si", lat, lon);
-        String url9 = String.format("https://visual-crossing-weather.p.rapidapi.com/forecast?aggregateHours=24" +
+        String url7 = String.format("https://visual-crossing-weather.p.rapidapi.com/forecast?aggregateHours=24" +
                 "&location=%f%%2C%f&contentType=json&unitGroup=metric&shortColumnNames=true", lat, lon);
-
-        String data1 = "aerisweather1.p.rapidapi.com";
-        String data2 = "climacell-microweather-v1.p.rapidapi.com";
-        String data3 = "visual-crossing-weather.p.rapidapi.com";
 
         Model metEir = new Model("MetEir.xml", url1);
         Model weatherBit = new Model("WeatherBit.json", url2);
-        Model noaa = new Model("NOAA.txt", url4);
-        Model accu = new Model("Accu.json", url5);
-        Model openWeather = new Model("OpenWeather.json", url6);
-        Model aeris = new Model("Aeris.json", url7, url7.split("/")[2], ApiType.RAPIDAPI);
-        Model climacell = new Model("ClimaCell.json", url8, url8.split("/")[2], ApiType.RAPIDAPI);
-        Model visual = new Model("Visual.json", url9, url9.split("/")[2], ApiType.RAPIDAPI);
+        Model accu = new Model("Accu.json", url3);
+        Model openWeather = new Model("OpenWeather.json", url4);
+        Model aeris = new Model("Aeris.json", url5, url5.split("/")[2], ApiType.RAPIDAPI);
+        Model climacell = new Model("ClimaCell.json", url6, url6.split("/")[2], ApiType.RAPIDAPI);
+        Model visual = new Model("Visual.json", url7, url7.split("/")[2], ApiType.RAPIDAPI);
 
 //        Model[] models = {metEir, weatherBit, accu, openWeather, aeris,  climacell, visual};
         Model[] models = {visual};
@@ -78,7 +70,7 @@ public class WeatherAPI {
         } catch (Exception e) {
             System.out.println(e);
         }
-        File temp = new File("output/temp.json");
+        File temp = new File("output/GET/temp.json");
         JSONObject json = PApplet.loadJSONObject(temp);
         String key = json.getString("Key");
         if (!key.equals(accuKey)) {
@@ -122,7 +114,7 @@ public class WeatherAPI {
             var client = HttpClient.newHttpClient();
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            PrintWriter output = PApplet.createWriter(new File("output/" + filename));
+            PrintWriter output = PApplet.createWriter(new File("output/GET/" + filename));
             System.out.println(filename + ": " + response.statusCode());
             output.println(response.body());
             output.flush();
