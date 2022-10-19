@@ -22,15 +22,20 @@ public class WeatherAPI {
         RAPIDAPI
     }
 
-//    public static void main(String[] args) {
-//        Model m = new Model("M.json", ApiType.GET);
-//        m.setKey("ID", "Name");
-//        m.setKey("Numeric", "Age");
-//        JSONArray arr = PApplet.loadJSONArray(new File("data/Input.json"));
-//        System.out.println(m.refactor(arr));
-//    }
-
     public static void main(String[] args) {
+        // TODO Move to own function - model.getTimes()
+        JSONObject models = PApplet.loadJSONObject(new File("data/Vars.json")).getJSONObject("Models");
+        for (Object o : models.keys()) {
+            String key = (String) o;
+            JSONObject model = models.getJSONObject(key);
+            String path = model.getString("Root");
+            String filename = key + ".json";
+            Object json = PApplet.loadJSONObject(new File("output/GET/" + filename));
+            JSONArray times = (JSONArray) JSONPath.jsonPathToObject(json, path);
+            System.out.println(key + times.size());
+        }
+    }
+    public static void main1(String[] args) {
         JSONObject json = PApplet.loadJSONObject(new File("data/Vars.json"));
         lat = json.getFloat("lat");
         lon = json.getFloat("lon");

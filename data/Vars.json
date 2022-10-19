@@ -2,12 +2,19 @@
   "lat": 52.930166,
   "lon": -8.282975,
   "accuKey": "3553881",
-  "Maps": {
-    "Accu": {
-      "windSpeed": "windSpeedKPH"
-    }
+  "Models": {
+
     "Aeris": {
-      "windSpeed": "windSpeedKPH"
+      "Root": "response/0/periods"
+    },
+    "OpenWeather": {
+      "Root": "list"
+    },
+    "Visual": {
+      "Root": "locations/52.930164,-8.282975/values"
+    },
+    "WeatherBit": {
+      "Root": "data"
     }
   }
 }
