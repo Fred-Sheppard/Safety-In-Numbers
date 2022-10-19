@@ -1,0 +1,28 @@
+[
+  {
+    "Name": "John",
+    "Age": {
+      "Value": 2,
+      "Unit": "Decades"
+    },
+    "Likes": [
+      "Pasta",
+      "Pizza",
+      "Chips"
+    ]
+  },
+  {
+    "Name": "Sean",
+    "Age": {
+      "Value": 23,
+      "Unit": "Years"
+    }
+  },
+  [
+    1,
+    2,
+    {
+      "Foo": "Bar"
+    }
+  ]
+]

@@ -4,11 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add configuration files to git">
-      <change afterPath="$PROJECT_DIR$/src/Refactor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Scratch1.java" afterDir="false" />
+    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add unfinished logic to refactor json">
+      <change afterPath="$PROJECT_DIR$/data/Input.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/Input2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/temp.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Scratch.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Vars.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/Vars.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Refactor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Refactor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -49,7 +54,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "C:/MyPrograms/processing-4.0b8/core/library/core.jar",
+    "last_opened_file_path": "C:/Personal/Code/WeatherAPI/data",
     "project.structure.last.edited": "Global Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
@@ -63,6 +68,9 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Personal\Code\WeatherAPI\data" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Personal\Code\WeatherAPI\output\Refactor" />
       <recent name="C:\Personal\Code\WeatherAPI\output\GET" />
@@ -128,7 +136,14 @@
       <option name="project" value="LOCAL" />
       <updated>1665872348904</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Add unfinished logic to refactor json">
+      <created>1666046290293</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1666046290293</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -179,7 +194,8 @@
     <MESSAGE value="Add info on api intervals" />
     <MESSAGE value="Add several RapidAPI APIs&#10;&#10;&#10;- Add enum to Model to handle various API types&#10;- Add getRapid() function for RapidAPI" />
     <MESSAGE value="Add configuration files to git" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add configuration files to git" />
+    <MESSAGE value="Add unfinished logic to refactor json" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add unfinished logic to refactor json" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
