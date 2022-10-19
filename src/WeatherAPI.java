@@ -1,5 +1,7 @@
 import processing.core.PApplet;
+import processing.data.JSONArray;
 import processing.data.JSONObject;
+import processing.data.StringDict;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,34 +22,51 @@ public class WeatherAPI {
         RAPIDAPI
     }
 
+//    public static void main(String[] args) {
+//        Model m = new Model("M.json", ApiType.GET);
+//        m.setKey("ID", "Name");
+//        m.setKey("Numeric", "Age");
+//        JSONArray arr = PApplet.loadJSONArray(new File("data/Input.json"));
+//        System.out.println(m.refactor(arr));
+//    }
+
     public static void main(String[] args) {
         JSONObject json = PApplet.loadJSONObject(new File("data/Vars.json"));
         lat = json.getFloat("lat");
         lon = json.getFloat("lon");
         accuKey = json.getString("accuKey");
 
-        String url1 = String.format("http://metwdb-openaccess.ichec.ie/metno-wdb2ts/locationforecast?lat=%f&long=%f",
-                lat, lon);
-        String url2 = String.format("https://api.weatherbit.io/v2.0/forecast/daily?&lat=%f&lon=%f" +
-                "&key=a5db704eb5ec4fb9b98149eb8811f575", lat, lon);
-        String url3 = String.format(
-                "http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/%s?apikey=1cfVw9AtSxOswPYM5eTwhfSqqlLKSeWt&details=true&metric=true", accuKey);
-        String url4 = String.format("https://api.openweathermap.org/data/2.5/forecast?lat=%f&lon=%f" +
-                "&units=metric&appid=35ce7696a59f9ed02b794ab6d155e6c1", lat, lon);
-        String url5 = String.format("https://aerisweather1.p.rapidapi.com/forecasts/%f,%%20%f?" +
-                "from=2022-10-16&filter=4hr&to=2022-10-17", lat, lon);
-        String url6 = String.format("https://climacell-microweather-v1.p.rapidapi.com/weather/forecast/hourly?lat=%f&lon=%f" +
-                "&fields=windSpeed%%2CwindDirection&unit_system=si", lat, lon);
-        String url7 = String.format("https://visual-crossing-weather.p.rapidapi.com/forecast?aggregateHours=24" +
-                "&location=%f%%2C%f&contentType=json&unitGroup=metric&shortColumnNames=true", lat, lon);
+        Model metEir = new Model("MetEir.xml", ApiType.GET);
+        Model weatherBit = new Model("WeatherBit.json", ApiType.GET);
+        Model accu = new Model("Accu.json", ApiType.GET);
+        Model openWeather = new Model("OpenWeather.json", ApiType.GET);
+        Model aeris = new Model("Aeris.json", ApiType.RAPIDAPI);
+        Model climacell = new Model("ClimaCell.json", ApiType.RAPIDAPI);
+        Model visual = new Model("Visual.json", ApiType.RAPIDAPI);
 
-        Model metEir = new Model("MetEir.xml", url1);
-        Model weatherBit = new Model("WeatherBit.json", url2);
-        Model accu = new Model("Accu.json", url3);
-        Model openWeather = new Model("OpenWeather.json", url4);
-        Model aeris = new Model("Aeris.json", url5, url5.split("/")[2], ApiType.RAPIDAPI);
-        Model climacell = new Model("ClimaCell.json", url6, url6.split("/")[2], ApiType.RAPIDAPI);
-        Model visual = new Model("Visual.json", url7, url7.split("/")[2], ApiType.RAPIDAPI);
+        metEir.setUrl(String.format("http://metwdb-openaccess.ichec.ie/metno-wdb2ts/locationforecast?lat=%f&long=%f",
+                lat, lon));
+        weatherBit.setUrl(String.format("https://api.weatherbit.io/v2.0/forecast/daily?&lat=%f&lon=%f" +
+                "&key=a5db704eb5ec4fb9b98149eb8811f575", lat, lon));
+        accu.setUrl(String.format(
+                "http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/%s?apikey=1cfVw9AtSxOswPYM5eTwhfSqqlLKSeWt&details=true&metric=true", accuKey));
+        openWeather.setUrl(String.format("https://api.openweathermap.org/data/2.5/forecast?lat=%f&lon=%f" +
+                "&units=metric&appid=35ce7696a59f9ed02b794ab6d155e6c1", lat, lon));
+        aeris.setUrl(String.format("https://aerisweather1.p.rapidapi.com/forecasts/%f,%%20%f?" +
+                "from=2022-10-16&filter=4hr&to=2022-10-17", lat, lon));
+        climacell.setUrl(String.format("https://climacell-microweather-v1.p.rapidapi.com/weather/forecast/hourly?lat=%f&lon=%f" +
+                "&fields=windSpeed%%2CwindDirection&unit_system=si", lat, lon));
+        visual.setUrl(String.format("https://visual-crossing-weather.p.rapidapi.com/forecast?aggregateHours=24" +
+                "&location=%f%%2C%f&contentType=json&unitGroup=metric&shortColumnNames=true", lat, lon));
+
+        JSONArray arr = PApplet.loadJSONObject(new File("output/GET/Aeris.json"))
+                .getJSONArray("response")
+                .getJSONObject(0)
+                .getJSONArray("periods");
+        aeris.setKey("windSpeed", "windSpeedKPH");
+        aeris.setKey("windDir", "windDirDEG");
+        System.out.println(aeris.refactor(arr));
+        System.exit(0);
 
 //        Model[] models = {metEir, weatherBit, accu, openWeather, aeris,  climacell, visual};
         Model[] models = {visual};
@@ -64,7 +83,7 @@ public class WeatherAPI {
         String url = String.format(
                 "http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=1cfVw9AtSxOswPYM5eTwhfSqqlLKSeWt&q=%f%%2C%f",
                 lat, lon);
-        Model m = new Model("temp.json", url);
+        Model m = new Model("temp.json", ApiType.GET);
         try {
             m.request();
         } catch (Exception e) {
@@ -87,18 +106,31 @@ public class WeatherAPI {
         String data;
         String filename;
         ApiType type;
+        StringDict keys;
 
-        Model(String filename, String url) {
+        Model(String filename, ApiType type) {
             this.filename = filename;
-            this.url = url;
-            this.type = ApiType.GET;
+            this.type = type;
+            keys = new StringDict();
         }
 
-        Model(String filename, String url, String data, ApiType type) {
-            this.filename = filename;
-            this.url = url;
-            this.data = data;
-            this.type = type;
+//        Model(String filename, String url, String data, ApiType type) {
+//            this.filename = filename;
+//            this.url = url;
+//            this.data = data;
+//            this.type = type;
+//        }
+
+        public void setUrl(String s) {
+            url = s;
+        }
+
+        public void setData(String s) {
+            data = s;
+        }
+
+        public void setKey(String key, String value) {
+            keys.set(key, value);
         }
 
         public String toString() {
@@ -144,6 +176,27 @@ public class WeatherAPI {
                     .header("X-RapidAPI-Host", data)
                     .method("GET", HttpRequest.BodyPublishers.noBody())
                     .build();
+        }
+
+        public JSONArray refactor(JSONArray times) {
+            //Empty array
+            JSONArray out = new JSONArray();
+            //Iterate through timeframes
+            for (int i = 0; i < times.size(); i++) {
+                //This timeframe
+                JSONObject thisJSON = times.getJSONObject(i);
+                //Object to be appended to array
+                JSONObject time = new JSONObject();
+                //myKey: windSpeed
+                //theirKey: wspKPH
+                for (String myKey : keys.keys()) {
+                    String theirKey = keys.get(myKey);
+                    //Put my key, their value
+                    time.put(myKey, thisJSON.get(theirKey));
+                }
+                out.append(time);
+            }
+            return out;
         }
     }
 }

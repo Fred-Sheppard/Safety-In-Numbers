@@ -1,10 +1,3 @@
-/*
-TODO
-Make refactor class - potentially move to Model
-Model.addKey("windSpeed", "WindSpeedKTS");
-Model.refactor():
- */
-
 import processing.core.PApplet;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
@@ -16,8 +9,8 @@ import java.util.Comparator;
 public class Refactor {
 
     public static void main(String[] args) {
-        accu();
-//        aeris();
+//        accu();
+        aeris();
     }
 
     static void accu() {
