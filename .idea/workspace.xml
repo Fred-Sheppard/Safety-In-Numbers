@@ -4,16 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add unfinished logic to refactor json">
-      <change afterPath="$PROJECT_DIR$/data/Input.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/Input2.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/temp.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Scratch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add jsonPathToObject() function">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/Vars.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/Vars.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Refactor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Refactor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Scratch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/JSONPath.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -77,6 +72,28 @@
       <recent name="C:\Personal\Code\WeatherAPI\" />
       <recent name="C:\Personal\Code\WeatherAPI\data" />
     </key>
+  </component>
+  <component name="RunManager" selected="Application.WeatherAPI">
+    <configuration name="WeatherAPI" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="WeatherAPI" />
+      <module name="WeatherAPI" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Scratch" type="Java Scratch">
+      <option name="MAIN_CLASS_NAME" value="Scratch" />
+      <module name="WeatherAPI" />
+      <option name="SCRATCH_FILE_URL" value="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.java" />
+      <shortenClasspath name="NONE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.WeatherAPI" />
+      <item itemvalue="Java Scratch.Scratch" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -143,7 +160,14 @@
       <option name="project" value="LOCAL" />
       <updated>1666046290293</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Add jsonPathToObject() function">
+      <created>1666204014549</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1666204014549</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -195,7 +219,8 @@
     <MESSAGE value="Add several RapidAPI APIs&#10;&#10;&#10;- Add enum to Model to handle various API types&#10;- Add getRapid() function for RapidAPI" />
     <MESSAGE value="Add configuration files to git" />
     <MESSAGE value="Add unfinished logic to refactor json" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add unfinished logic to refactor json" />
+    <MESSAGE value="Add jsonPathToObject() function" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add jsonPathToObject() function" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

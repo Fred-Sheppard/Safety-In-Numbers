@@ -6,25 +6,26 @@ import processing.data.StringList;
 import java.io.File;
 import java.nio.file.InvalidPathException;
 
-public class Scratch {
+public class JSONPath {
 
     public static StringList path = new StringList();
 
     public static void main(String[] args) {
-        JSONObject json = PApplet.loadJSONObject(new File("data/Input.json"));
-//        JSONArray json = PApplet.loadJSONArray(new File("data/Input2.json"));
-//        tree(arr);
-        String path = "/One/Age/Value/";
+//        JSONObject json = PApplet.loadJSONObject(new File("data/Input.json"));
+        JSONArray json = PApplet.loadJSONArray(new File("data/Input2.json"));
+        tree(json);
+        String path = "1/Age/Unit";
         System.out.println(jsonPathToObject(json, path));
     }
 
     /**
+     * Returns the data at a given json path.
+     * Use numbers to represent array indexes.
+     * e.g. "People/0/Age"
      *
-     * @param json
-     * JSON object in which to retrieve data
-     * @param path
-     * String
-     * @return
+     * @param json JSON object from which to retrieve data
+     * @param path String representation of path to data.
+     * @return Value at path
      */
     static Object jsonPathToObject(Object json, String path) {
         String[] pathArray = path.split("/", 0);
@@ -59,17 +60,15 @@ public class Scratch {
             Object val = json.get(key);
             //Add current key to path
             path.append("/" + key);
-            if (val instanceof JSONObject) {
-                //If it's another object, go inside that one
-                tree((JSONObject) val);
-            } else if (val instanceof JSONArray) {
-                //If it's another arr, go inside that one
-                tree((JSONArray) val);
-            } else {
-                //We're done with this layer
-                //Go back a layer and go again
-                printStringList(path);
-                path.pop();
+            switch (val) {
+                // Read next layer
+                case JSONObject j -> tree(j);
+                case JSONArray j -> tree(j);
+                default -> {
+                    // Reached final value, finish and go back a layer
+                    printStringList(path);
+                    path.pop();
+                }
             }
         }
         try {
@@ -82,26 +81,20 @@ public class Scratch {
 
     public static void tree(JSONArray arr) {
         //For starting array
-        if (path.size() == 0) path.append("/[]");
         // For every Object in arr
         for (int i = 0; i < arr.size(); i++) {
             //Array Objects don't have keys, so use index
-            String key = "[" + i + "]";
+            path.append("/" + i);
             Object val = arr.get(i);
-            if (val instanceof JSONObject) {
-                // If it's another object, go inside that one
-                path.append("/" + key);
-                tree((JSONObject) val);
-            } else if (val instanceof JSONArray) {
-                // If it's another arr, go inside that one
-                path.append("/" + key);
-                tree((JSONArray) val);
-            } else {
-                // We're done with this layer
-                // Go back a layer and go again
-                path.append("/" + key);
-                printStringList(path);
-                path.pop();
+            switch (val) {
+                // Read next layer
+                case JSONObject j -> tree(j);
+                case JSONArray j -> tree(j);
+                default -> {
+                    // Reached final value, finish and go back a layer
+                    printStringList(path);
+                    path.pop();
+                }
             }
         }
         try {

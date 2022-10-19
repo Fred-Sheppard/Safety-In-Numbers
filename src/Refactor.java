@@ -8,10 +8,10 @@ import java.util.Comparator;
 
 public class Refactor {
 
-    public static void main(String[] args) {
+//    public static void main(String[] args) {
 //        accu();
-        aeris();
-    }
+//        aeris();
+//    }
 
     static void accu() {
         JSONArray times = PApplet.loadJSONArray(new File("output/GET/Accu.json"));
