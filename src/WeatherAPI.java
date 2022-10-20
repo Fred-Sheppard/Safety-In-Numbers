@@ -10,6 +10,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import static processing.core.PApplet.loadJSONArray;
 import static processing.core.PApplet.loadJSONObject;
 
 public class WeatherAPI {
@@ -27,7 +28,7 @@ public class WeatherAPI {
 
     public static void main(String[] args) {
         configs = loadJSONObject(new File("data/Vars.json"));
-        Model aeris = new Model("Visual.json", ApiType.GET);
+        Model aeris = new Model("Aeris.json", ApiType.GET);
         aeris.saveData();
 //        requestAll();
     }
@@ -94,6 +95,15 @@ public class WeatherAPI {
         temp.delete();
     }
 
+    public static Object loadJSON(String filename) {
+        File file = new File(filename);
+        try {
+            return loadJSONObject(file);
+        } catch (RuntimeException e) {
+            return loadJSONArray(file);
+        }
+    }
+
     static class Model {
 
         String url;
@@ -113,7 +123,7 @@ public class WeatherAPI {
         public void saveData() {
             JSONArray output = new JSONArray();
             // Source of data
-            JSONObject jsonSource = loadJSONObject(new File("output/GET/" + filename));
+            Object jsonSource = loadJSON("output/GET/" + filename);
             // Array of timeFrames
             // new JSONArray(Aeris.json/response/periods)
             JSONArray times = (JSONArray) JSONPath.jsonPathToObject(jsonSource,
