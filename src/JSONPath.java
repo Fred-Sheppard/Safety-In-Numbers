@@ -11,8 +11,8 @@ public class JSONPath {
     public static StringList path = new StringList();
 
     public static void main(String[] args) {
-//        JSONObject json = PApplet.loadJSONObject(new File("data/Input.json"));
-        JSONArray json = PApplet.loadJSONArray(new File("data/Input2.json"));
+//        JSONObject json = PApplet.loadJSONObject(new File("data/Object.json"));
+        JSONArray json = PApplet.loadJSONArray(new File("data/Array.json"));
         tree(json);
         String path = "1/Age/Unit";
         System.out.println(jsonPathToObject(json, path));
@@ -47,7 +47,7 @@ public class JSONPath {
             default -> null;
         };
         if (child == null) {
-            throw new InvalidPathException(s, "Object " + s + " does not exist");
+            throw new InvalidPathException(s, "JSONReader: Object \"" + s + "\" does not exist");
         }
         // Read next layer
         return readJSON(child, path, ++index);

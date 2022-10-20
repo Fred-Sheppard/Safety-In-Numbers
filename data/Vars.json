@@ -3,18 +3,32 @@
   "lon": -8.282975,
   "accuKey": "3553881",
   "Models": {
-
     "Aeris": {
-      "Root": "response/0/periods"
+      "Root": "response/0/periods",
+      "Keys": {
+        "windSpeed": "windSpeedKPH",
+        "windDir": "windDirDEG",
+        "Epoch": "timestamp"
+      }
     },
     "OpenWeather": {
-      "Root": "list"
+      "Root": "list",
+      "Keys": {
+        "windSpeed": "wind/speed"
+      }
     },
     "Visual": {
-      "Root": "locations/52.930164,-8.282975/values"
+      "Root": "locations/52.930164,-8.282975/values",
+      "Keys": {
+        "windSpeed": "wspd",
+        "Epoch": "datetime"
+      }
     },
     "WeatherBit": {
-      "Root": "data"
+      "Root": "data",
+      "Keys": {
+        "windSpeed": "wind_spd"
+      }
     }
   }
 }
