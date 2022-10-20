@@ -4,11 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add jsonPathToObject() function">
+    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add logic to find root of each model&#10;&#10;&#10;- Add list of models to Vars.json, each with a &quot;Root&quot; value">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Input.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/Object.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Input2.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/Array.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/Vars.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/Vars.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Refactor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Refactor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Scratch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/JSONPath.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/temp.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/JSONPath.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/JSONPath.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -49,6 +51,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ignore.preview.features.used": "true",
     "last_opened_file_path": "C:/Personal/Code/WeatherAPI/data",
     "project.structure.last.edited": "Global Libraries",
     "project.structure.proportion": "0.15",
@@ -167,7 +170,14 @@
       <option name="project" value="LOCAL" />
       <updated>1666204014549</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Add logic to find root of each model&#10;&#10;&#10;- Add list of models to Vars.json, each with a &quot;Root&quot; value">
+      <created>1666211093366</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1666211093366</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -220,7 +230,23 @@
     <MESSAGE value="Add configuration files to git" />
     <MESSAGE value="Add unfinished logic to refactor json" />
     <MESSAGE value="Add jsonPathToObject() function" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add jsonPathToObject() function" />
+    <MESSAGE value="Add logic to find root of each model&#10;&#10;&#10;- Add list of models to Vars.json, each with a &quot;Root&quot; value" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add logic to find root of each model&#10;&#10;&#10;- Add list of models to Vars.json, each with a &quot;Root&quot; value" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.nio.file.InvalidPathException" package="java.nio.file" />
+          <option name="timeStamp" value="11" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="Java Scratch">
+        <watch expression="((HashMap.Node)json.map.entrySet().toArray()[0]).getKey()" custom="java.util.HashMap.Node" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -1,7 +1,6 @@
 import processing.core.PApplet;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
-import processing.data.StringDict;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +9,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+
+import static processing.core.PApplet.loadJSONObject;
 
 public class WeatherAPI {
 
@@ -22,21 +23,17 @@ public class WeatherAPI {
         RAPIDAPI
     }
 
+    public static JSONObject configs;
+
     public static void main(String[] args) {
-        // TODO Move to own function - model.getTimes()
-        JSONObject models = PApplet.loadJSONObject(new File("data/Vars.json")).getJSONObject("Models");
-        for (Object o : models.keys()) {
-            String key = (String) o;
-            JSONObject model = models.getJSONObject(key);
-            String path = model.getString("Root");
-            String filename = key + ".json";
-            Object json = PApplet.loadJSONObject(new File("output/GET/" + filename));
-            JSONArray times = (JSONArray) JSONPath.jsonPathToObject(json, path);
-            System.out.println(key + times.size());
-        }
+        configs = loadJSONObject(new File("data/Vars.json"));
+        Model aeris = new Model("Visual.json", ApiType.GET);
+        aeris.saveData();
+//        requestAll();
     }
-    public static void main1(String[] args) {
-        JSONObject json = PApplet.loadJSONObject(new File("data/Vars.json"));
+
+    public static void requestAll() {
+        JSONObject json = loadJSONObject(new File("data/Vars.json"));
         lat = json.getFloat("lat");
         lon = json.getFloat("lon");
         accuKey = json.getString("accuKey");
@@ -64,17 +61,8 @@ public class WeatherAPI {
         visual.setUrl(String.format("https://visual-crossing-weather.p.rapidapi.com/forecast?aggregateHours=24" +
                 "&location=%f%%2C%f&contentType=json&unitGroup=metric&shortColumnNames=true", lat, lon));
 
-        JSONArray arr = PApplet.loadJSONObject(new File("output/GET/Aeris.json"))
-                .getJSONArray("response")
-                .getJSONObject(0)
-                .getJSONArray("periods");
-        aeris.setKey("windSpeed", "windSpeedKPH");
-        aeris.setKey("windDir", "windDirDEG");
-        System.out.println(aeris.refactor(arr));
-        System.exit(0);
-
 //        Model[] models = {metEir, weatherBit, accu, openWeather, aeris,  climacell, visual};
-        Model[] models = {visual};
+        Model[] models = {climacell};
         try {
             for (Model m : models) {
                 m.request();
@@ -89,13 +77,14 @@ public class WeatherAPI {
                 "http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=ACCUWEATHER_KEY&q=%f%%2C%f",
                 lat, lon);
         Model m = new Model("temp.json", ApiType.GET);
+        m.setUrl(url);
         try {
             m.request();
         } catch (Exception e) {
             System.out.println(e);
         }
         File temp = new File("output/GET/temp.json");
-        JSONObject json = PApplet.loadJSONObject(temp);
+        JSONObject json = loadJSONObject(temp);
         String key = json.getString("Key");
         if (!key.equals(accuKey)) {
             System.out.println("Accuweather key changed. New Location key is: " + key);
@@ -111,20 +100,46 @@ public class WeatherAPI {
         String data;
         String filename;
         ApiType type;
-        StringDict keys;
+        JSONObject config;
 
         Model(String filename, ApiType type) {
             this.filename = filename;
             this.type = type;
-            keys = new StringDict();
+            String name = filename.split("\\.")[0];
+            config = (JSONObject) JSONPath.jsonPathToObject(configs,
+                    "Models/" + name);
         }
 
-//        Model(String filename, String url, String data, ApiType type) {
-//            this.filename = filename;
-//            this.url = url;
-//            this.data = data;
-//            this.type = type;
-//        }
+        public void saveData() {
+            JSONArray output = new JSONArray();
+            // Source of data
+            JSONObject jsonSource = loadJSONObject(new File("output/GET/" + filename));
+            // Array of timeFrames
+            // new JSONArray(Aeris.json/response/periods)
+            JSONArray times = (JSONArray) JSONPath.jsonPathToObject(jsonSource,
+                    config.getString("Root"));
+            // List of keys you want to include
+            JSONObject myKeys = config.getJSONObject("Keys");
+            for (int i = 0; i < times.size(); i++) {
+                JSONObject thisTime = times.getJSONObject(i);
+                JSONObject timeOuput = new JSONObject();
+                // Find their key's name, get value at this key
+                for (Object o : myKeys.keys()) {
+                    String myMetric = (String) o; // windSpeed
+                    String theirMetric = myKeys.getString(myMetric); //windSpeedKPH
+                    Object value = thisTime.get(theirMetric); // 22.6
+                    // Maybe a typo in Vars.json
+                    if (value == null) System.out.printf("""
+                            %s
+                            Could not find value at "%s"%n""", filename, theirMetric);
+                    timeOuput.put(myMetric, value);
+                }
+                // Add timeFrame to list of timeFrames
+                output.append(timeOuput);
+            }
+            output.save(new File("output/Refactor/" + filename), null);
+        }
+
 
         public void setUrl(String s) {
             url = s;
@@ -132,10 +147,6 @@ public class WeatherAPI {
 
         public void setData(String s) {
             data = s;
-        }
-
-        public void setKey(String key, String value) {
-            keys.set(key, value);
         }
 
         public String toString() {
@@ -181,27 +192,6 @@ public class WeatherAPI {
                     .header("X-RapidAPI-Host", data)
                     .method("GET", HttpRequest.BodyPublishers.noBody())
                     .build();
-        }
-
-        public JSONArray refactor(JSONArray times) {
-            //Empty array
-            JSONArray out = new JSONArray();
-            //Iterate through timeframes
-            for (int i = 0; i < times.size(); i++) {
-                //This timeframe
-                JSONObject thisJSON = times.getJSONObject(i);
-                //Object to be appended to array
-                JSONObject time = new JSONObject();
-                //myKey: windSpeed
-                //theirKey: wspKPH
-                for (String myKey : keys.keys()) {
-                    String theirKey = keys.get(myKey);
-                    //Put my key, their value
-                    time.put(myKey, thisJSON.get(theirKey));
-                }
-                out.append(time);
-            }
-            return out;
         }
     }
 }

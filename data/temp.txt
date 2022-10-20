@@ -1,3 +1,0 @@
-|/"Age"/"Value"
-
-arr.get(0).getJSONObject("Age").getInt("Value");
