@@ -4,13 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add logic to find root of each model&#10;&#10;&#10;- Add list of models to Vars.json, each with a &quot;Root&quot; value">
+    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add logic to write any metric to file from json data&#10;&#10;&#10;- Enter metrics in &quot;Keys&quot; Object in Vars.json&#10;- Will be outputted to output/Refactor/Accu.json for example">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Input.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/Object.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Input2.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/Array.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Vars.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/Vars.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/temp.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/JSONPath.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/JSONPath.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -177,7 +172,14 @@
       <option name="project" value="LOCAL" />
       <updated>1666211093366</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Add logic to write any metric to file from json data&#10;&#10;&#10;- Enter metrics in &quot;Keys&quot; Object in Vars.json&#10;- Will be outputted to output/Refactor/Accu.json for example">
+      <created>1666302103780</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1666302103780</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -231,7 +233,8 @@
     <MESSAGE value="Add unfinished logic to refactor json" />
     <MESSAGE value="Add jsonPathToObject() function" />
     <MESSAGE value="Add logic to find root of each model&#10;&#10;&#10;- Add list of models to Vars.json, each with a &quot;Root&quot; value" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add logic to find root of each model&#10;&#10;&#10;- Add list of models to Vars.json, each with a &quot;Root&quot; value" />
+    <MESSAGE value="Add logic to write any metric to file from json data&#10;&#10;&#10;- Enter metrics in &quot;Keys&quot; Object in Vars.json&#10;- Will be outputted to output/Refactor/Accu.json for example" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add logic to write any metric to file from json data&#10;&#10;&#10;- Enter metrics in &quot;Keys&quot; Object in Vars.json&#10;- Will be outputted to output/Refactor/Accu.json for example" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
