@@ -1,7 +1,11 @@
+import org.xml.sax.SAXException;
 import processing.core.PApplet;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
+import processing.data.XML;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,6 +21,7 @@ public class WeatherAPI {
 
     static float lat, lon;
     static String accuKey;
+    public static JSONObject configs;
 
     enum ApiType {
         GET,
@@ -24,17 +29,21 @@ public class WeatherAPI {
         RAPIDAPI
     }
 
-    public static JSONObject configs;
-
     public static void main(String[] args) {
-        configs = loadJSONObject(new File("data/Vars.json"));
-        Model aeris = new Model("Aeris.json", ApiType.GET);
-        aeris.saveData();
-//        requestAll();
+        // TODO Convert all units to same type i.e. kph, mps, etc.
+        configs = loadJSONObject(new File("data/config.json"));
+        lat = configs.getFloat("lat");
+        lon = configs.getFloat("lon");
+
+//        Model accu = new Model("Accu.json", ApiType.GET);
+//        accu.setUrl();
+//        accu.saveData();
+        Model metEir = new Model("MetEir.xml", ApiType.GET);
+        metEir.saveXML();
     }
 
     public static void requestAll() {
-        JSONObject json = loadJSONObject(new File("data/Vars.json"));
+        JSONObject json = loadJSONObject(new File("data/config.json"));
         lat = json.getFloat("lat");
         lon = json.getFloat("lon");
         accuKey = json.getString("accuKey");
@@ -49,18 +58,10 @@ public class WeatherAPI {
 
         metEir.setUrl(String.format("http://metwdb-openaccess.ichec.ie/metno-wdb2ts/locationforecast?lat=%f&long=%f",
                 lat, lon));
-        weatherBit.setUrl(String.format("https://api.weatherbit.io/v2.0/forecast/daily?&lat=%f&lon=%f" +
-                "&key=a5db704eb5ec4fb9b98149eb8811f575", lat, lon));
         accu.setUrl(String.format(
                 "http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/%s?apikey=1cfVw9AtSxOswPYM5eTwhfSqqlLKSeWt&details=true&metric=true", accuKey));
-        openWeather.setUrl(String.format("https://api.openweathermap.org/data/2.5/forecast?lat=%f&lon=%f" +
-                "&units=metric&appid=35ce7696a59f9ed02b794ab6d155e6c1", lat, lon));
-        aeris.setUrl(String.format("https://aerisweather1.p.rapidapi.com/forecasts/%f,%%20%f?" +
-                "from=2022-10-16&filter=4hr&to=2022-10-17", lat, lon));
         climacell.setUrl(String.format("https://climacell-microweather-v1.p.rapidapi.com/weather/forecast/hourly?lat=%f&lon=%f" +
                 "&fields=windSpeed%%2CwindDirection&unit_system=si", lat, lon));
-        visual.setUrl(String.format("https://visual-crossing-weather.p.rapidapi.com/forecast?aggregateHours=24" +
-                "&location=%f%%2C%f&contentType=json&unitGroup=metric&shortColumnNames=true", lat, lon));
 
 //        Model[] models = {metEir, weatherBit, accu, openWeather, aeris,  climacell, visual};
         Model[] models = {climacell};
@@ -106,11 +107,11 @@ public class WeatherAPI {
 
     static class Model {
 
-        String url;
-        String data;
-        String filename;
-        ApiType type;
-        JSONObject config;
+        private String url;
+        private String data;
+        public String filename;
+        private final ApiType type;
+        private final JSONObject config;
 
         Model(String filename, ApiType type) {
             this.filename = filename;
@@ -121,6 +122,11 @@ public class WeatherAPI {
         }
 
         public void saveData() {
+            String root = config.getString("Root");
+            if (root.equals("XML")) {
+                saveXML();
+                return;
+            }
             JSONArray output = new JSONArray();
             // Source of data
             Object jsonSource = loadJSON("output/GET/" + filename);
@@ -135,10 +141,13 @@ public class WeatherAPI {
                 JSONObject timeOuput = new JSONObject();
                 // Find their key's name, get value at this key
                 for (Object o : myKeys.keys()) {
+                    // myMetric is the standardised name for outputting
+                    // theirMetric is what they call the metric, and may be path through multiple json Objects
+                    // e.g. Accu.json windSpeed: Wind/Speed/Value
                     String myMetric = (String) o; // windSpeed
                     String theirMetric = myKeys.getString(myMetric); //windSpeedKPH
-                    Object value = thisTime.get(theirMetric); // 22.6
-                    // Maybe a typo in Vars.json
+                    Object value = JSONPath.jsonPathToObject(thisTime, theirMetric); // 22.6
+                    // Might be caused by typo in config.json if this occurs
                     if (value == null) System.out.printf("""
                             %s
                             Could not find value at "%s"%n""", filename, theirMetric);
@@ -150,9 +159,60 @@ public class WeatherAPI {
             output.save(new File("output/Refactor/" + filename), null);
         }
 
+        public void saveXML() {
+            XML xml = loadXML("output/GET/MetEir.xml", null);
+            JSONArray output = new JSONArray();
+            // List of metrics to request
+            JSONObject myKeys = config.getJSONObject("Keys");
+            Time:
+            for (XML time : xml.getChild("product").getChildren("time")) {
+                JSONObject timeOutput = new JSONObject();
+                for (Object o : myKeys.keys()) {
+                    // myMetric is the standardised name for outputting
+                    // theirMetric is the path to the value
+                    String myMetric = (String) o;
+                    String theirMetric = myKeys.getString(myMetric);
+                    // The final part of a path is an attribute and not a child
+                    // It must be split and treated differently
+                    String[] path = theirMetric.split("/");
+                    String attribute = path[path.length-1];
+                    // Get child from path minus attribute
+                    // e.g. location/windSpeed/mps -> location/windSpeed/
+                    XML key = time.getChild(theirMetric.replace("/" + attribute, ""));
+                    // If one key in this timeframe is null, they all will be
+                    // Just skip to the next timeframe
+                    if (key == null) {
+                        continue Time;
+                    }
+                    // TODO This returns a String, parse to float, int etc
+                    timeOutput.put(myMetric, key.getString(attribute));
+                }
+                output.append(timeOutput);
+            }
+            String f = filename.replace("xml", "json");
+            output.save(new File("output/Refactor/" + f), null);
+        }
+
+        public XML loadXML(String filename, String options) {
+            try {
+                BufferedReader reader = PApplet.createReader(new File(filename));
+                return new XML(reader, options);
+            } catch (ParserConfigurationException | SAXException | IOException var4) {
+                throw new RuntimeException(var4);
+            }
+        }
+
 
         public void setUrl(String s) {
             url = s;
+        }
+
+        public void setUrl(float lat, float lon) {
+            setUrl(String.format(config.getString("url"), lat, lon));
+        }
+
+        public void setUrl() {
+            setUrl((config.getString("url")));
         }
 
         public void setData(String s) {
