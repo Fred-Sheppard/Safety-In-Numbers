@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add logic to write any metric to file from json data&#10;&#10;&#10;- Enter metrics in &quot;Keys&quot; Object in Vars.json&#10;- Will be outputted to output/Refactor/Accu.json for example">
+    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add loadJSON() function&#10;&#10;&#10;- Will load a JSON Object or Array without having to know what type it is">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Models.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Vars.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -17,8 +19,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="HTML File" />
-        <option value="Processing" />
         <option value="Class" />
+        <option value="Processing" />
       </list>
     </option>
   </component>
@@ -38,37 +40,38 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "ignore.preview.features.used": "true",
-    "last_opened_file_path": "C:/Personal/Code/WeatherAPI/data",
-    "project.structure.last.edited": "Global Libraries",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "Errors"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;ignore.preview.features.used&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Personal/Code/WeatherAPI/data&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;Errors&quot;
   },
-  "keyToStringList": {
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "JAVA",
-      "PDE"
+  &quot;keyToStringList&quot;: {
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;JAVA&quot;,
+      &quot;PDE&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Personal\Code\WeatherAPI\data" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Personal\Code\WeatherAPI\src\" />
+      <recent name="C:\Users\frede\AppData\Roaming\JetBrains\IdeaIC2022.2\scratches" />
       <recent name="C:\Personal\Code\WeatherAPI\output\Refactor" />
       <recent name="C:\Personal\Code\WeatherAPI\output\GET" />
       <recent name="C:\Personal\Code\WeatherAPI\" />
-      <recent name="C:\Personal\Code\WeatherAPI\data" />
     </key>
   </component>
   <component name="RunManager" selected="Application.WeatherAPI">
@@ -82,7 +85,7 @@
     <configuration name="Scratch" type="Java Scratch">
       <option name="MAIN_CLASS_NAME" value="Scratch" />
       <module name="WeatherAPI" />
-      <option name="SCRATCH_FILE_URL" value="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.java" />
+      <option name="SCRATCH_FILE_URL" value="file://$PROJECT_DIR$/src/scratch.java" />
       <shortenClasspath name="NONE" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -179,7 +182,14 @@
       <option name="project" value="LOCAL" />
       <updated>1666302103780</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Add loadJSON() function&#10;&#10;&#10;- Will load a JSON Object or Array without having to know what type it is">
+      <created>1666302785667</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1666302785667</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -234,14 +244,19 @@
     <MESSAGE value="Add jsonPathToObject() function" />
     <MESSAGE value="Add logic to find root of each model&#10;&#10;&#10;- Add list of models to Vars.json, each with a &quot;Root&quot; value" />
     <MESSAGE value="Add logic to write any metric to file from json data&#10;&#10;&#10;- Enter metrics in &quot;Keys&quot; Object in Vars.json&#10;- Will be outputted to output/Refactor/Accu.json for example" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add logic to write any metric to file from json data&#10;&#10;&#10;- Enter metrics in &quot;Keys&quot; Object in Vars.json&#10;- Will be outputted to output/Refactor/Accu.json for example" />
+    <MESSAGE value="Add loadJSON() function&#10;&#10;&#10;- Will load a JSON Object or Array without having to know what type it is" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add loadJSON() function&#10;&#10;&#10;- Will load a JSON Object or Array without having to know what type it is" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <breakpoint enabled="true" type="java-exception">
+        <breakpoint type="java-exception">
           <properties class="java.nio.file.InvalidPathException" package="java.nio.file" />
           <option name="timeStamp" value="11" />
+        </breakpoint>
+        <breakpoint type="java-exception">
+          <properties class="java.lang.StringIndexOutOfBoundsException" package="java.lang" />
+          <option name="timeStamp" value="14" />
         </breakpoint>
       </breakpoints>
     </breakpoint-manager>

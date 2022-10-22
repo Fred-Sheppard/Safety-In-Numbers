@@ -1,4 +1,7 @@
 Using:
+RapidAPI
+  https://rapidapi.com/developer/analytics/ISE-Portfolio
+
 ECMWF - Met Eireann
   54h to 90h in one hour intervals: named as ec_n1280_1hr
   90h to 144h in three hour intervals: named as ec_n1280_3hr
@@ -15,28 +18,13 @@ Accuweather
   1h in 72h
   1 day in 15 days
 
-OpenWeather
+OpenWeatherMap
   5h in 3 days
 
-RapidAPI
-  https://rapidapi.com/developer/analytics/ISE-Portfolio
 
 Aeris
   100/day
   any
-
-ClimaCell
-  500/day
-  https://docs.tomorrow.io/reference/data-layers-overview
-  https://docs.tomorrow.io/reference/data-layers-core
-  1h in 15 days
-  1d in 15 days
-  1 day	[-7d,+15d]
-  1h	1 hour	[-168h,+360h] 15 days
-  30m	30 minutes	[-6h,+6h]
-  15m	15 minutes	[-6h,+6h]
-  5m	5 minutes	[-6h,+6h]
-  1m	1 minute	[-6h,+6h]
 
 Visual Crossing
   500/month
@@ -57,6 +45,6 @@ NoApi:
 WRF
 HIRLAM - deprecated
 Weather2020
-OpenWeatherMap
+ClimaCell
 
 ToRetry: AROME
