@@ -15,7 +15,7 @@ public class JSONPath {
         JSONArray json = PApplet.loadJSONArray(new File("data/Array.json"));
         tree(json);
         String path = "1/Age/Unit";
-        System.out.println(jsonPathToObject(json, path));
+        System.out.println(getValue(json, path));
     }
 
     /**
@@ -27,7 +27,7 @@ public class JSONPath {
      * @param path String representation of path to data.
      * @return Value at path
      */
-    static Object jsonPathToObject(Object json, String path) {
+    static Object getValue(Object json, String path) {
         String[] pathArray = path.split("/", 0);
         return readJSON(json, pathArray, 0);
     }
@@ -80,7 +80,6 @@ public class JSONPath {
     }
 
     public static void tree(JSONArray arr) {
-        //For starting array
         // For every Object in arr
         for (int i = 0; i < arr.size(); i++) {
             //Array Objects don't have keys, so use index
@@ -112,5 +111,4 @@ public class JSONPath {
         }
         System.out.println(sb);
     }
-
 }

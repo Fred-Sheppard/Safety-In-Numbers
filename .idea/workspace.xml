@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add loadJSON() function&#10;&#10;&#10;- Will load a JSON Object or Array without having to know what type it is">
+    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add saveXML() function&#10;&#10;&#10;- If Root is set to &quot;XML&quot; in config.json, then saveXML is called by saveData().&#10;- As of right now, it is only called for MetEir.xml">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Models.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Vars.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/JSONPath.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/JSONPath.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Refactor.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -85,7 +86,7 @@
     <configuration name="Scratch" type="Java Scratch">
       <option name="MAIN_CLASS_NAME" value="Scratch" />
       <module name="WeatherAPI" />
-      <option name="SCRATCH_FILE_URL" value="file://$PROJECT_DIR$/src/scratch.java" />
+      <option name="SCRATCH_FILE_URL" value="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.java" />
       <shortenClasspath name="NONE" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -189,7 +190,14 @@
       <option name="project" value="LOCAL" />
       <updated>1666302785667</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Add saveXML() function&#10;&#10;&#10;- If Root is set to &quot;XML&quot; in config.json, then saveXML is called by saveData().&#10;- As of right now, it is only called for MetEir.xml">
+      <created>1666482219083</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1666482219083</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -245,7 +253,8 @@
     <MESSAGE value="Add logic to find root of each model&#10;&#10;&#10;- Add list of models to Vars.json, each with a &quot;Root&quot; value" />
     <MESSAGE value="Add logic to write any metric to file from json data&#10;&#10;&#10;- Enter metrics in &quot;Keys&quot; Object in Vars.json&#10;- Will be outputted to output/Refactor/Accu.json for example" />
     <MESSAGE value="Add loadJSON() function&#10;&#10;&#10;- Will load a JSON Object or Array without having to know what type it is" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add loadJSON() function&#10;&#10;&#10;- Will load a JSON Object or Array without having to know what type it is" />
+    <MESSAGE value="Add saveXML() function&#10;&#10;&#10;- If Root is set to &quot;XML&quot; in config.json, then saveXML is called by saveData().&#10;- As of right now, it is only called for MetEir.xml" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add saveXML() function&#10;&#10;&#10;- If Root is set to &quot;XML&quot; in config.json, then saveXML is called by saveData().&#10;- As of right now, it is only called for MetEir.xml" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

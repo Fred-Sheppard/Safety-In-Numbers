@@ -9,30 +9,42 @@
         "windSpeed": "Wind/Speed/Value",
         "windDir": "Wind/Direction/Degrees",
         "Epoch": "EpochDateTime"
+      },
+      "Units": {
+        "windSpeed": 0.539957
       }
     },
     "Aeris": {
       "url": "https://aerisweather1.p.rapidapi.com/forecasts/%f,%%20%f?from=2022-10-16&filter=4hr&to=2022-10-17",
       "Root": "response/0/periods",
       "Keys": {
-        "windSpeed": "windSpeedKPH",
+        "windSpeed": "windSpeedKTS",
         "windDir": "windDirDEG",
         "Epoch": "timestamp"
+      },
+      "Units": {
       }
     },
     "MetEir": {
-      "url": "",
+      "url": "http://metwdb-openaccess.ichec.ie/metno-wdb2ts/locationforecast?lat=%f&long=%f",
       "Root": "XML",
       "Keys": {
         "windSpeed": "location/windSpeed/mps",
         "windDir": "location/windDirection/deg"
+      },
+      "Units": {
+        "windSpeed": ""
       }
     },
     "OpenWeather": {
       "url": "https://api.openweathermap.org/data/2.5/forecast?lat=%f&lon=%f&units=metric&appid=OPEN_WEATHER_KEY",
       "Root": "list",
       "Keys": {
-        "windSpeed": "wind/speed"
+        "windSpeed": "wind/speed",
+        "windDir": "wind/deg"
+      },
+      "Units": {
+        "windSpeed": 1.94384
       }
     },
     "Visual": {
@@ -41,13 +53,20 @@
       "Keys": {
         "windSpeed": "wspd",
         "Epoch": "datetime"
+      },
+      "Units": {
+        "windSpeed": 0.539957
       }
     },
     "WeatherBit": {
       "url": "https://api.weatherbit.io/v2.0/forecast/daily?&lat=%f&lon=%f&key=WEATHERBIT_KEY",
       "Root": "data",
       "Keys": {
-        "windSpeed": "wind_spd"
+        "windSpeed": "wind_spd",
+        "windDir": "wind_dir"
+      },
+      "Units": {
+        "windSpeed": 1.94384
       }
     }
   }
