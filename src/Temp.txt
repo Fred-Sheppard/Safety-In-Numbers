@@ -17,6 +17,13 @@ main() {
   for (int i = 0; i < models.size(); i++) {
     modelName = models.get(i);
     String filename = modelName + ".json";
+    if modelName == OpenWeather {
+        Model m1 = new Model(name+_1h+json)
+        Model m2 = new Model(name+_1d+json)
+        m1.setRoot("hourly");
+        m2.setRoot("daily");
+    }
+  }
     Model m = new Model(filename);
   }
 }

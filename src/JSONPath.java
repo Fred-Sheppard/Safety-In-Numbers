@@ -10,14 +10,6 @@ public class JSONPath {
 
     public static StringList path = new StringList();
 
-    public static void main(String[] args) {
-//        JSONObject json = PApplet.loadJSONObject(new File("data/Object.json"));
-        JSONArray json = PApplet.loadJSONArray(new File("data/Array.json"));
-        tree(json);
-        String path = "1/Age/Unit";
-        System.out.println(getValue(json, path));
-    }
-
     /**
      * Returns the data at a given json path.
      * Use numbers to represent array indexes.
