@@ -23,23 +23,42 @@ public class WeatherAPI {
     static String accuKey;
     public static JSONObject configs;
 
-    enum ApiType {
+    enum REQUESTTYPE {
         GET,
         POST,
         RAPIDAPI
     }
 
-    public static void main(String[] args) {
-        // TODO Convert all units to same type i.e. kph, mps, etc.
+    public static void main(String[] args) throws IOException, InterruptedException {
+        /*
+         TODO Need separate configs for hourly, daily. Find some way to do this
+         TODO Maybe put "1h" "1d" inside "Accu", maybe just copy and make separate
+         */
         configs = loadJSONObject(new File("data/config.json"));
         lat = configs.getFloat("lat");
         lon = configs.getFloat("lon");
 
-        Model accu = new Model("WeatherBit.json", ApiType.GET);
-//        accu.setUrl();
-        accu.saveData();
-//        Model metEir = new Model("MetEir.xml", ApiType.GET);
-//        metEir.saveXML();
+        JSONObject queries = configs.getJSONObject("Queries");
+        for (Object o : queries.keys()) {
+            String modelName = (String) o;
+            System.out.println(modelName);
+            String url = queries.getString(modelName);
+            if (modelName.equals("OpenWeather")) {
+                Model m1 = new Model("OpenWeather_1h.json");
+                Model m2 = new Model("OpenWeather_1d.json");
+                m1.setRoot("hourly");
+                m2.setRoot("daily");
+                m1.setUrl(url);
+                m2.setUrl(url);
+                m1.request();
+                m2.request();
+            } else {
+                Model m = new Model(modelName + ".json");
+                m.setUrl(url);
+                m.request();
+            }
+            break;
+        }
     }
 
     public static void requestAll() {
@@ -48,12 +67,12 @@ public class WeatherAPI {
         lon = json.getFloat("lon");
         accuKey = json.getString("accuKey");
 
-        Model metEir = new Model("MetEir.xml", ApiType.GET);
-        Model weatherBit = new Model("WeatherBit.json", ApiType.GET);
-        Model accu = new Model("Accu.json", ApiType.GET);
-        Model openWeather = new Model("OpenWeather.json", ApiType.GET);
-        Model aeris = new Model("Aeris.json", ApiType.RAPIDAPI);
-        Model visual = new Model("Visual.json", ApiType.RAPIDAPI);
+        Model metEir = new Model("MetEir.xml");
+        Model weatherBit = new Model("WeatherBit.json");
+        Model accu = new Model("Accu.json");
+        Model openWeather = new Model("OpenWeather.json");
+        Model aeris = new Model("Aeris.json");
+        Model visual = new Model("Visual.json");
 
 //        Model[] models = {metEir, weatherBit, accu, openWeather, aeris,  climacell, visual};
         Model[] models = {visual};
@@ -65,28 +84,6 @@ public class WeatherAPI {
         } catch (Exception e) {
             System.out.println(e);
         }
-    }
-
-    static void checkAccuKey() {
-        String url = String.format(
-                "http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=1cfVw9AtSxOswPYM5eTwhfSqqlLKSeWt&q=%f%%2C%f",
-                lat, lon);
-        Model m = new Model("temp.json", ApiType.GET);
-        m.setUrl(url);
-        try {
-            m.request();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        File temp = new File("output/GET/temp.json");
-        JSONObject json = loadJSONObject(temp);
-        String key = json.getString("Key");
-        if (!key.equals(accuKey)) {
-            System.out.println("Accuweather key changed. New Location key is: " + key);
-        } else {
-            System.out.println("Accuweather: Key is good");
-        }
-        temp.delete();
     }
 
     // Loads JSON file, regardless if it's an Object or Array
@@ -104,19 +101,30 @@ public class WeatherAPI {
         private String url;
         private String data;
         public String filename;
-        private final ApiType type;
+        private final REQUESTTYPE requestType;
         private final JSONObject config;
+        private String root;
 
-        Model(String filename, ApiType type) {
-            this.filename = filename;
-            this.type = type;
-            String name = filename.split("\\.")[0];
+        Model(String filename) {
+            this.filename = filename; // Aeris_1h.json
+            String modelName = filename.split("\\.")[0]; // Aeris_1h
+            String configName = modelName.split("_")[0]; // Aeris
             config = (JSONObject) JSONPath.getValue(configs,
-                    "Models/" + name);
+                    "Models/" + configName);
+            int typeIndex = config.getInt("RequestType");
+            requestType = REQUESTTYPE.values()[typeIndex];
+        }
+
+        Model(String filename, boolean testing) {
+            this.filename = filename;
+            config = new JSONObject();
+            requestType = REQUESTTYPE.GET;
         }
 
         public void saveData() {
-            String root = config.getString("Root");
+            if (root == null) {
+                root = config.getString("Root");
+            }
             if (root.equals("XML")) {
                 saveXML();
                 return;
@@ -232,12 +240,16 @@ public class WeatherAPI {
             data = s;
         }
 
+        public void setRoot(String s) {
+            root = s;
+        }
+
         public String toString() {
             return filename + " " + url;
         }
 
         void request() throws IOException, InterruptedException {
-            HttpRequest request = switch (type) {
+            HttpRequest request = switch (requestType) {
                 case GET -> get(url);
                 case POST -> post(url, data);
                 case RAPIDAPI -> getRapid(url, data);

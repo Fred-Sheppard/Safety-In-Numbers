@@ -1,10 +1,21 @@
 {
   "lat": 52.930166,
   "lon": -8.282975,
+  "Queries": {
+    "Accu_1h": "http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/3553881?apikey=1cfVw9AtSxOswPYM5eTwhfSqqlLKSeWt&details=true&metric=true",
+    "Accu_1d": "http://dataservice.accuweather.com/forecasts/v1/daily/5day/3553881?apikey=1cfVw9AtSxOswPYM5eTwhfSqqlLKSeWt&details=true&metric=true",
+    "Aeris_1h": "https://aerisweather1.p.rapidapi.com/forecasts/%f,%f?plimit=168&filter=1hr",
+    "Aeris_1d": "https://aerisweather1.p.rapidapi.com/forecasts/%f,%f?plimit=7&filter=1d",
+    "MetEir": "http://metwdb-openaccess.ichec.ie/metno-wdb2ts/locationforecast?lat=%f&long=%f",
+    "OpenWeather": "https://api.openweathermap.org/data/3.0/onecall?lat=%f&lon=%f&exclude=current,alerts,minutely&appid=35ce7696a59f9ed02b794ab6d155e6c1&units=metric",
+    "Visual_1h": "https://visual-crossing-weather.p.rapidapi.com/forecast?aggregateHours=1&location=%f%%2C%f&contentType=json&unitGroup=metric&shortColumnNames=true",
+    "WeatherBit_1h": "",
+    "WeatherBit_1d": "https://api.weatherbit.io/v2.0/forecast/daily?&lat=%f&lon=%f&key=a5db704eb5ec4fb9b98149eb8811f575"
+  },
   "Models": {
     "Accu": {
-      "url": "http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/3553881?apikey=1cfVw9AtSxOswPYM5eTwhfSqqlLKSeWt&details=true&metric=true",
       "Root": "",
+      "RequestType": 0,
       "Keys": {
         "windSpeed": "Wind/Speed/Value",
         "windDir": "Wind/Direction/Degrees",
@@ -15,8 +26,8 @@
       }
     },
     "Aeris": {
-      "url": "https://aerisweather1.p.rapidapi.com/forecasts/%f,%%20%f?from=2022-10-16&filter=4hr&to=2022-10-17",
       "Root": "response/0/periods",
+      "RequestType": 0,
       "Keys": {
         "windSpeed": "windSpeedKTS",
         "windDir": "windDirDEG",
@@ -26,8 +37,8 @@
       }
     },
     "MetEir": {
-      "url": "http://metwdb-openaccess.ichec.ie/metno-wdb2ts/locationforecast?lat=%f&long=%f",
       "Root": "XML",
+      "RequestType": 2,
       "Keys": {
         "windSpeed": "location/windSpeed/mps",
         "windDir": "location/windDirection/deg"
@@ -37,19 +48,17 @@
       }
     },
     "OpenWeather": {
-      "url": "https://api.openweathermap.org/data/2.5/forecast?lat=%f&lon=%f&units=metric&appid=35ce7696a59f9ed02b794ab6d155e6c1",
-      "Root": "list",
       "Keys": {
-        "windSpeed": "wind/speed",
-        "windDir": "wind/deg"
+        "windSpeed": "wind_speed",
+        "windDir": "wind_deg"
       },
       "Units": {
         "windSpeed": 1.94384
       }
     },
     "Visual": {
-      "url": "https://visual-crossing-weather.p.rapidapi.com/forecast?aggregateHours=24&location=%f%%2C%f&contentType=json&unitGroup=metric&shortColumnNames=true",
       "Root": "locations/52.930164,-8.282975/values",
+      "RequestType": 2,
       "Keys": {
         "windSpeed": "wspd",
         "Epoch": "datetime"
@@ -59,8 +68,8 @@
       }
     },
     "WeatherBit": {
-      "url": "https://api.weatherbit.io/v2.0/forecast/daily?&lat=%f&lon=%f&key=a5db704eb5ec4fb9b98149eb8811f575",
       "Root": "data",
+      "RequestType": 0,
       "Keys": {
         "windSpeed": "wind_spd",
         "windDir": "wind_dir"
