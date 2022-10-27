@@ -1,46 +1,13 @@
-Config: {
-  "Queries": [
-    "Accu_1h",
-    "Accu_1d",
-    "Aeris_1h",
-    "Aeris_1d"
-  ]
-  "Models": {
-    "Accu": {
-      "type": 0
-    }
+// Protects against invalid RequestType values
+Model() {
+  int index = config.getInt("RequestType");
+  if (index > 2) {
+    System.out.error(String.format("Error. RequestType in %s cannot be greater than %d. Value: %d", modelName, RequestType.values().length, index);
+    requestType = RequestType.GET;
+  } else if (index < 0) {
+    System.out.error(String.format("Error. RequestType in %s cannot be less than 0. Value: %d", modelName, index);
+    requestType = RequestType.GET;
+  } else {
+    requestType = RequestType.values()[index];
   }
 }
-
-main() {
-  JSONArray models = loadJSONObject("config.json").getJSONArray("Queries");
-  for (int i = 0; i < models.size(); i++) {
-    modelName = models.get(i);
-    String filename = modelName + ".json";
-    if modelName == OpenWeather {
-        Model m1 = new Model(name+_1h+json)
-        Model m2 = new Model(name+_1d+json)
-        m1.setRoot("hourly");
-        m2.setRoot("daily");
-    }
-  }
-    Model m = new Model(filename);
-  }
-}
-
-Model {
-
-  APItype type;
-
-  Model(String filename) {
-    this.filename = filename;
-    String configName = modelName.split("_")[0];
-    JSONObject config = JSONPath.getValue(configs, "Models/" + configname);
-    type = (Type) config.getInt("type");
-    // How to convert int to enum?
-   }
-  
-
-}
-
-https://www.programiz.com/java-programming/enums
