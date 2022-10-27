@@ -19,3 +19,4 @@ List of multipliers, if any, to apply to the given metrics.
 Used for conversion between units. e.g. kph -> knts.
 
 
+TODO Remove "Queries" object, create unique "Model" object for each query. E.g. Accu_1d, Accu_1h.
