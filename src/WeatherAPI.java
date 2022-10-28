@@ -42,33 +42,7 @@ public class WeatherAPI {
                 fileType = ".xml";
             }
             Model m = new Model(modelName + fileType);
-            System.out.println(m.filename + " " +  m.requestType + " " + m.url);
             m.saveData();
-        }
-    }
-
-    public static void requestAll() {
-        JSONObject json = loadJSONObject(new File("data/config.json"));
-        lat = json.getFloat("lat");
-        lon = json.getFloat("lon");
-        accuKey = json.getString("accuKey");
-
-        Model metEir = new Model("MetEir.xml");
-        Model weatherBit = new Model("WeatherBit.json");
-        Model accu = new Model("Accu.json");
-        Model openWeather = new Model("OpenWeather.json");
-        Model aeris = new Model("Aeris.json");
-        Model visual = new Model("Visual.json");
-
-//        Model[] models = {metEir, weatherBit, accu, openWeather, aeris,  climacell, visual};
-        Model[] models = {visual};
-        try {
-            for (Model m : models) {
-                m.setUrlFromConfig();
-                m.request();
-            }
-        } catch (Exception e) {
-            System.out.println(e);
         }
     }
 
@@ -85,7 +59,7 @@ public class WeatherAPI {
     static class Model {
 
         private String url;
-        private String data;
+        private String header;
         public String filename;
         private final RequestType requestType;
         private final JSONObject config;
@@ -94,9 +68,12 @@ public class WeatherAPI {
         Model(String filename) {
             this.filename = filename; // Aeris_1h.json
             String modelName = filename.split("\\.")[0]; // Aeris_1h
+            // Entry in config.json that contains values for url, root, keys etc.
             config = (JSONObject) JSONPath.getValue(configs, "Models/" + modelName);
-            url = String.format(config.getString("url"), lat, lon);
-            data = config.getString("Header");
+            // Url to be used for HTTP requests
+            url = String.format(config.getString("URL"), lat, lon);
+            // Value to be passed as a header in RapidAPI requests
+            header = config.getString("Header");
             int typeIndex = config.getInt("RequestType");
             if (typeIndex > 2) {
                 System.out.printf("Error. RequestType in %s cannot be greater than %d. Value: %d%n", modelName, RequestType.values().length-1, typeIndex);
@@ -105,6 +82,7 @@ public class WeatherAPI {
                 System.out.printf("Error. RequestType in %s cannot be less than 0. Value: %d%n", modelName, typeIndex);
                 requestType = RequestType.GET;
             } else {
+                // 0 = GET, 1 = POST, 2 = RAPIDAPI
                 requestType = RequestType.values()[typeIndex];
             }
         }
@@ -168,6 +146,7 @@ public class WeatherAPI {
                 // Add timeFrame to list of timeFrames
                 output.append(timeOuput);
             }
+            System.out.println(filename);
             output.save(new File("output/Refactor/" + filename), null);
         }
 
@@ -210,8 +189,8 @@ public class WeatherAPI {
         void request() throws IOException, InterruptedException {
             HttpRequest request = switch (requestType) {
                 case GET -> get(url);
-                case POST -> post(url, data);
-                case RAPIDAPI -> getRapid(url, data);
+                case POST -> post(url, header);
+                case RAPIDAPI -> getRapid(url, header);
             };
             var client = HttpClient.newHttpClient();
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -233,21 +212,20 @@ public class WeatherAPI {
             }
         }
 
-
         public void setUrl(String s) {
             url = s;
         }
 
         public void setUrl(float lat, float lon) {
-            setUrl(String.format(config.getString("url"), lat, lon));
+            setUrl(String.format(config.getString("URL"), lat, lon));
         }
 
         public void setUrlFromConfig() {
-            setUrl((config.getString("url")));
+            setUrl((config.getString("URL")));
         }
 
-        public void setData(String s) {
-            data = s;
+        public void setHeader(String s) {
+            header = s;
         }
 
         public void setRoot(String s) {
@@ -257,7 +235,6 @@ public class WeatherAPI {
         public String toString() {
             return filename + " " + url;
         }
-
 
         HttpRequest get(String postEndpoint) {
             return HttpRequest.newBuilder()

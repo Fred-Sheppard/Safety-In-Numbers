@@ -1,15 +1,18 @@
 # Using config.json
 
-## Queries:
-A list of urls to query, where the resulting file will be named as the key.
-Each query uses the Model config sharing a name with the text before the underscore.
-Urls use %f in place of latitude and longitude, for use with String.format().<br>
-e.g. "Accu_1h": "[url]" -> "Accu_1h.json", config = "Accu"
-
 ## Models:
-Config file for each Model. Contains:<br>
+Config file for each Model. The key name will be outputted as the file name.
+Each model config contains:<br>
 ### Root:
 JSON path to the array of time periods in the http request response.
+### RequestType:
+Type of HTTP request that will be called. Can be GET, POST or RAPIDAPI.<br>
+GET performs a GET request.<br>
+POST performs a POST request.<br>
+RAPIDAPI appends an additional header tag to the GET request (for use with rapidapi.com)
+### URL:
+Url to be used within the HTTP request.
+Urls use %f in place of latitude and longitude, for use with String.format().
 ### Keys:
 List of metrics to be queried.
 The key is a standardised name to be used across this project,
@@ -19,4 +22,4 @@ List of multipliers, if any, to apply to the given metrics.
 Used for conversion between units. e.g. kph -> knts.
 
 
-TODO Remove "Queries" object, create unique "Model" object for each query. E.g. Accu_1d, Accu_1h.
+
