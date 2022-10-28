@@ -13,24 +13,29 @@ Harmonie - Met Eireann
 WeatherBit
   1h in 2-10 days
   1 day in 16 days
+  https://www.weatherbit.io/api/weather-forecast-hourly
 
 Accuweather
   1h in 72h
   1 day in 15 days
+  https://developer.accuweather.com/accuweather-forecast-api/apis
 
 OpenWeatherMap
-  5h in 3 days
-
+  1h in 2d
+  1d in 8d
+  https://openweathermap.org/api/one-call-3
 
 Aeris
   100/day
   any
+  https://rapidapi.com/aerisweather-aerisweather/api/aerisweather1
 
 Visual Crossing
   500/month
   1h in 7d
   12h in 7d
   1d in 7d
+  https://rapidapi.com/visual-crossing-corporation-visual-crossing-corporation-default/api/visual-crossing-weather
 
 Paid:
 Windy

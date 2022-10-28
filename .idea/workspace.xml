@@ -4,14 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add conversion logic in saveData() between kts, kph etc.">
-      <change afterPath="$PROJECT_DIR$/data/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Array.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Object.json" beforeDir="false" />
+    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Main() now requests all models in config.json then refactors the results&#10;&#10;&#10;- Removed &quot;Queries&quot; from config.json, moved url to &quot;Models&quot;&#10;- Add unique entry in &quot;Models&quot; for each timestep e.g. Accu_1h, Accu_1d&#10;- Add urls to API docs in Models.txt&#10;- Add logic to prevent errors through incorrect requestType values">
       <change beforePath="$PROJECT_DIR$/data/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/JSONPath.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/JSONPath.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Temp.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Temp.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -207,7 +201,21 @@
       <option name="project" value="LOCAL" />
       <updated>1666543451061</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Begin logic to request all models&#10;&#10;- Refactor Model constructor to make use of this logic&#10;- Add &quot;Queries&quot; to config.json. This is a list of all urls that should be queried&#10;- Move REQUESTTYPE (was APITYPE) to config.json &#10;- TODO Make separate configs for different time frames i.e. 1h, 1d">
+      <created>1666649657973</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1666649657973</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Main() now requests all models in config.json then refactors the results&#10;&#10;&#10;- Removed &quot;Queries&quot; from config.json, moved url to &quot;Models&quot;&#10;- Add unique entry in &quot;Models&quot; for each timestep e.g. Accu_1h, Accu_1d&#10;- Add urls to API docs in Models.txt&#10;- Add logic to prevent errors through incorrect requestType values">
+      <created>1666995726440</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1666995726441</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -265,7 +273,11 @@
     <MESSAGE value="Add loadJSON() function&#10;&#10;&#10;- Will load a JSON Object or Array without having to know what type it is" />
     <MESSAGE value="Add saveXML() function&#10;&#10;&#10;- If Root is set to &quot;XML&quot; in config.json, then saveXML is called by saveData().&#10;- As of right now, it is only called for MetEir.xml" />
     <MESSAGE value="Add conversion logic in saveData() between kts, kph etc." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add conversion logic in saveData() between kts, kph etc." />
+    <MESSAGE value="Begin logic to request all models&#10;&#10;- Add &quot;Queries&quot; to config.json. This is a list of all urls that should be queried.&#10;- Move REQUESTTYPE to &#10;- TODO Make separate configs for different time frames i.e. 1h, 1d" />
+    <MESSAGE value="Begin logic to request all models&#10;&#10;- Add &quot;Queries&quot; to config.json. This is a list of all urls that should be queried&#10;- Move REQUESTTYPE (was APITYPE) to config.json &#10;- TODO Make separate configs for different time frames i.e. 1h, 1d" />
+    <MESSAGE value="Begin logic to request all models&#10;&#10;- Refactor Model constructor to make use of this logic&#10;- Add &quot;Queries&quot; to config.json. This is a list of all urls that should be queried&#10;- Move REQUESTTYPE (was APITYPE) to config.json &#10;- TODO Make separate configs for different time frames i.e. 1h, 1d" />
+    <MESSAGE value="Main() now requests all models in config.json then refactors the results&#10;&#10;&#10;- Removed &quot;Queries&quot; from config.json, moved url to &quot;Models&quot;&#10;- Add unique entry in &quot;Models&quot; for each timestep e.g. Accu_1h, Accu_1d&#10;- Add urls to API docs in Models.txt&#10;- Add logic to prevent errors through incorrect requestType values" />
+    <option name="LAST_COMMIT_MESSAGE" value="Main() now requests all models in config.json then refactors the results&#10;&#10;&#10;- Removed &quot;Queries&quot; from config.json, moved url to &quot;Models&quot;&#10;- Add unique entry in &quot;Models&quot; for each timestep e.g. Accu_1h, Accu_1d&#10;- Add urls to API docs in Models.txt&#10;- Add logic to prevent errors through incorrect requestType values" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -277,6 +289,10 @@
         <breakpoint type="java-exception">
           <properties class="java.lang.StringIndexOutOfBoundsException" package="java.lang" />
           <option name="timeStamp" value="14" />
+        </breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.ClassCastException" package="java.lang" />
+          <option name="timeStamp" value="17" />
         </breakpoint>
       </breakpoints>
     </breakpoint-manager>

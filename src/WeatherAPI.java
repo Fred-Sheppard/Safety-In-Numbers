@@ -23,41 +23,27 @@ public class WeatherAPI {
     static String accuKey;
     public static JSONObject configs;
 
-    enum REQUESTTYPE {
+    enum RequestType {
         GET,
         POST,
         RAPIDAPI
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        /*
-         TODO Need separate configs for hourly, daily. Find some way to do this
-         TODO Maybe put "1h" "1d" inside "Accu", maybe just copy and make separate
-         */
         configs = loadJSONObject(new File("data/config.json"));
         lat = configs.getFloat("lat");
         lon = configs.getFloat("lon");
 
-        JSONObject queries = configs.getJSONObject("Queries");
-        for (Object o : queries.keys()) {
+        JSONObject models = configs.getJSONObject("Models");
+        for (Object o : models.keys()) {
             String modelName = (String) o;
-            System.out.println(modelName);
-            String url = queries.getString(modelName);
-            if (modelName.equals("OpenWeather")) {
-                Model m1 = new Model("OpenWeather_1h.json");
-                Model m2 = new Model("OpenWeather_1d.json");
-                m1.setRoot("hourly");
-                m2.setRoot("daily");
-                m1.setUrl(url);
-                m2.setUrl(url);
-                m1.request();
-                m2.request();
-            } else {
-                Model m = new Model(modelName + ".json");
-                m.setUrl(url);
-                m.request();
+            String fileType = ".json";
+            if (modelName.equals("MetEir")) {
+                fileType = ".xml";
             }
-            break;
+            Model m = new Model(modelName + fileType);
+            System.out.println(m.filename + " " +  m.requestType + " " + m.url);
+            m.saveData();
         }
     }
 
@@ -101,24 +87,32 @@ public class WeatherAPI {
         private String url;
         private String data;
         public String filename;
-        private final REQUESTTYPE requestType;
+        private final RequestType requestType;
         private final JSONObject config;
         private String root;
 
         Model(String filename) {
             this.filename = filename; // Aeris_1h.json
             String modelName = filename.split("\\.")[0]; // Aeris_1h
-            String configName = modelName.split("_")[0]; // Aeris
-            config = (JSONObject) JSONPath.getValue(configs,
-                    "Models/" + configName);
+            config = (JSONObject) JSONPath.getValue(configs, "Models/" + modelName);
+            url = String.format(config.getString("url"), lat, lon);
+            data = config.getString("Header");
             int typeIndex = config.getInt("RequestType");
-            requestType = REQUESTTYPE.values()[typeIndex];
+            if (typeIndex > 2) {
+                System.out.printf("Error. RequestType in %s cannot be greater than %d. Value: %d%n", modelName, RequestType.values().length-1, typeIndex);
+                requestType = RequestType.GET;
+            } else if (typeIndex < 0) {
+                System.out.printf("Error. RequestType in %s cannot be less than 0. Value: %d%n", modelName, typeIndex);
+                requestType = RequestType.GET;
+            } else {
+                requestType = RequestType.values()[typeIndex];
+            }
         }
 
         Model(String filename, boolean testing) {
             this.filename = filename;
             config = new JSONObject();
-            requestType = REQUESTTYPE.GET;
+            requestType = RequestType.GET;
         }
 
         public void saveData() {
@@ -213,6 +207,22 @@ public class WeatherAPI {
             output.save(new File("output/Refactor/" + f), null);
         }
 
+        void request() throws IOException, InterruptedException {
+            HttpRequest request = switch (requestType) {
+                case GET -> get(url);
+                case POST -> post(url, data);
+                case RAPIDAPI -> getRapid(url, data);
+            };
+            var client = HttpClient.newHttpClient();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            PrintWriter output = PApplet.createWriter(new File("output/GET/" + filename));
+            System.out.println(filename + ": " + response.statusCode());
+            output.println(response.body());
+            output.flush();
+            output.close();
+        }
+
         // Taken from processing.data.XML
         public XML loadXML(String filename, String options) {
             try {
@@ -248,21 +258,6 @@ public class WeatherAPI {
             return filename + " " + url;
         }
 
-        void request() throws IOException, InterruptedException {
-            HttpRequest request = switch (requestType) {
-                case GET -> get(url);
-                case POST -> post(url, data);
-                case RAPIDAPI -> getRapid(url, data);
-            };
-            var client = HttpClient.newHttpClient();
-            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            PrintWriter output = PApplet.createWriter(new File("output/GET/" + filename));
-            System.out.println(filename + ": " + response.statusCode());
-            output.println(response.body());
-            output.flush();
-            output.close();
-        }
 
         HttpRequest get(String postEndpoint) {
             return HttpRequest.newBuilder()
