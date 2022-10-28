@@ -6,7 +6,7 @@ Each model config contains:<br>
 ### Root:
 JSON path to the array of time periods in the http request response.
 ### RequestType:
-Type of HTTP request that will be called. Can be GET, POST or RAPIDAPI.<br>
+Type of HTTP request that will be called. Can be 0, 1 or 2 to represent GET, POST or RAPIDAPI.<br>
 GET performs a GET request.<br>
 POST performs a POST request.<br>
 RAPIDAPI appends an additional header tag to the GET request (for use with rapidapi.com)
