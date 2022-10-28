@@ -5,7 +5,7 @@
     "Accu_1h": {
       "Root": "",
       "RequestType": 0,
-      "url": "http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/3553881?apikey=ACCUWEATHER_KEY&details=true&metric=true",
+      "URL": "http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/3553881?apikey=ACCUWEATHER_KEY&details=true&metric=true",
       "Keys": {
         "windSpeed": "Wind/Speed/Value",
         "windDir": "Wind/Direction/Degrees",
@@ -18,7 +18,7 @@
     "Accu_1d": {
       "Root": "DailyForecasts",
       "RequestType": 0,
-      "url": "http://dataservice.accuweather.com/forecasts/v1/daily/5day/3553881?apikey=ACCUWEATHER_KEY&details=true&metric=true",
+      "URL": "http://dataservice.accuweather.com/forecasts/v1/daily/5day/3553881?apikey=ACCUWEATHER_KEY&details=true&metric=true",
       "Keys": {
         "windSpeed": "Day/Wind/Speed/Value",
         "windDir": "Day/Wind/Direction/Degrees",
@@ -31,7 +31,7 @@
     "Aeris_1h": {
       "Root": "response/0/periods",
       "RequestType": 2,
-      "url": "https://aerisweather1.p.rapidapi.com/forecasts/%f,%f?plimit=72&filter=1hr",
+      "URL": "https://aerisweather1.p.rapidapi.com/forecasts/%f,%f?plimit=72&filter=1hr",
       "Header": "aerisweather1.p.rapidapi.com",
       "Keys": {
         "windSpeed": "windSpeedKTS",
@@ -44,7 +44,7 @@
     "Aeris_1d": {
       "Root": "response/0/periods",
       "RequestType": 2,
-      "url": "https://aerisweather1.p.rapidapi.com/forecasts/%f,%f?plimit=7&filter=1d",
+      "URL": "https://aerisweather1.p.rapidapi.com/forecasts/%f,%f?plimit=7&filter=1d",
       "Header": "aerisweather1.p.rapidapi.com",
       "Keys": {
         "windSpeed": "windSpeedKTS",
@@ -57,7 +57,7 @@
     "MetEir": {
       "Root": "XML",
       "RequestType": 0,
-      "url": "http://metwdb-openaccess.ichec.ie/metno-wdb2ts/locationforecast?lat=%f&long=%f",
+      "URL": "http://metwdb-openaccess.ichec.ie/metno-wdb2ts/locationforecast?lat=%f&long=%f",
       "Keys": {
         "windSpeed": "location/windSpeed/mps",
         "windDir": "location/windDirection/deg"
@@ -69,7 +69,7 @@
     "OpenWeather_1h": {
       "Root": "hourly",
       "RequestType": 0,
-      "url": "https://api.openweathermap.org/data/3.0/onecall?lat=%f&lon=%f&exclude=current,alerts,minutely,daily&appid=OPEN_WEATHER_KEY&units=metric",
+      "URL": "https://api.openweathermap.org/data/3.0/onecall?lat=%f&lon=%f&exclude=current,alerts,minutely,daily&appid=OPEN_WEATHER_KEY&units=metric",
       "Keys": {
         "windSpeed": "wind_speed",
         "windDir": "wind_deg",
@@ -82,7 +82,7 @@
     "OpenWeather_1d": {
       "Root": "daily",
       "RequestType": 0,
-      "url": "https://api.openweathermap.org/data/3.0/onecall?lat=%f&lon=%f&exclude=current,alerts,minutely,hourly&appid=OPEN_WEATHER_KEY&units=metric",
+      "URL": "https://api.openweathermap.org/data/3.0/onecall?lat=%f&lon=%f&exclude=current,alerts,minutely,hourly&appid=OPEN_WEATHER_KEY&units=metric",
       "Keys": {
         "windSpeed": "wind_speed",
         "windDir": "wind_deg",
@@ -95,7 +95,7 @@
     "Visual_1h": {
       "Root": "locations/52.930164,-8.282975/values",
       "RequestType": 2,
-      "url": "https://visual-crossing-weather.p.rapidapi.com/forecast?aggregateHours=1&location=%f%%2C%f&contentType=json&unitGroup=metric&shortColumnNames=true",
+      "URL": "https://visual-crossing-weather.p.rapidapi.com/forecast?aggregateHours=1&location=%f%%2C%f&contentType=json&unitGroup=metric&shortColumnNames=true",
       "Header": "visual-crossing-weather.p.rapidapi.com",
       "Keys": {
         "windSpeed": "wspd",
@@ -109,7 +109,7 @@
     "Visual_1d": {
       "Root": "locations/52.930164,-8.282975/values",
       "RequestType": 2,
-      "url": "https://visual-crossing-weather.p.rapidapi.com/forecast?aggregateHours=24&location=%f%%2C%f&contentType=json&unitGroup=metric&shortColumnNames=true",
+      "URL": "https://visual-crossing-weather.p.rapidapi.com/forecast?aggregateHours=24&location=%f%%2C%f&contentType=json&unitGroup=metric&shortColumnNames=true",
       "Header": "visual-crossing-weather.p.rapidapi.com",
       "Keys": {
         "windSpeed": "wspd",
@@ -123,7 +123,7 @@
     "WeatherBit_1d": {
       "Root": "data",
       "RequestType": 0,
-      "url": "https://api.weatherbit.io/v2.0/forecast/daily?&lat=%f&lon=%f&key=WEATHERBIT_KEY",
+      "URL": "https://api.weatherbit.io/v2.0/forecast/daily?&lat=%f&lon=%f&key=WEATHERBIT_KEY",
       "Keys": {
         "windSpeed": "wind_spd",
         "windDir": "wind_dir",
