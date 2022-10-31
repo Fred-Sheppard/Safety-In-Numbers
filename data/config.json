@@ -7,12 +7,15 @@
       "RequestType": 0,
       "URL": "http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/3553881?apikey=ACCUWEATHER_KEY&details=true&metric=true",
       "Keys": {
-        "windSpeed": "Wind/Speed/Value",
-        "windDir": "Wind/Direction/Degrees",
+        "WindSpeed": "Wind/Speed/Value",
+        "WindDir": "Wind/Direction/Degrees",
+        "WindGust": "WindGust/Speed/Value",
+        "Temperature": "Temperature/Value",
         "Epoch": "EpochDateTime"
       },
       "Units": {
-        "windSpeed": 0.539957
+        "WindGust": 0.539957,
+        "WindSpeed": 0.539957
       }
     },
     "Accu_1d": {
@@ -20,12 +23,16 @@
       "RequestType": 0,
       "URL": "http://dataservice.accuweather.com/forecasts/v1/daily/5day/3553881?apikey=ACCUWEATHER_KEY&details=true&metric=true",
       "Keys": {
-        "windSpeed": "Day/Wind/Speed/Value",
-        "windDir": "Day/Wind/Direction/Degrees",
-        "Epoch": "EpochDate"
+        "WindSpeed": "Day/Wind/Speed/Value",
+        "WindDir": "Day/Wind/Direction/Degrees",
+        "Epoch": "EpochDate",
+        "WindGust": "Day/WindGust/Speed/Value",
+        "Temperature_Max": "Temperature/Maximum/Value",
+        "Temperature_Min": "Temperature/Minimum/Value"
       },
       "Units": {
-        "windSpeed": 0.539957
+        "WindSpeed": 0.539957,
+        "WindGust": 0.539957
       }
     },
     "Aeris_1h": {
@@ -34,8 +41,10 @@
       "URL": "https://aerisweather1.p.rapidapi.com/forecasts/%f,%f?plimit=72&filter=1hr",
       "Header": "aerisweather1.p.rapidapi.com",
       "Keys": {
-        "windSpeed": "windSpeedKTS",
-        "windDir": "windDirDEG",
+        "WindSpeed": "windSpeedKTS",
+        "WindDir": "windDirDEG",
+        "WindGust": "windGustKTS",
+        "Temperature": "tempC",
         "Epoch": "timestamp"
       },
       "Units": {
@@ -47,8 +56,11 @@
       "URL": "https://aerisweather1.p.rapidapi.com/forecasts/%f,%f?plimit=7&filter=1d",
       "Header": "aerisweather1.p.rapidapi.com",
       "Keys": {
-        "windSpeed": "windSpeedKTS",
-        "windDir": "windDirDEG",
+        "WindSpeed": "windSpeedKTS",
+        "WindDir": "windDirDEG",
+        "WindGust": "windGustKTS",
+        "Temperature_Max": "maxTempC",
+        "Temperature_Min": "minTempC",
         "Epoch": "timestamp"
       },
       "Units": {
@@ -59,11 +71,14 @@
       "RequestType": 0,
       "URL": "http://metwdb-openaccess.ichec.ie/metno-wdb2ts/locationforecast?lat=%f&long=%f",
       "Keys": {
-        "windSpeed": "location/windSpeed/mps",
-        "windDir": "location/windDirection/deg"
+        "WindSpeed": "location/windSpeed/mps",
+        "WindDir": "location/windDirection/deg",
+        "WindGust": "location/windGust/mps",
+        "Temperature": "location/temperature/value"
       },
       "Units": {
-        "windSpeed": ""
+        "WindSpeed": 1.94384,
+        "WindGust": 1.94384
       }
     },
     "OpenWeather_1h": {
@@ -71,12 +86,15 @@
       "RequestType": 0,
       "URL": "https://api.openweathermap.org/data/3.0/onecall?lat=%f&lon=%f&exclude=current,alerts,minutely,daily&appid=OPEN_WEATHER_KEY&units=metric",
       "Keys": {
-        "windSpeed": "wind_speed",
-        "windDir": "wind_deg",
+        "WindSpeed": "wind_speed",
+        "WindDir": "wind_deg",
+        "WindGust": "wind_gust",
+        "Temperature": "temp",
         "Epoch": "dt"
       },
       "Units": {
-        "windSpeed": 1.94384
+        "WindSpeed": 1.94384,
+        "WindGust": 1.94384
       }
     },
     "OpenWeather_1d": {
@@ -84,12 +102,16 @@
       "RequestType": 0,
       "URL": "https://api.openweathermap.org/data/3.0/onecall?lat=%f&lon=%f&exclude=current,alerts,minutely,hourly&appid=OPEN_WEATHER_KEY&units=metric",
       "Keys": {
-        "windSpeed": "wind_speed",
-        "windDir": "wind_deg",
+        "WindSpeed": "wind_speed",
+        "WindDir": "wind_deg",
+        "WindGust": "wind_gust",
+        "Temperature_Max": "temp/max",
+        "Temperature_Min": "temp/min",
         "Epoch": "dt"
       },
       "Units": {
-        "windSpeed": 1.94384
+        "WindSpeed": 1.94384,
+        "WindGust": 1.94384
       }
     },
     "Visual_1h": {
@@ -98,12 +120,15 @@
       "URL": "https://visual-crossing-weather.p.rapidapi.com/forecast?aggregateHours=1&location=%f%%2C%f&contentType=json&unitGroup=metric&shortColumnNames=true",
       "Header": "visual-crossing-weather.p.rapidapi.com",
       "Keys": {
-        "windSpeed": "wspd",
-        "windDir": "wdir",
+        "WindSpeed": "wspd",
+        "WindDir": "wdir",
+        "WindGust": "wgust",
+        "Temperature": "temp",
         "Epoch": "datetime"
       },
       "Units": {
-        "windSpeed": 0.539957
+        "WindSpeed": 0.539957,
+        "WindGust": 0.539957
       }
     },
     "Visual_1d": {
@@ -112,12 +137,15 @@
       "URL": "https://visual-crossing-weather.p.rapidapi.com/forecast?aggregateHours=24&location=%f%%2C%f&contentType=json&unitGroup=metric&shortColumnNames=true",
       "Header": "visual-crossing-weather.p.rapidapi.com",
       "Keys": {
-        "windSpeed": "wspd",
-        "windDir": "wdir",
+        "WindSpeed": "wspd",
+        "WindDir": "wdir",
+        "WindGust": "wgust",
+        "Temperature": "temp",
         "Epoch": "datetime"
       },
       "Units": {
-        "windSpeed": 0.539957
+        "WindSpeed": 0.539957,
+        "WindGust": 0.539957
       }
     },
     "WeatherBit_1d": {
@@ -125,12 +153,16 @@
       "RequestType": 0,
       "URL": "https://api.weatherbit.io/v2.0/forecast/daily?&lat=%f&lon=%f&key=WEATHERBIT_KEY",
       "Keys": {
-        "windSpeed": "wind_spd",
-        "windDir": "wind_dir",
+        "WindSpeed": "wind_spd",
+        "WindDir": "wind_dir",
+        "WindGust": "wind_gust_spd",
+        "Temperature_Max": "max_temp",
+        "Temperature_Min": "min_temp",
         "Epoch": "ts"
       },
       "Units": {
-        "windSpeed": 1.94384
+        "WindSpeed": 1.94384,
+        "WindGust": 1.94384
       }
     }
   }
