@@ -14,13 +14,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-import static processing.core.PApplet.loadJSONArray;
-import static processing.core.PApplet.loadJSONObject;
-
 public class WeatherAPI {
 
     static float lat, lon;
-    static String accuKey;
     public static JSONObject configs;
 
     enum RequestType {
@@ -30,9 +26,13 @@ public class WeatherAPI {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        configs = loadJSONObject(new File("data/config.json"));
+        configs = PApplet.loadJSONObject(new File("data/config.json"));
         lat = configs.getFloat("lat");
         lon = configs.getFloat("lon");
+
+//        Model metEir = new Model("MetEir.xml");
+//        metEir.request();
+//        metEir.saveData();
 
         JSONObject models = configs.getJSONObject("Models");
         for (Object o : models.keys()) {
@@ -42,6 +42,7 @@ public class WeatherAPI {
                 fileType = ".xml";
             }
             Model m = new Model(modelName + fileType);
+            m.request();
             m.saveData();
         }
     }
@@ -50,9 +51,9 @@ public class WeatherAPI {
     public static Object loadJSON(String filename) {
         File file = new File(filename);
         try {
-            return loadJSONObject(file);
+            return PApplet.loadJSONObject(file);
         } catch (RuntimeException e) {
-            return loadJSONArray(file);
+            return PApplet.loadJSONArray(file);
         }
     }
 
@@ -87,6 +88,7 @@ public class WeatherAPI {
             }
         }
 
+        @SuppressWarnings("unused")
         Model(String filename, boolean testing) {
             this.filename = filename;
             config = new JSONObject();
@@ -155,6 +157,7 @@ public class WeatherAPI {
             JSONArray output = new JSONArray();
             // List of metrics to request
             JSONObject myKeys = config.getJSONObject("Keys");
+            JSONObject myUnits = config.getJSONObject("Units");
             Time:
             // If more xml models are added, this will have to be streamlined
             // For now, the path can be hardcoded
@@ -177,8 +180,13 @@ public class WeatherAPI {
                     if (key == null) {
                         continue Time;
                     }
-                    // TODO This returns a String, parse to float, int etc
-                    timeOutput.put(myMetric, key.getString(attribute));
+                    double value = Double.parseDouble(key.getString(attribute));
+                    Object cFactor = myUnits.get(myMetric);
+                    // If there is a calculation to be done
+                    if (cFactor != null) {
+                        value *= (double) cFactor;
+                    }
+                    timeOutput.put(myMetric, value);
                 }
                 output.append(timeOutput);
             }
