@@ -13,6 +13,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.ZonedDateTime;
 
 public class WeatherAPI {
 
@@ -59,25 +60,35 @@ public class WeatherAPI {
 
     static class Model {
 
-        private String url;
-        private String header;
-        public String filename;
-        private final RequestType requestType;
+        // URL to be used for HTTP requests
+        private String url; // "https://aerisweather1.p.rapidapi.com/forecasts/%f,%f?plimit=72&filter=1hr"
+        // Header data to be used with RapidAPI requests
+        private String header; // "aerisweather1.p.rapidapi.com"
+        // Name of input and output file
+        public String filename; // Aeris_1h.json
+        // Type of HTTP request that will be called. GET, POST or RAPIDAPI
+        private final RequestType requestType; // GET
+        // Contains data for the model found in config.json, under the model name
         private final JSONObject config;
-        private String root;
+        // JSON path to the array of time periods in the http request response.
+        private String root; // "response/0/periods"
 
         Model(String filename) {
             this.filename = filename; // Aeris_1h.json
             String modelName = filename.split("\\.")[0]; // Aeris_1h
-            // Entry in config.json that contains values for url, root, keys etc.
+            // Entry in config.json that contains values for url, root, keys etc
             config = (JSONObject) JSONPath.getValue(configs, "Models/" + modelName);
             // Url to be used for HTTP requests
             url = String.format(config.getString("URL"), lat, lon);
             // Value to be passed as a header in RapidAPI requests
             header = config.getString("Header");
+            // JSON path to the array of time periods in the http request response.
+            root = config.getString("Root");
+            // Integer value of RequestType. Can be between 0 and the enum values' length -1
             int typeIndex = config.getInt("RequestType");
-            if (typeIndex > 2) {
-                System.out.printf("Error. RequestType in %s cannot be greater than %d. Value: %d%n", modelName, RequestType.values().length-1, typeIndex);
+            int maxIndexAllowed = RequestType.values().length-1;
+            if (typeIndex > maxIndexAllowed) {
+                System.out.printf("Error. RequestType in %s cannot be greater than %d. Value: %d%n", modelName, maxIndexAllowed, typeIndex);
                 requestType = RequestType.GET;
             } else if (typeIndex < 0) {
                 System.out.printf("Error. RequestType in %s cannot be less than 0. Value: %d%n", modelName, typeIndex);
@@ -96,9 +107,6 @@ public class WeatherAPI {
         }
 
         public void saveData() {
-            if (root == null) {
-                root = config.getString("Root");
-            }
             if (root.equals("XML")) {
                 saveXML();
                 return;
@@ -148,8 +156,8 @@ public class WeatherAPI {
                 // Add timeFrame to list of timeFrames
                 output.append(timeOuput);
             }
-            System.out.println(filename);
             output.save(new File("output/Refactor/" + filename), null);
+            System.out.println(filename);
         }
 
         public void saveXML() {
@@ -163,6 +171,9 @@ public class WeatherAPI {
             // For now, the path can be hardcoded
             for (XML time : xml.getChild("product").getChildren("time")) {
                 JSONObject timeOutput = new JSONObject();
+                String s = time.getString("from");
+                ZonedDateTime z = ZonedDateTime.parse(s);
+                timeOutput.put("Epoch", z.toEpochSecond());
                 for (Object o : myKeys.keys()) {
                     // myMetric is the standardised name for outputting
                     // theirMetric is the path to the value
@@ -192,6 +203,7 @@ public class WeatherAPI {
             }
             String f = filename.replace("xml", "json");
             output.save(new File("output/Refactor/" + f), null);
+            System.out.println(f);
         }
 
         void request() throws IOException, InterruptedException {
