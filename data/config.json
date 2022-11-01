@@ -7,11 +7,11 @@
       "RequestType": 0,
       "URL": "http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/3553881?apikey=ACCUWEATHER_KEY&details=true&metric=true",
       "Keys": {
+        "Epoch": "EpochDateTime",
         "WindSpeed": "Wind/Speed/Value",
-        "WindDir": "Wind/Direction/Degrees",
         "WindGust": "WindGust/Speed/Value",
-        "Temperature": "Temperature/Value",
-        "Epoch": "EpochDateTime"
+        "WindDir": "Wind/Direction/Degrees",
+        "Temperature": "Temperature/Value"
       },
       "Units": {
         "WindGust": 0.539957,
@@ -45,7 +45,8 @@
         "WindDir": "windDirDEG",
         "WindGust": "windGustKTS",
         "Temperature": "tempC",
-        "Epoch": "timestamp"
+        "Epoch": "timestamp",
+        "Pressure": "pressureMB"
       },
       "Units": {
       }
@@ -61,7 +62,8 @@
         "WindGust": "windGustKTS",
         "Temperature_Max": "maxTempC",
         "Temperature_Min": "minTempC",
-        "Epoch": "timestamp"
+        "Epoch": "timestamp",
+        "Pressure": "pressureMB"
       },
       "Units": {
       }
@@ -74,7 +76,8 @@
         "WindSpeed": "location/windSpeed/mps",
         "WindDir": "location/windDirection/deg",
         "WindGust": "location/windGust/mps",
-        "Temperature": "location/temperature/value"
+        "Temperature": "location/temperature/value",
+        "Pressure": "location/pressure/value"
       },
       "Units": {
         "WindSpeed": 1.94384,
@@ -90,7 +93,8 @@
         "WindDir": "wind_deg",
         "WindGust": "wind_gust",
         "Temperature": "temp",
-        "Epoch": "dt"
+        "Epoch": "dt",
+        "Pressure": "pressure"
       },
       "Units": {
         "WindSpeed": 1.94384,
@@ -107,7 +111,8 @@
         "WindGust": "wind_gust",
         "Temperature_Max": "temp/max",
         "Temperature_Min": "temp/min",
-        "Epoch": "dt"
+        "Epoch": "dt",
+        "Pressure": "pressure"
       },
       "Units": {
         "WindSpeed": 1.94384,
@@ -124,7 +129,8 @@
         "WindDir": "wdir",
         "WindGust": "wgust",
         "Temperature": "temp",
-        "Epoch": "datetime"
+        "Epoch": "datetime",
+        "Pressure": "sealevelpressure"
       },
       "Units": {
         "WindSpeed": 0.539957,
@@ -141,7 +147,8 @@
         "WindDir": "wdir",
         "WindGust": "wgust",
         "Temperature": "temp",
-        "Epoch": "datetime"
+        "Epoch": "datetime",
+        "Pressure": "sealevelpressure"
       },
       "Units": {
         "WindSpeed": 0.539957,
@@ -158,7 +165,8 @@
         "WindGust": "wind_gust_spd",
         "Temperature_Max": "max_temp",
         "Temperature_Min": "min_temp",
-        "Epoch": "ts"
+        "Epoch": "ts",
+        "Pressure": "pres"
       },
       "Units": {
         "WindSpeed": 1.94384,
