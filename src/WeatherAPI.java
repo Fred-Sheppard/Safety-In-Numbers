@@ -13,7 +13,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 public class WeatherAPI {
 
@@ -32,21 +32,21 @@ public class WeatherAPI {
         lat = configs.getFloat("lat");
         lon = configs.getFloat("lon");
 
-        Model metEir = new Model("MetEir.xml");
-        metEir.request();
-        metEir.saveData();
+//        Model metEir = new Model("MetEir.xml");
+//        metEir.request();
+//        metEir.saveData();
 
-//        JSONObject models = configs.getJSONObject("Models");
-//        for (Object o : models.keys()) {
-//            String modelName = (String) o;
-//            String fileType = ".json";
-//            if (modelName.equals("MetEir")) {
-//                fileType = ".xml";
-//            }
-//            Model m = new Model(modelName + fileType);
-//            m.request();
-//            m.saveData();
-//        }
+        JSONObject models = configs.getJSONObject("Models");
+        for (Object o : models.keys()) {
+            String modelName = (String) o;
+            String fileType = ".json";
+            if (modelName.equals("MetEir")) {
+                fileType = ".xml";
+            }
+            Model m = new Model(modelName + fileType);
+            m.request();
+            m.saveData();
+        }
     }
 
     // Loads JSON file, regardless if it's an Object or Array
@@ -56,6 +56,16 @@ public class WeatherAPI {
             return PApplet.loadJSONObject(file);
         } catch (RuntimeException e) {
             return PApplet.loadJSONArray(file);
+        }
+    }
+
+    // Taken from processing.data.XML
+    public static XML loadXML(String filename, String options) {
+        try {
+            BufferedReader reader = PApplet.createReader(new File(filename));
+            return new XML(reader, options);
+        } catch (ParserConfigurationException | SAXException | IOException var4) {
+            throw new RuntimeException(var4);
         }
     }
 
@@ -165,13 +175,37 @@ public class WeatherAPI {
 
         public void saveXML() {
             XML xml = loadXML("output/GET/MetEir.xml", null);
-            JSONArray output = new JSONArray();
             // List of metrics to request
             JSONObject myKeys = config.getJSONObject("Keys");
             JSONObject myUnits = config.getJSONObject("Units");
+
+            // MetEir.xml contains 4 model timeframes
+            // Each model spans a specific timeframe
+            // Output each to a separate file
+
+            // Go through header at top of xml file, find time range for each model
+            // Save the starting time for each model to "cutoffs"
+            // When iterating through times, if the current time starts at a cutoff time,
+            // add the following times to the next file (outputs[modelIndex])
+            XML[] timeFrameCutOffs = xml.getChild("meta").getChildren("model");
+            // Set cutoff times
+            String[] cutoffs = new String[timeFrameCutOffs.length];
+            for (int i = 0; i < timeFrameCutOffs.length; i++) {
+                String from = timeFrameCutOffs[i].getString("from");
+                cutoffs[i] = from;
+            }
+            // Initialise outputs
+            JSONArray[] outputs = new JSONArray[timeFrameCutOffs.length];
+            for (int i = 0; i < outputs.length; i++) {
+                outputs[i] = new JSONArray();
+            }
+
             // If more xml models are added, this will have to be streamlined
             // For now, the path can be hardcoded
             XML[] times = xml.getChild("product").getChildren("time");
+            // Index of which file to output to
+            // Harmonie, ECMWF 1h, 3h, 6h
+            int modelIndex = 0;
             /*
             From the MetEireann docs:
                 For each timestep of the API there are two distinct forecast blocks: A & B
@@ -179,14 +213,21 @@ public class WeatherAPI {
                 Block A is related to everything else
             So when iterating, every second timeFrame must be skipped
             */
-            for (int i = 0; i < times.length-1; i += 2) {
+            for (int i = 0; i < times.length - 1; i += 2) {
                 XML thisTimeA = times[i];
                 JSONObject timeOutput = new JSONObject();
                 String s = thisTimeA.getString("from");
-                ZonedDateTime z = ZonedDateTime.parse(s);
+                // If this time's "from" value is the same as the next cutoff,
+                // Start appending to that cutoff
+                if (modelIndex < cutoffs.length - 1) {
+                    if (s.equals(cutoffs[modelIndex + 1])) {
+                        modelIndex++;
+                    }
+                }
+                OffsetDateTime z = OffsetDateTime.parse(s);
                 timeOutput.put("Epoch", z.toEpochSecond());
 
-                XML thisTimeB = times[i+1];
+                XML thisTimeB = times[i + 1];
                 XML precipitation = thisTimeB.getChild("location/precipitation");
                 timeOutput.put("Precipitation", precipitation.getFloat("value"));
                 timeOutput.put("POP", precipitation.getFloat("probability"));
@@ -199,12 +240,17 @@ public class WeatherAPI {
                     // It must be split and treated differently
                     String[] path = theirMetric.split("/");
                     String attribute = path[path.length - 1];
-                    // Get child from path minus attribute
-                    // e.g. location/windSpeed/mps -> location/windSpeed/
-                    XML key = thisTimeA.getChild(theirMetric.replace("/" + attribute, ""));
+                    // We need: Child, Attribute
+                    // Child = Path - Attribute
+                    // e.g. location/windSpeed/mps ->
+                    // (Child) location/windSpeed/
+                    // (Attribute) mps
+                    String childPath = theirMetric.replace("/" + attribute, "");
+                    XML key = thisTimeA.getChild(childPath);
                     // For further out timeframes, certain metrics aren't included, such as WindGust
                     // Just skip these metrics if that's the case
                     if (key == null) {
+                        // Moves on to next Metric e.g. WindGust -> WindSpeed
                         continue;
                     }
                     double value = Double.parseDouble(key.getString(attribute));
@@ -215,11 +261,19 @@ public class WeatherAPI {
                     }
                     timeOutput.put(myMetric, value);
                 }
-                output.append(timeOutput);
+                outputs[modelIndex].append(timeOutput);
             }
-            String f = filename.replace("xml", "json");
-            output.save(new File("output/Refactor/" + f), null);
-            System.out.println(f);
+            String[] filenames = {
+                    "Harmonie_1h",
+                    "ECMWF_1h",
+                    "ECMWF_3h",
+                    "ECMWF_6h"
+            };
+            for (int i = 0; i < outputs.length; i++) {
+                String filename = "output/Refactor/" + filenames[i] + ".json";
+                outputs[i].save(new File(filename), null);
+                System.out.println(filenames[i]);
+            }
         }
 
         void request() throws IOException, InterruptedException {
@@ -236,16 +290,6 @@ public class WeatherAPI {
             output.println(response.body());
             output.flush();
             output.close();
-        }
-
-        // Taken from processing.data.XML
-        public XML loadXML(String filename, String options) {
-            try {
-                BufferedReader reader = PApplet.createReader(new File(filename));
-                return new XML(reader, options);
-            } catch (ParserConfigurationException | SAXException | IOException var4) {
-                throw new RuntimeException(var4);
-            }
         }
 
         public void setUrl(String s) {
