@@ -11,7 +11,9 @@
         "WindSpeed": "Wind/Speed/Value",
         "WindGust": "WindGust/Speed/Value",
         "WindDir": "Wind/Direction/Degrees",
-        "Temperature": "Temperature/Value"
+        "Temperature": "Temperature/Value",
+        "Precipitation": "TotalLiquid/Value",
+        "Pop": "PrecipitationProbability"
       },
       "Units": {
         "WindGust": 0.539957,
@@ -28,7 +30,9 @@
         "Epoch": "EpochDate",
         "WindGust": "Day/WindGust/Speed/Value",
         "Temperature_Max": "Temperature/Maximum/Value",
-        "Temperature_Min": "Temperature/Minimum/Value"
+        "Temperature_Min": "Temperature/Minimum/Value",
+        "Precipitation": "Day/TotalLiquid/Value",
+        "POP": "Day/PrecipitationProbability"
       },
       "Units": {
         "WindSpeed": 0.539957,
@@ -46,7 +50,9 @@
         "WindGust": "windGustKTS",
         "Temperature": "tempC",
         "Epoch": "timestamp",
-        "Pressure": "pressureMB"
+        "Pressure": "pressureMB",
+        "Precipitation": "precipMM",
+        "POP": "pop"
       },
       "Units": {
       }
@@ -63,7 +69,9 @@
         "Temperature_Max": "maxTempC",
         "Temperature_Min": "minTempC",
         "Epoch": "timestamp",
-        "Pressure": "pressureMB"
+        "Pressure": "pressureMB",
+        "Precipitation": "precipMM",
+        "POP": "pop"
       },
       "Units": {
       }
@@ -77,7 +85,8 @@
         "WindDir": "location/windDirection/deg",
         "WindGust": "location/windGust/mps",
         "Temperature": "location/temperature/value",
-        "Pressure": "location/pressure/value"
+        "Pressure": "location/pressure/value",
+        "POP": "precipitation/probability"
       },
       "Units": {
         "WindSpeed": 1.94384,
@@ -94,11 +103,14 @@
         "WindGust": "wind_gust",
         "Temperature": "temp",
         "Epoch": "dt",
-        "Pressure": "pressure"
+        "Pressure": "pressure",
+        "Precipitation": "rain/1h",
+        "POP": "pop"
       },
       "Units": {
         "WindSpeed": 1.94384,
-        "WindGust": 1.94384
+        "WindGust": 1.94384,
+        "POP": 100.0
       }
     },
     "OpenWeather_1d": {
@@ -112,11 +124,14 @@
         "Temperature_Max": "temp/max",
         "Temperature_Min": "temp/min",
         "Epoch": "dt",
-        "Pressure": "pressure"
+        "Pressure": "pressure",
+        "Precipitation": "rain",
+        "POP": "pop"
       },
       "Units": {
         "WindSpeed": 1.94384,
-        "WindGust": 1.94384
+        "WindGust": 1.94384,
+        "POP": 100.0
       }
     },
     "Visual_1h": {
@@ -130,7 +145,9 @@
         "WindGust": "wgust",
         "Temperature": "temp",
         "Epoch": "datetime",
-        "Pressure": "sealevelpressure"
+        "Pressure": "sealevelpressure",
+        "Precipitation": "precip",
+        "POP": "pop"
       },
       "Units": {
         "WindSpeed": 0.539957,
@@ -148,7 +165,9 @@
         "WindGust": "wgust",
         "Temperature": "temp",
         "Epoch": "datetime",
-        "Pressure": "sealevelpressure"
+        "Pressure": "sealevelpressure",
+        "Precipitation": "precip",
+        "POP": "pop"
       },
       "Units": {
         "WindSpeed": 0.539957,
@@ -166,7 +185,9 @@
         "Temperature_Max": "max_temp",
         "Temperature_Min": "min_temp",
         "Epoch": "ts",
-        "Pressure": "pres"
+        "Pressure": "pres",
+        "Precipitation": "precip",
+        "POP": "pop"
       },
       "Units": {
         "WindSpeed": 1.94384,
