@@ -27,25 +27,26 @@ public class WeatherAPI {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
+        System.out.println("WeatherAPI.java");
         configs = PApplet.loadJSONObject(new File("data/config.json"));
         lat = configs.getFloat("lat");
         lon = configs.getFloat("lon");
 
-//        Model metEir = new Model("MetEir.xml");
-//        metEir.request();
-//        metEir.saveData();
+        Model metEir = new Model("MetEir.xml");
+        metEir.request();
+        metEir.saveData();
 
-        JSONObject models = configs.getJSONObject("Models");
-        for (Object o : models.keys()) {
-            String modelName = (String) o;
-            String fileType = ".json";
-            if (modelName.equals("MetEir")) {
-                fileType = ".xml";
-            }
-            Model m = new Model(modelName + fileType);
-            m.request();
-            m.saveData();
-        }
+//        JSONObject models = configs.getJSONObject("Models");
+//        for (Object o : models.keys()) {
+//            String modelName = (String) o;
+//            String fileType = ".json";
+//            if (modelName.equals("MetEir")) {
+//                fileType = ".xml";
+//            }
+//            Model m = new Model(modelName + fileType);
+//            m.request();
+//            m.saveData();
+//        }
     }
 
     // Loads JSON file, regardless if it's an Object or Array
@@ -60,6 +61,8 @@ public class WeatherAPI {
 
     static class Model {
 
+        // Contains data for the model found in config.json, under the model name
+        private final JSONObject config;
         // URL to be used for HTTP requests
         private String url; // "https://aerisweather1.p.rapidapi.com/forecasts/%f,%f?plimit=72&filter=1hr"
         // Header data to be used with RapidAPI requests
@@ -68,8 +71,6 @@ public class WeatherAPI {
         public String filename; // Aeris_1h.json
         // Type of HTTP request that will be called. GET, POST or RAPIDAPI
         private final RequestType requestType; // GET
-        // Contains data for the model found in config.json, under the model name
-        private final JSONObject config;
         // JSON path to the array of time periods in the http request response.
         private String root; // "response/0/periods"
 
@@ -86,7 +87,7 @@ public class WeatherAPI {
             root = config.getString("Root");
             // Integer value of RequestType. Can be between 0 and the enum values' length -1
             int typeIndex = config.getInt("RequestType");
-            int maxIndexAllowed = RequestType.values().length-1;
+            int maxIndexAllowed = RequestType.values().length - 1;
             if (typeIndex > maxIndexAllowed) {
                 System.out.printf("Error. RequestType in %s cannot be greater than %d. Value: %d%n", modelName, maxIndexAllowed, typeIndex);
                 requestType = RequestType.GET;
@@ -132,11 +133,13 @@ public class WeatherAPI {
                     String myMetric = (String) o; // windSpeed
                     String theirMetric = myKeys.getString(myMetric); //windSpeedKPH
                     Object value = JSONPath.getValue(thisTime, theirMetric); // 22.6
-                    // Might be caused by typo in config.json if this occurs
+                    // Occurs if:
+                    //   The path in config.json contains a typo
+                    // OR
+                    //   The timeframe does not contain this value
+                    // e.g. Some OpenWeather timeframes don't contain a value for "rain"
                     if (value == null) {
-                        System.out.printf("""
-                                %s
-                                Could not find value at "%s"%n""", filename, theirMetric);
+                        System.out.printf("%s: Could not find value at %s%n", filename, theirMetric);
                         continue;
                     }
                     // Conversion factor between kts, kph etc.
@@ -166,14 +169,27 @@ public class WeatherAPI {
             // List of metrics to request
             JSONObject myKeys = config.getJSONObject("Keys");
             JSONObject myUnits = config.getJSONObject("Units");
-            Time:
             // If more xml models are added, this will have to be streamlined
             // For now, the path can be hardcoded
-            for (XML time : xml.getChild("product").getChildren("time")) {
+            XML[] times = xml.getChild("product").getChildren("time");
+            /*
+            From the MetEireann docs:
+                For each timestep of the API there are two distinct forecast blocks: A & B
+                Block B is related to rainfall accumulations and weather symbol
+                Block A is related to everything else
+            So when iterating, every second timeFrame must be skipped
+            */
+            for (int i = 0; i < times.length-1; i += 2) {
+                XML thisTimeA = times[i];
                 JSONObject timeOutput = new JSONObject();
-                String s = time.getString("from");
+                String s = thisTimeA.getString("from");
                 ZonedDateTime z = ZonedDateTime.parse(s);
                 timeOutput.put("Epoch", z.toEpochSecond());
+
+                XML thisTimeB = times[i+1];
+                XML precipitation = thisTimeB.getChild("location/precipitation");
+                timeOutput.put("Precipitation", precipitation.getFloat("value"));
+                timeOutput.put("POP", precipitation.getFloat("probability"));
                 for (Object o : myKeys.keys()) {
                     // myMetric is the standardised name for outputting
                     // theirMetric is the path to the value
@@ -185,11 +201,11 @@ public class WeatherAPI {
                     String attribute = path[path.length - 1];
                     // Get child from path minus attribute
                     // e.g. location/windSpeed/mps -> location/windSpeed/
-                    XML key = time.getChild(theirMetric.replace("/" + attribute, ""));
-                    // If one key in this timeframe is null, they all will be
-                    // Just skip to the next timeframe
+                    XML key = thisTimeA.getChild(theirMetric.replace("/" + attribute, ""));
+                    // For further out timeframes, certain metrics aren't included, such as WindGust
+                    // Just skip these metrics if that's the case
                     if (key == null) {
-                        continue Time;
+                        continue;
                     }
                     double value = Double.parseDouble(key.getString(attribute));
                     Object cFactor = myUnits.get(myMetric);

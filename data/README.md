@@ -19,7 +19,20 @@ The key is a standardised name to be used across this project,
 the value is a json path to this metric in the response
 ### Units:
 List of multipliers, if any, to apply to the given metrics.
-Used for conversion between units. e.g. kph -> knts.
+Used for conversion between units. e.g. kph -> knts. <br>
+Units to be used are as follows:
+
+| Metric        | Unit  |
+|:--------------|:-----:|
+| WindSpeed     |  kts  |
+| WindGust      |  kts  |
+| WindDir       |  deg  |
+| WindDir       |  °C   |
+| Pressure      | mbar  |
+| Precipitation |  mm   |
+| POP           | 0-100 |
+
+
 
 
 

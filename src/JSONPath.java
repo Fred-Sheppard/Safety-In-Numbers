@@ -1,10 +1,8 @@
-import processing.core.PApplet;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 import processing.data.StringList;
 
-import java.io.File;
-import java.nio.file.InvalidPathException;
+//import java.nio.file.InvalidPathException;
 
 public class JSONPath {
 
@@ -36,11 +34,20 @@ public class JSONPath {
             // If JSONArray, read next layer with int key
             case JSONArray j -> j.get(Integer.parseInt(s));
             // If anything else (Integer, String), no children
+            // If we reach this, we're asking for a child that doesn't exist
+            // i.e. the path should end, but goes a layer deeper
             default -> null;
         };
+        // Used to throw an error, but we don't always want that
+        // With at typo in the path, an error is more beneficial
+        // However, sometimes Model timeframes simply don't include a metric for some reason
+        // e.g. OpenWeather leaves out a value for "rain" occasionally
+        // In that case, we should simply inform the user and move on
         if (child == null) {
-            throw new InvalidPathException(s, "JSONReader: Object \"" + s + "\" does not exist");
+//            throw new InvalidPathException(s, "JSONReader: Object \"" + s + "\" does not exist");
+            return null;
         }
+
         // Read next layer
         return readJSON(child, path, ++index);
     }
