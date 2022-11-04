@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add metrics precipitation and POP (chance of rain)&#10;&#10;- Add table to config/ReadMe containing standardised units for project&#10;- Refactor MetEir parsing to take account of separate block for precipitation">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/frede.xml" afterDir="false" />
+    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Separate MetEir's output into separate files&#10;&#10;- Add logic to read time range of MetEir models&#10;- Move loadXML out of Model">
+      <change afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/mysql-connector-java-8.0.30.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WeatherAPI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/WeatherAPI.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,28 +40,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;ignore.preview.features.used&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Personal/Code/WeatherAPI/data&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.javacompiler&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ignore.preview.features.used": "true",
+    "jdk.selected.JAVA_MODULE": "17",
+    "last_opened_file_path": "C:/Personal/Code/WeatherAPI/lib/mysql-connector-java-8.0.30.jar",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.projectsettings.compiler.javacompiler"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;JAVA&quot;,
-      &quot;PDE&quot;
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "JAVA",
+      "PDE"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Personal\Code\WeatherAPI\data" />
@@ -74,7 +75,7 @@
       <recent name="C:\Personal\Code\WeatherAPI\" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.WeatherAPI">
+  <component name="RunManager" selected="Java Scratch.Scratch">
     <configuration name="WeatherAPI" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="WeatherAPI" />
       <module name="WeatherAPI" />
@@ -253,7 +254,14 @@
       <option name="project" value="LOCAL" />
       <updated>1667433635265</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Separate MetEir's output into separate files&#10;&#10;- Add logic to read time range of MetEir models&#10;- Move loadXML out of Model">
+      <created>1667508123495</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1667508123495</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -319,7 +327,8 @@
     <MESSAGE value="Add unit conversion to MetEir Model&#10;&#10;- Add WindGust conversion factor to all models (Except you Aeris &lt;3)" />
     <MESSAGE value="Add logic to get EpochDateTime from MetEir.xml&#10;&#10;- Add Pressure to keys to be queried" />
     <MESSAGE value="Add metrics precipitation and POP (chance of rain)&#10;&#10;- Add table to config/ReadMe containing standardised units for project&#10;- Refactor MetEir parsing to take account of separate block for precipitation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add metrics precipitation and POP (chance of rain)&#10;&#10;- Add table to config/ReadMe containing standardised units for project&#10;- Refactor MetEir parsing to take account of separate block for precipitation" />
+    <MESSAGE value="Separate MetEir's output into separate files&#10;&#10;- Add logic to read time range of MetEir models&#10;- Move loadXML out of Model" />
+    <option name="LAST_COMMIT_MESSAGE" value="Separate MetEir's output into separate files&#10;&#10;- Add logic to read time range of MetEir models&#10;- Move loadXML out of Model" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
