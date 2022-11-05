@@ -1,0 +1,18 @@
+create table tab  (
+Epoch bigint primary key,
+POP int,
+Precipitation float,
+Pressure float,
+Temperature float,
+WindDir int,
+WindGust float,
+WindSpeed float);
+
+create table test4  (
+     pop int,
+     winddir int,
+     temperature float,
+     precipitation float,
+     epoch bigint primary key,
+     windspeed float,
+     windgust float);

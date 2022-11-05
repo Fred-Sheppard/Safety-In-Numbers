@@ -1,0 +1,2 @@
+SQL Cheatsheet https://www.w3schools.com/sql/sql_create_table.asp
+Interfacing with JDBC https://www.youtube.com/watch?v=e8g9eNnFpHQ&ab_channel=WittCode
