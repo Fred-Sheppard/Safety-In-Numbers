@@ -17,6 +17,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.TreeMap;
 
 public class WeatherAPI {
 
@@ -30,22 +33,21 @@ public class WeatherAPI {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-
-        // Todo JSONObjects store keys in a random order
-        //  This is a problem for SQL
-        //  Different JSONObject implementation? Using LinkedLists?
-        //  Different database? Wide-column such as cassandra
-        //  Create a TreeMap in the upload function and order the data before outputting <--
-
         System.out.println("WeatherAPI.java");
         configs = PApplet.loadJSONObject(new File("data/config.json"));
         lat = configs.getFloat("lat");
         lon = configs.getFloat("lon");
 
-        Model metEir = new Model("MetEir.xml");
-        String response = metEir.request();
-        metEir.saveData(response);
-//        metEir.upload();
+        Model metEir = new Model("Accu_1h.json");
+//        String response = metEir.request();
+//        metEir.saveData(response);
+        Statement statement = initSQL();
+        try {
+            statement.executeUpdate("DELETE FROM tab");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        metEir.upload();
 
 //        JSONObject models = configs.getJSONObject("Models");
 //        for (Object o : models.keys()) {
@@ -61,6 +63,7 @@ public class WeatherAPI {
     }
 
     // Loads JSON file, regardless if it's an Object or Array
+    @SuppressWarnings("unused")
     public static Object loadJSON(String filename) {
         File file = new File(filename);
         try {
@@ -80,6 +83,7 @@ public class WeatherAPI {
     }
 
     // Taken from processing.data.XML
+    @SuppressWarnings("unused")
     public static XML loadXML(String filename, String options) {
         try {
             BufferedReader reader = PApplet.createReader(new File(filename));
@@ -121,7 +125,7 @@ public class WeatherAPI {
             // Entry in config.json that contains values for url, root, keys etc
             config = (JSONObject) JSONPath.getValue(configs, "Models/" + modelName);
             // Url to be used for HTTP requests
-            url = String.format(config.getString("URL"), lat, lon);
+            setUrlFromConfig();
             // Value to be passed as a header in RapidAPI requests
             header = config.getString("Header");
             // JSON path to the array of time periods in the http request response.
@@ -149,6 +153,7 @@ public class WeatherAPI {
         }
 
         // Returns response body for the url given in config.json
+        @SuppressWarnings("unused")
         String request() throws IOException, InterruptedException {
             HttpRequest request = switch (requestType) {
                 case GET -> get(url);
@@ -160,6 +165,7 @@ public class WeatherAPI {
             return response.body();
         }
 
+        @SuppressWarnings("unused")
         public void saveData(String data) {
             if (root.equals("XML")) {
                 saveXML(data);
@@ -335,25 +341,37 @@ public class WeatherAPI {
             StringBuilder[] inputsBuilders = new StringBuilder[arr.size()];
             // Eventual list of headers
             // e.g. (Epoch, WindSpeed, WindDir)
+            // Needs to be sorted first
+            @SuppressWarnings("unchecked")
+            // It's a Set of keys, it wil always contain Strings
+            ArrayList<String> keysList = new ArrayList<String>(keys.keys());
+            Collections.sort(keysList);
             StringBuilder keysBuilder = new StringBuilder();
-            for (Object o : keys.keys()) {
-                String key = (String) o;
+            // Iterate through sorted keys
+            for (String key : keysList) {
                 keysBuilder.append(key);
                 keysBuilder.append(","); // Epoch,
-            }
+            } // Epoch, WindSpeed, WindDir,
             // Removes last comma
             keysBuilder.deleteCharAt(keysBuilder.length() - 1); // Epoch, WindSpeed, WindDir
             for (int i = 0; i < arr.size(); i++) {
                 // JSON Object for current time
                 JSONObject time = arr.getJSONObject(i);
+                // First, we need to order the keys
+                TreeMap<String, Object> treeMap = new TreeMap<>();
+                for (Object o : keys.keys()) {
+                    String key = (String) o;
+                    Object val = time.get(key);
+                    treeMap.put(key, val);
+                }
                 // Init builder for list of inputs
                 inputsBuilders[i] = new StringBuilder();
                 StringBuilder builder = inputsBuilders[i];
                 builder.append("(");
-                for (Object o : keys.keys()) {
-                    String key = (String) o; // WindSpeed
+                for (String key : treeMap.keySet()) {
                     Object val = time.get(key); // 10.4
-                    builder.append(val.toString()); // 10.4
+                    String valStr = val == null ? null : val.toString();
+                    builder.append(valStr); // 10.4
                     builder.append(","); // 10.4,
                 } // (1667523600, 10.9, 241,
                 builder.deleteCharAt(builder.length()-1); // (1667523600, 10.9, 241
@@ -366,7 +384,7 @@ public class WeatherAPI {
                 }
             }
             StringBuilder query = new StringBuilder();
-            query.append("INSERT INTO test4 (");
+            query.append("INSERT INTO tab (");
             query.append(keysBuilder); // Epoch, WindSpeed, WindDir
             query.append(")\nVALUES\n");
             for (StringBuilder sb : inputsBuilders) {
@@ -377,38 +395,32 @@ public class WeatherAPI {
             // (1667523600, 10.9, 241),
             // (1667526326, 11.2, 356);
             try {
-                statement.executeUpdate(query.toString());
+                int response = statement.executeUpdate(query.toString());
+                System.out.printf("Query OK, %d rows affected", response);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-            /*
-            create table test4  (
-                 pop int,
-                 winddir int,
-                 temperature float,
-                 precipitation float,
-                 epoch bigint primary key,
-                 windspeed float,
-                 windgust float);
-             */
         }
 
         public void setUrl(String s) {
             url = s;
         }
 
+        @SuppressWarnings("unused")
         public void setUrl(float lat, float lon) {
             setUrl(String.format(config.getString("URL"), lat, lon));
         }
 
         public void setUrlFromConfig() {
-            setUrl((config.getString("URL")));
+            setUrl(String.format(config.getString("URL"), lat, lon));
         }
 
+        @SuppressWarnings("unused")
         public void setHeader(String s) {
             header = s;
         }
 
+        @SuppressWarnings("unused")
         public void setRoot(String s) {
             root = s;
         }
