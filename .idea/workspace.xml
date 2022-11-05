@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add SQL JDBC example SQL.java&#10;&#10;- Include mysql-connector-java-8.0.30.jar in lib">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add logic to transfer data from &quot;Reformat&quot; to SQL database&#10;&#10;- Todo deal with random ordering of JSON">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
     </list>
@@ -74,7 +73,7 @@
       <recent name="C:\Personal\Code\WeatherAPI\" />
     </key>
   </component>
-  <component name="RunManager" selected="Java Scratch.Scratch">
+  <component name="RunManager" selected="Application.WeatherAPI">
     <configuration name="WeatherAPI" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="WeatherAPI" />
       <module name="WeatherAPI" />
@@ -267,7 +266,14 @@
       <option name="project" value="LOCAL" />
       <updated>1667533097958</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Add logic to transfer data from &quot;Reformat&quot; to SQL database&#10;&#10;- Todo deal with random ordering of JSON">
+      <created>1667614396031</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1667614396031</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -335,7 +341,8 @@
     <MESSAGE value="Add metrics precipitation and POP (chance of rain)&#10;&#10;- Add table to config/ReadMe containing standardised units for project&#10;- Refactor MetEir parsing to take account of separate block for precipitation" />
     <MESSAGE value="Separate MetEir's output into separate files&#10;&#10;- Add logic to read time range of MetEir models&#10;- Move loadXML out of Model" />
     <MESSAGE value="Add SQL JDBC example SQL.java&#10;&#10;- Include mysql-connector-java-8.0.30.jar in lib" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add SQL JDBC example SQL.java&#10;&#10;- Include mysql-connector-java-8.0.30.jar in lib" />
+    <MESSAGE value="Add logic to transfer data from &quot;Reformat&quot; to SQL database&#10;&#10;- Todo deal with random ordering of JSON" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add logic to transfer data from &quot;Reformat&quot; to SQL database&#10;&#10;- Todo deal with random ordering of JSON" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

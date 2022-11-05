@@ -8,7 +8,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -31,23 +30,22 @@ public class WeatherAPI {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        // Todo JSONObjects can be created from Strings
-        //  Skip the GET folder entirely, just pass response.body to saveData()
 
         // Todo JSONObjects store keys in a random order
         //  This is a problem for SQL
         //  Different JSONObject implementation? Using LinkedLists?
         //  Different database? Wide-column such as cassandra
         //  Create a TreeMap in the upload function and order the data before outputting <--
+
         System.out.println("WeatherAPI.java");
         configs = PApplet.loadJSONObject(new File("data/config.json"));
         lat = configs.getFloat("lat");
         lon = configs.getFloat("lon");
 
-        Model metEir = new Model("Accu_1h.json");
-        metEir.upload();
-//        metEir.request();
-//        metEir.saveData();
+        Model metEir = new Model("MetEir.xml");
+        String response = metEir.request();
+        metEir.saveData(response);
+//        metEir.upload();
 
 //        JSONObject models = configs.getJSONObject("Models");
 //        for (Object o : models.keys()) {
@@ -69,6 +67,15 @@ public class WeatherAPI {
             return PApplet.loadJSONObject(file);
         } catch (RuntimeException e) {
             return PApplet.loadJSONArray(file);
+        }
+    }
+
+    // Parses a JSON String, regardless if it's an Object or Array
+    public static Object parseJSON(String data) {
+        try {
+            return JSONObject.parse(data);
+        } catch (RuntimeException e) {
+            return JSONArray.parse(data);
         }
     }
 
@@ -141,14 +148,26 @@ public class WeatherAPI {
             requestType = RequestType.GET;
         }
 
-        public void saveData() {
+        // Returns response body for the url given in config.json
+        String request() throws IOException, InterruptedException {
+            HttpRequest request = switch (requestType) {
+                case GET -> get(url);
+                case POST -> post(url, header);
+                case RAPIDAPI -> getRapid(url, header);
+            };
+            var client = HttpClient.newHttpClient();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.body();
+        }
+
+        public void saveData(String data) {
             if (root.equals("XML")) {
-                saveXML();
+                saveXML(data);
                 return;
             }
             JSONArray output = new JSONArray();
             // Source of data
-            Object jsonSource = loadJSON("output/GET/" + filename);
+            Object jsonSource = parseJSON(data);
             // Array of timeFrames
             // new JSONArray(Aeris.json/response/periods)
             JSONArray times = (JSONArray) JSONPath.getValue(jsonSource,
@@ -197,8 +216,13 @@ public class WeatherAPI {
             System.out.println(filename);
         }
 
-        public void saveXML() {
-            XML xml = loadXML("output/GET/MetEir.xml", null);
+        public void saveXML(String data) {
+            XML xml = null;
+            try {
+                xml = XML.parse(data);
+            } catch (IOException | ParserConfigurationException | SAXException e) {
+                throw new RuntimeException(e);
+            }
             // List of metrics to request
             JSONObject myKeys = config.getJSONObject("Keys");
             JSONObject myUnits = config.getJSONObject("Units");
@@ -300,22 +324,6 @@ public class WeatherAPI {
             }
         }
 
-        void request() throws IOException, InterruptedException {
-            HttpRequest request = switch (requestType) {
-                case GET -> get(url);
-                case POST -> post(url, header);
-                case RAPIDAPI -> getRapid(url, header);
-            };
-            var client = HttpClient.newHttpClient();
-            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            PrintWriter output = PApplet.createWriter(new File("output/GET/" + filename));
-            System.out.println(filename + ": " + response.statusCode());
-            output.println(response.body());
-            output.flush();
-            output.close();
-        }
-
         // Uploads data from the model's filename to SQL database
         public void upload() {
             JSONArray arr = PApplet.loadJSONArray(new File("output/Refactor/" + filename));
@@ -336,20 +344,24 @@ public class WeatherAPI {
             // Removes last comma
             keysBuilder.deleteCharAt(keysBuilder.length() - 1); // Epoch, WindSpeed, WindDir
             for (int i = 0; i < arr.size(); i++) {
+                // JSON Object for current time
                 JSONObject time = arr.getJSONObject(i);
+                // Init builder for list of inputs
                 inputsBuilders[i] = new StringBuilder();
                 StringBuilder builder = inputsBuilders[i];
                 builder.append("(");
                 for (Object o : keys.keys()) {
-                    String key = (String) o;
-                    Object val = time.get(key);
+                    String key = (String) o; // WindSpeed
+                    Object val = time.get(key); // 10.4
                     builder.append(val.toString()); // 10.4
                     builder.append(","); // 10.4,
-                }
+                } // (1667523600, 10.9, 241,
                 builder.deleteCharAt(builder.length()-1); // (1667523600, 10.9, 241
                 if (i < arr.size() - 1) {
+                    // There are more timeframes to parse
                     builder.append("),\n"); // (1667523600, 10.9, 241),
                 } else {
+                    // Final timeframe parsed, add a semicolon
                     builder.append(");\n"); // (1667523600, 10.9, 241);
                 }
             }
