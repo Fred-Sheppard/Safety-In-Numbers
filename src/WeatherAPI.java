@@ -13,6 +13,10 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.OffsetDateTime;
 
 public class WeatherAPI {
@@ -27,26 +31,35 @@ public class WeatherAPI {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
+        // Todo JSONObjects can be created from Strings
+        //  Skip the GET folder entirely, just pass response.body to saveData()
+
+        // Todo JSONObjects store keys in a random order
+        //  This is a problem for SQL
+        //  Different JSONObject implementation? Using LinkedLists?
+        //  Different database? Wide-column such as cassandra
+        //  Create a TreeMap in the upload function and order the data before outputting <--
         System.out.println("WeatherAPI.java");
         configs = PApplet.loadJSONObject(new File("data/config.json"));
         lat = configs.getFloat("lat");
         lon = configs.getFloat("lon");
 
-//        Model metEir = new Model("MetEir.xml");
+        Model metEir = new Model("Accu_1h.json");
+        metEir.upload();
 //        metEir.request();
 //        metEir.saveData();
 
-        JSONObject models = configs.getJSONObject("Models");
-        for (Object o : models.keys()) {
-            String modelName = (String) o;
-            String fileType = ".json";
-            if (modelName.equals("MetEir")) {
-                fileType = ".xml";
-            }
-            Model m = new Model(modelName + fileType);
-            m.request();
-            m.saveData();
-        }
+//        JSONObject models = configs.getJSONObject("Models");
+//        for (Object o : models.keys()) {
+//            String modelName = (String) o;
+//            String fileType = ".json";
+//            if (modelName.equals("MetEir")) {
+//                fileType = ".xml";
+//            }
+//            Model m = new Model(modelName + fileType);
+//            m.request();
+//            m.saveData();
+//        }
     }
 
     // Loads JSON file, regardless if it's an Object or Array
@@ -66,6 +79,17 @@ public class WeatherAPI {
             return new XML(reader, options);
         } catch (ParserConfigurationException | SAXException | IOException var4) {
             throw new RuntimeException(var4);
+        }
+    }
+
+    public static Statement initSQL() {
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/models", "root", "12345678");
+            return connection.createStatement();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -290,6 +314,71 @@ public class WeatherAPI {
             output.println(response.body());
             output.flush();
             output.close();
+        }
+
+        // Uploads data from the model's filename to SQL database
+        public void upload() {
+            JSONArray arr = PApplet.loadJSONArray(new File("output/Refactor/" + filename));
+            JSONObject keys = config.getJSONObject("Keys");
+            // JDBC object to execute sql queries
+            Statement statement = initSQL();
+            // Array of eventual inputs into the table
+            // e.g. (1667523600, 10.9, 241),
+            StringBuilder[] inputsBuilders = new StringBuilder[arr.size()];
+            // Eventual list of headers
+            // e.g. (Epoch, WindSpeed, WindDir)
+            StringBuilder keysBuilder = new StringBuilder();
+            for (Object o : keys.keys()) {
+                String key = (String) o;
+                keysBuilder.append(key);
+                keysBuilder.append(","); // Epoch,
+            }
+            // Removes last comma
+            keysBuilder.deleteCharAt(keysBuilder.length() - 1); // Epoch, WindSpeed, WindDir
+            for (int i = 0; i < arr.size(); i++) {
+                JSONObject time = arr.getJSONObject(i);
+                inputsBuilders[i] = new StringBuilder();
+                StringBuilder builder = inputsBuilders[i];
+                builder.append("(");
+                for (Object o : keys.keys()) {
+                    String key = (String) o;
+                    Object val = time.get(key);
+                    builder.append(val.toString()); // 10.4
+                    builder.append(","); // 10.4,
+                }
+                builder.deleteCharAt(builder.length()-1); // (1667523600, 10.9, 241
+                if (i < arr.size() - 1) {
+                    builder.append("),\n"); // (1667523600, 10.9, 241),
+                } else {
+                    builder.append(");\n"); // (1667523600, 10.9, 241);
+                }
+            }
+            StringBuilder query = new StringBuilder();
+            query.append("INSERT INTO test4 (");
+            query.append(keysBuilder); // Epoch, WindSpeed, WindDir
+            query.append(")\nVALUES\n");
+            for (StringBuilder sb : inputsBuilders) {
+                query.append(sb);
+            }
+            // INSERT INTO test4 (Epoch, WindSpeed, WindDir)
+            // VALUES
+            // (1667523600, 10.9, 241),
+            // (1667526326, 11.2, 356);
+            try {
+                statement.executeUpdate(query.toString());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            /*
+            create table test4  (
+                 pop int,
+                 winddir int,
+                 temperature float,
+                 precipitation float,
+                 epoch bigint primary key,
+                 windspeed float,
+                 windgust float);
+             */
         }
 
         public void setUrl(String s) {
