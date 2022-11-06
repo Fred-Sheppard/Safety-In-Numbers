@@ -1,4 +1,4 @@
-create table tab  (
+create table Visual_1d  (
 Epoch bigint primary key,
 POP int,
 Precipitation float,
@@ -8,11 +8,13 @@ WindDir int,
 WindGust float,
 WindSpeed float);
 
-create table test4  (
-     pop int,
-     winddir int,
-     temperature float,
-     precipitation float,
-     epoch bigint primary key,
-     windspeed float,
-     windgust float);
+create table daily  (
+Epoch bigint primary key,
+POP int,
+Precipitation float,
+Pressure float,
+Temperature_Max float,
+Temperature_Min float,
+WindDir int,
+WindGust float,
+WindSpeed float);
