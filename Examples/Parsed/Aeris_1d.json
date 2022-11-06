@@ -1,0 +1,79 @@
+[
+  {
+    "POP": 70,
+    "WindDir": 181,
+    "Precipitation": 2.4,
+    "Temperature_Min": 6,
+    "Epoch": 1667458800,
+    "WindSpeed": 8,
+    "Temperature_Max": 10,
+    "WindGust": 15,
+    "Pressure": 996
+  },
+  {
+    "POP": 0,
+    "WindDir": 244,
+    "Precipitation": 6.3,
+    "Temperature_Min": 9,
+    "Epoch": 1667545200,
+    "WindSpeed": 3,
+    "Temperature_Max": 10,
+    "WindGust": 13,
+    "Pressure": 1016
+  },
+  {
+    "POP": 0,
+    "WindDir": 255,
+    "Precipitation": 0,
+    "Temperature_Min": 10,
+    "Epoch": 1667631600,
+    "WindSpeed": 15,
+    "Temperature_Max": 13,
+    "WindGust": 25,
+    "Pressure": 1005
+  },
+  {
+    "POP": 0,
+    "WindDir": 192,
+    "Precipitation": 1.6,
+    "Temperature_Min": 10,
+    "Epoch": 1667718000,
+    "WindSpeed": 11,
+    "Temperature_Max": 12,
+    "WindGust": 31,
+    "Pressure": 992
+  },
+  {
+    "POP": 70,
+    "WindDir": 188,
+    "Precipitation": 4.8,
+    "Temperature_Min": 9,
+    "Epoch": 1667804400,
+    "WindSpeed": 15,
+    "Temperature_Max": 14,
+    "WindGust": 35,
+    "Pressure": 986
+  },
+  {
+    "POP": 17,
+    "WindDir": 223,
+    "Precipitation": 0.1,
+    "Temperature_Min": 5,
+    "Epoch": 1667890800,
+    "WindSpeed": 18,
+    "Temperature_Max": 11,
+    "WindGust": 30,
+    "Pressure": 991
+  },
+  {
+    "POP": 0,
+    "WindDir": 188,
+    "Precipitation": 0.7,
+    "Temperature_Min": 13,
+    "Epoch": 1667977200,
+    "WindSpeed": 6,
+    "Temperature_Max": 13,
+    "WindGust": 31,
+    "Pressure": 1004
+  }
+]

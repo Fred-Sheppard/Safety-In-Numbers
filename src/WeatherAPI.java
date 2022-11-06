@@ -8,6 +8,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -38,28 +39,23 @@ public class WeatherAPI {
         lat = configs.getFloat("lat");
         lon = configs.getFloat("lon");
 
-        Model metEir = new Model("Accu_1h.json");
-//        String response = metEir.request();
-//        metEir.saveData(response);
-        Statement statement = initSQL();
-        try {
-            statement.executeUpdate("DELETE FROM tab");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        metEir.upload();
-
-//        JSONObject models = configs.getJSONObject("Models");
-//        for (Object o : models.keys()) {
-//            String modelName = (String) o;
-//            String fileType = ".json";
-//            if (modelName.equals("MetEir")) {
-//                fileType = ".xml";
-//            }
-//            Model m = new Model(modelName + fileType);
-//            m.request();
-//            m.saveData();
+//        Model model = new Model("OpenWeather_1h");
+//        Statement statement = initSQL();
+//        try {
+//            statement.executeUpdate("DELETE FROM OpenWeather_1h");
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
 //        }
+//        String response = model.request();
+//        model.saveAndUpload(response, true);
+
+        JSONObject models = configs.getJSONObject("Models");
+        for (Object o : models.keys()) {
+            String modelName = (String) o;
+            Model model = new Model(modelName);
+            String response = model.request();
+            model.saveAndUpload(response, false);
+        }
     }
 
     // Loads JSON file, regardless if it's an Object or Array
@@ -104,6 +100,18 @@ public class WeatherAPI {
         }
     }
 
+    @SuppressWarnings("unused")
+    public static void clearTables() throws SQLException {
+        Connection connection = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/models", "root", "12345678");
+        Statement statement = connection.createStatement();
+        String s = "delete from %s";
+        String[] data = PApplet.loadStrings(new File("data/temp.txt"));
+        for (String s1 : data) {
+            statement.executeUpdate(String.format(s, s1));
+        }
+    }
+
     static class Model {
 
         // Contains data for the model found in config.json, under the model name
@@ -113,17 +121,16 @@ public class WeatherAPI {
         // Header data to be used with RapidAPI requests
         private String header; // "aerisweather1.p.rapidapi.com"
         // Name of input and output file
-        public String filename; // Aeris_1h.json
+        public String name; // Aeris_1h.json
         // Type of HTTP request that will be called. GET, POST or RAPIDAPI
         private final RequestType requestType; // GET
         // JSON path to the array of time periods in the http request response.
         private String root; // "response/0/periods"
 
-        Model(String filename) {
-            this.filename = filename; // Aeris_1h.json
-            String modelName = filename.split("\\.")[0]; // Aeris_1h
+        Model(String name) {
+            this.name = name;
             // Entry in config.json that contains values for url, root, keys etc
-            config = (JSONObject) JSONPath.getValue(configs, "Models/" + modelName);
+            config = (JSONObject) JSONPath.getValue(configs, "Models/" + name);
             // Url to be used for HTTP requests
             setUrlFromConfig();
             // Value to be passed as a header in RapidAPI requests
@@ -134,10 +141,10 @@ public class WeatherAPI {
             int typeIndex = config.getInt("RequestType");
             int maxIndexAllowed = RequestType.values().length - 1;
             if (typeIndex > maxIndexAllowed) {
-                System.out.printf("Error. RequestType in %s cannot be greater than %d. Value: %d%n", modelName, maxIndexAllowed, typeIndex);
+                System.out.printf("Error. RequestType in %s cannot be greater than %d. Value: %d%n", name, maxIndexAllowed, typeIndex);
                 requestType = RequestType.GET;
             } else if (typeIndex < 0) {
-                System.out.printf("Error. RequestType in %s cannot be less than 0. Value: %d%n", modelName, typeIndex);
+                System.out.printf("Error. RequestType in %s cannot be less than 0. Value: %d%n", name, typeIndex);
                 requestType = RequestType.GET;
             } else {
                 // 0 = GET, 1 = POST, 2 = RAPIDAPI
@@ -146,8 +153,8 @@ public class WeatherAPI {
         }
 
         @SuppressWarnings("unused")
-        Model(String filename, boolean testing) {
-            this.filename = filename;
+        Model(String name, boolean testing) {
+            this.name = name;
             config = new JSONObject();
             requestType = RequestType.GET;
         }
@@ -155,6 +162,7 @@ public class WeatherAPI {
         // Returns response body for the url given in config.json
         @SuppressWarnings("unused")
         String request() throws IOException, InterruptedException {
+            System.out.print(name + ": Requesting...");
             HttpRequest request = switch (requestType) {
                 case GET -> get(url);
                 case POST -> post(url, header);
@@ -162,16 +170,34 @@ public class WeatherAPI {
             };
             var client = HttpClient.newHttpClient();
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.print("done. ");
             return response.body();
         }
 
         @SuppressWarnings("unused")
-        public void saveData(String data) {
+        public void saveAndUpload(String data, boolean doLog) {
+            System.out.print("Parsing...");
             if (root.equals("XML")) {
-                saveXML(data);
+                var list = xmlToTreeListArray(data);
+                System.out.print("done. ");
+                if (doLog) {
+                    String logPath = "logs/MetEir.txt";
+                    PrintWriter pw = PApplet.createWriter(new File(logPath));
+                    for (var treeMaps : list) {
+                        treeMaps.forEach(pw::println);
+                    }
+                    System.out.print("Logged to " + logPath + ". ");
+                    pw.flush();
+                    pw.close();
+                }
+                for (var treeMaps : list) {
+                    // Todo do something about met eireann and the 4 tables
+                    //  need either 4 uploads, 4 Models() or a checker in upload()
+//                    upload(treeMaps);
+                }
                 return;
             }
-            JSONArray output = new JSONArray();
+            ArrayList<TreeMap<String, Object>> output = new ArrayList<>();
             // Source of data
             Object jsonSource = parseJSON(data);
             // Array of timeFrames
@@ -183,7 +209,7 @@ public class WeatherAPI {
             JSONObject myUnits = config.getJSONObject("Units");
             for (int i = 0; i < times.size(); i++) {
                 JSONObject thisTime = times.getJSONObject(i);
-                JSONObject timeOuput = new JSONObject();
+                TreeMap<String, Object> timeOutput = new TreeMap<>();
                 // Find their key's name, get value at this key
                 for (Object o : myKeys.keys()) {
                     // myMetric is the standardised name for outputting
@@ -198,7 +224,8 @@ public class WeatherAPI {
                     //   The timeframe does not contain this value
                     // e.g. Some OpenWeather timeframes don't contain a value for "rain"
                     if (value == null) {
-                        System.out.printf("%s: Could not find value at %s%n", filename, theirMetric);
+//                        System.out.printf("%s: Could not find value at %s%n", name, theirMetric);
+                        timeOutput.put(myMetric, null);
                         continue;
                     }
                     // Conversion factor between kts, kph etc.
@@ -213,16 +240,26 @@ public class WeatherAPI {
                         };
                     }
                     // windSpeed: 12.5
-                    timeOuput.put(myMetric, value);
+                    timeOutput.put(myMetric, value);
                 }
                 // Add timeFrame to list of timeFrames
-                output.append(timeOuput);
+                output.add(timeOutput);
             }
-            output.save(new File("output/Refactor/" + filename), null);
-            System.out.println(filename);
+            System.out.print("done. ");
+            if (doLog) {
+                String logPath = "logs/" + name + ".txt";
+                PrintWriter pw = PApplet.createWriter(new File(logPath));
+                for (var v : output) {
+                    pw.println(v);
+                }
+                pw.flush();
+                pw.close();
+                System.out.print("Logged to " + logPath + ". ");
+            }
+            upload(output);
         }
 
-        public void saveXML(String data) {
+        public ArrayList<TreeMap<String, Object>>[] xmlToTreeListArray(String data) {
             XML xml = null;
             try {
                 xml = XML.parse(data);
@@ -249,9 +286,10 @@ public class WeatherAPI {
                 cutoffs[i] = from;
             }
             // Initialise outputs
-            JSONArray[] outputs = new JSONArray[timeFrameCutOffs.length];
+            @SuppressWarnings("unchecked")
+            ArrayList<TreeMap<String, Object>>[] outputs = new ArrayList[4];
             for (int i = 0; i < outputs.length; i++) {
-                outputs[i] = new JSONArray();
+                outputs[i] = new ArrayList<>();
             }
 
             // If more xml models are added, this will have to be streamlined
@@ -269,7 +307,7 @@ public class WeatherAPI {
             */
             for (int i = 0; i < times.length - 1; i += 2) {
                 XML thisTimeA = times[i];
-                JSONObject timeOutput = new JSONObject();
+                TreeMap<String, Object> timeOutput = new TreeMap<>();
                 String s = thisTimeA.getString("from");
                 // If this time's "from" value is the same as the next cutoff,
                 // Start appending to that cutoff
@@ -315,30 +353,26 @@ public class WeatherAPI {
                     }
                     timeOutput.put(myMetric, value);
                 }
-                outputs[modelIndex].append(timeOutput);
+                outputs[modelIndex].add(timeOutput);
             }
-            String[] filenames = {
-                    "Harmonie_1h",
-                    "ECMWF_1h",
-                    "ECMWF_3h",
-                    "ECMWF_6h"
-            };
-            for (int i = 0; i < outputs.length; i++) {
-                String filename = "output/Refactor/" + filenames[i] + ".json";
-                outputs[i].save(new File(filename), null);
-                System.out.println(filenames[i]);
-            }
+            String filenames = """
+                    Harmonie_1h
+                    ECMWF_1h
+                    ECMWF_3h
+                    ECMWF_6h""";
+            System.out.println(filenames);
+            return outputs;
         }
 
         // Uploads data from the model's filename to SQL database
-        public void upload() {
-            JSONArray arr = PApplet.loadJSONArray(new File("output/Refactor/" + filename));
+        public void upload(ArrayList<TreeMap<String, Object>> inputArray) {
+            System.out.print("Uploading...");
             JSONObject keys = config.getJSONObject("Keys");
             // JDBC object to execute sql queries
             Statement statement = initSQL();
             // Array of eventual inputs into the table
             // e.g. (1667523600, 10.9, 241),
-            StringBuilder[] inputsBuilders = new StringBuilder[arr.size()];
+            StringBuilder[] inputsBuilders = new StringBuilder[inputArray.size()];
             // Eventual list of headers
             // e.g. (Epoch, WindSpeed, WindDir)
             // Needs to be sorted first
@@ -354,28 +388,21 @@ public class WeatherAPI {
             } // Epoch, WindSpeed, WindDir,
             // Removes last comma
             keysBuilder.deleteCharAt(keysBuilder.length() - 1); // Epoch, WindSpeed, WindDir
-            for (int i = 0; i < arr.size(); i++) {
+            for (int i = 0; i < inputArray.size(); i++) {
                 // JSON Object for current time
-                JSONObject time = arr.getJSONObject(i);
-                // First, we need to order the keys
-                TreeMap<String, Object> treeMap = new TreeMap<>();
-                for (Object o : keys.keys()) {
-                    String key = (String) o;
-                    Object val = time.get(key);
-                    treeMap.put(key, val);
-                }
+                TreeMap<String, Object> thisTime = inputArray.get(i);
                 // Init builder for list of inputs
                 inputsBuilders[i] = new StringBuilder();
                 StringBuilder builder = inputsBuilders[i];
                 builder.append("(");
-                for (String key : treeMap.keySet()) {
-                    Object val = time.get(key); // 10.4
+                for (String key : thisTime.keySet()) {
+                    Object val = thisTime.get(key); // 10.4
                     String valStr = val == null ? null : val.toString();
                     builder.append(valStr); // 10.4
                     builder.append(","); // 10.4,
                 } // (1667523600, 10.9, 241,
-                builder.deleteCharAt(builder.length()-1); // (1667523600, 10.9, 241
-                if (i < arr.size() - 1) {
+                builder.deleteCharAt(builder.length() - 1); // (1667523600, 10.9, 241
+                if (i < inputArray.size() - 1) {
                     // There are more timeframes to parse
                     builder.append("),\n"); // (1667523600, 10.9, 241),
                 } else {
@@ -384,7 +411,9 @@ public class WeatherAPI {
                 }
             }
             StringBuilder query = new StringBuilder();
-            query.append("INSERT INTO tab (");
+            query.append("INSERT INTO ");
+            query.append(name);
+            query.append(" (");
             query.append(keysBuilder); // Epoch, WindSpeed, WindDir
             query.append(")\nVALUES\n");
             for (StringBuilder sb : inputsBuilders) {
@@ -396,7 +425,7 @@ public class WeatherAPI {
             // (1667526326, 11.2, 356);
             try {
                 int response = statement.executeUpdate(query.toString());
-                System.out.printf("Query OK, %d rows affected", response);
+                System.out.printf("Query OK, %d rows affected%n", response);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -426,7 +455,7 @@ public class WeatherAPI {
         }
 
         public String toString() {
-            return filename + " " + url;
+            return name + " " + url;
         }
 
         HttpRequest get(String postEndpoint) {

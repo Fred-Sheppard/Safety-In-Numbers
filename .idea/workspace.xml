@@ -4,11 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Bypass saving responses into GET folder, pipe directly into saveData&#10;&#10;- Uses JSONObject.parse() to retrieve an Object from a String">
-      <change afterPath="$PROJECT_DIR$/Resources.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Temp.txt" afterDir="false" />
+    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Fix ordering of data entered into database&#10;&#10;- Before entering data, use ArrayLists and TreeMaps to sort keys&#10;- That way, it will always match the table's headers">
+      <change afterPath="$PROJECT_DIR$/Examples/HTTP/Accu_1d.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Examples/HTTP/Accu_1h.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Examples/HTTP/Aeris_1d.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Examples/HTTP/Aeris_1h.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Examples/HTTP/MetEir.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Examples/HTTP/OpenWeather_1d.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Examples/HTTP/OpenWeather_1h.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Examples/HTTP/Visual_1d.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Examples/HTTP/Visual_1h.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Examples/HTTP/WeatherBit_1d.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Examples/Parsed/Aeris_1d.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Examples/Parsed/Aeris_1h.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/temp.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Temp.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Temp.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Temp.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,7 +69,7 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "Errors"
+    "settings.editor.selected.configurable": "terminal"
   },
   "keyToStringList": {
     "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
@@ -69,11 +83,11 @@
       <recent name="C:\Personal\Code\WeatherAPI\data" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Personal\Code\WeatherAPI\logs\Examples" />
+      <recent name="C:\Personal\Code\WeatherAPI\logs" />
+      <recent name="C:\Personal\Code\WeatherAPI\Outputs" />
       <recent name="C:\Personal\Code\WeatherAPI\src\" />
       <recent name="C:\Users\frede\AppData\Roaming\JetBrains\IdeaIC2022.2\scratches" />
-      <recent name="C:\Personal\Code\WeatherAPI\output\Refactor" />
-      <recent name="C:\Personal\Code\WeatherAPI\output\GET" />
-      <recent name="C:\Personal\Code\WeatherAPI\" />
     </key>
   </component>
   <component name="RunManager" selected="Application.WeatherAPI">
@@ -100,6 +114,9 @@
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration>C:\Users\frede\AppData\Roaming\Subversion</configuration>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="" />
@@ -283,7 +300,14 @@
       <option name="project" value="LOCAL" />
       <updated>1667615764481</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Fix ordering of data entered into database&#10;&#10;- Before entering data, use ArrayLists and TreeMaps to sort keys&#10;- That way, it will always match the table's headers">
+      <created>1667620306508</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1667620306508</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -327,7 +351,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Fix typo" />
     <MESSAGE value="Move Model to single class&#10;&#10;&#10;- Change from individual files for each model&#10;to single class with variable inputs&#10;- These files have yet to be deleted" />
     <MESSAGE value="Add Models.txt&#10;&#10;&#10;- Models.txt is a list of all tried models, both working and otherwise&#10;- Added several new APIs" />
     <MESSAGE value="Add info on api intervals" />
@@ -352,7 +375,8 @@
     <MESSAGE value="Add SQL JDBC example SQL.java&#10;&#10;- Include mysql-connector-java-8.0.30.jar in lib" />
     <MESSAGE value="Add logic to transfer data from &quot;Reformat&quot; to SQL database&#10;&#10;- Todo deal with random ordering of JSON" />
     <MESSAGE value="Bypass saving responses into GET folder, pipe directly into saveData&#10;&#10;- Uses JSONObject.parse() to retrieve an Object from a String" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bypass saving responses into GET folder, pipe directly into saveData&#10;&#10;- Uses JSONObject.parse() to retrieve an Object from a String" />
+    <MESSAGE value="Fix ordering of data entered into database&#10;&#10;- Before entering data, use ArrayLists and TreeMaps to sort keys&#10;- That way, it will always match the table's headers" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix ordering of data entered into database&#10;&#10;- Before entering data, use ArrayLists and TreeMaps to sort keys&#10;- That way, it will always match the table's headers" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -361,6 +385,15 @@
           <properties class="java.lang.NullPointerException" package="java.lang" />
           <option name="timeStamp" value="18" />
         </breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.sql.SQLException" package="java.sql" />
+          <option name="timeStamp" value="19" />
+        </breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/WeatherAPI.java</url>
+          <line>425</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
