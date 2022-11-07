@@ -195,7 +195,6 @@ public class WeatherAPI {
             }
         }
 
-    @SuppressWarnings("unused")
     public ArrayList<TreeMap<String, Object>> readJSON(String data, boolean doLog) {
         ArrayList<TreeMap<String, Object>> output = new ArrayList<>();
         // Source of data
