@@ -5,24 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Fix ordering of data entered into database&#10;&#10;- Before entering data, use ArrayLists and TreeMaps to sort keys&#10;- That way, it will always match the table's headers">
-      <change afterPath="$PROJECT_DIR$/Examples/HTTP/Accu_1d.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Examples/HTTP/Accu_1h.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Examples/HTTP/Aeris_1d.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Examples/HTTP/Aeris_1h.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Examples/HTTP/MetEir.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Examples/HTTP/OpenWeather_1d.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Examples/HTTP/OpenWeather_1h.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Examples/HTTP/Visual_1d.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Examples/HTTP/Visual_1h.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Examples/HTTP/WeatherBit_1d.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Examples/Parsed/Aeris_1d.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Examples/Parsed/Aeris_1h.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/temp.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Temp.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Temp.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Temp.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -41,6 +24,11 @@
   </component>
   <component name="Git.Settings">
     <option name="PUSH_AUTO_UPDATE" value="true" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -55,29 +43,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "ignore.preview.features.used": "true",
-    "jdk.selected.JAVA_MODULE": "17",
-    "last_opened_file_path": "C:/Personal/Code/WeatherAPI/lib/mysql-connector-java-8.0.30.jar",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "terminal"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;ignore.preview.features.used&quot;: &quot;true&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Personal/Code/WeatherAPI/lib/mysql-connector-java-8.0.30.jar&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;terminal&quot;
   },
-  "keyToStringList": {
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "JAVA",
-      "PDE"
+  &quot;keyToStringList&quot;: {
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;JAVA&quot;,
+      &quot;PDE&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Personal\Code\WeatherAPI\data" />
@@ -337,7 +325,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="HEAD" />
+                        <option value="master" />
                       </list>
                     </value>
                   </entry>
@@ -391,7 +379,7 @@
         </breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/WeatherAPI.java</url>
-          <line>425</line>
+          <line>418</line>
           <option name="timeStamp" value="20" />
         </line-breakpoint>
       </breakpoints>

@@ -34,6 +34,7 @@ public class WeatherAPI {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
+        // Todo add processing.core to lib
         System.out.println("WeatherAPI.java");
         configs = PApplet.loadJSONObject(new File("data/config.json"));
         lat = configs.getFloat("lat");
@@ -54,7 +55,7 @@ public class WeatherAPI {
             String modelName = (String) o;
             Model model = new Model(modelName);
             String response = model.request();
-            model.saveAndUpload(response, false);
+            model.readJSON(response, false);
         }
     }
 
@@ -173,30 +174,21 @@ public class WeatherAPI {
             System.out.print("done. ");
             return response.body();
         }
-
-        @SuppressWarnings("unused")
-        public void saveAndUpload(String data, boolean doLog) {
+        
+        public void parseAndUpload(String data, boolean doLog) {
             System.out.print("Parsing...");
             if (root.equals("XML")) {
-                var list = xmlToTreeListArray(data);
-                System.out.print("done. ");
-                if (doLog) {
-                    String logPath = "logs/MetEir.txt";
-                    PrintWriter pw = PApplet.createWriter(new File(logPath));
-                    for (var treeMaps : list) {
-                        treeMaps.forEach(pw::println);
-                    }
-                    System.out.print("Logged to " + logPath + ". ");
-                    pw.flush();
-                    pw.close();
+                var arr = readXML(data, doLog);
+                for (var treeMap : arr) {
+                    upload(treeMap);
                 }
-                for (var treeMaps : list) {
-                    // Todo do something about met eireann and the 4 tables
-                    //  need either 4 uploads, 4 Models() or a checker in upload()
-//                    upload(treeMaps);
-                }
-                return;
+            } else {
+                upload(readJSON(data, doLog));
             }
+        }
+
+        @SuppressWarnings("unused")
+        public ArrayList<TreeMap<String, Object>> readJSON(String data, boolean doLog) {
             ArrayList<TreeMap<String, Object>> output = new ArrayList<>();
             // Source of data
             Object jsonSource = parseJSON(data);
@@ -257,9 +249,10 @@ public class WeatherAPI {
                 System.out.print("Logged to " + logPath + ". ");
             }
             upload(output);
+            return output;
         }
 
-        public ArrayList<TreeMap<String, Object>>[] xmlToTreeListArray(String data) {
+        public ArrayList<TreeMap<String, Object>>[] readXML(String data, boolean doLog) {
             XML xml = null;
             try {
                 xml = XML.parse(data);
