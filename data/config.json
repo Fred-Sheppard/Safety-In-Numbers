@@ -91,7 +91,13 @@
       "Units": {
         "WindSpeed": 1.94384,
         "WindGust": 1.94384
-      }
+      },
+      "SubModels": [
+        "Harmonie_1h",
+        "ECMWF_1h",
+        "ECMWF_3h",
+        "ECMWF_6h"
+      ]
     },
     "OpenWeather_1h": {
       "Root": "hourly",
