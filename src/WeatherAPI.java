@@ -55,7 +55,7 @@ public class WeatherAPI {
             String modelName = (String) o;
             Model model = new Model(modelName);
             String response = model.request();
-            model.readJSON(response, false);
+            model.readAndUpload(response, false);
         }
     }
 
@@ -174,13 +174,18 @@ public class WeatherAPI {
             System.out.print("done. ");
             return response.body();
         }
-        
-        public void parseAndUpload(String data, boolean doLog) {
+
+        public void readAndUpload(String data, boolean doLog) {
             System.out.print("Parsing...");
             if (root.equals("XML")) {
                 var arr = readXML(data, doLog);
                 for (var treeMap : arr) {
-                    upload(treeMap);
+                    JSONOBject subModels = config.getJSONObject("SubModels") {
+                        for (Object o : subModels.keys()) {
+                            String modelName = (String) o;
+                            upload(treeMap, modelName);
+                        }
+                    }
                 }
             } else {
                 upload(readJSON(data, doLog));
@@ -248,7 +253,6 @@ public class WeatherAPI {
                 pw.close();
                 System.out.print("Logged to " + logPath + ". ");
             }
-            upload(output);
             return output;
         }
 
@@ -353,12 +357,28 @@ public class WeatherAPI {
                     ECMWF_1h
                     ECMWF_3h
                     ECMWF_6h""";
-            System.out.println(filenames);
+            System.out.print(filenames);
+            if (doLog) {
+                for (String filename : filenames) {
+                    String logPath = "logs/" + filename + ".txt";
+                    PrintWriter pw = PApplet.createWriter(new File(logPath));
+                    for (var v : output) {
+                        pw.println(v);
+                    }
+                    pw.flush();
+                    pw.close();
+                    System.out.print("Logged to " + logPath + ". ");
+                }
+            }
             return outputs;
         }
 
-        // Uploads data from the model's filename to SQL database
         public void upload(ArrayList<TreeMap<String, Object>> inputArray) {
+            upload(inputArray, name);
+        }
+
+        // Uploads data from the model's filename to SQL database
+        public void upload(ArrayList<TreeMap<String, Object>> inputArray, String tableName) {
             System.out.print("Uploading...");
             JSONObject keys = config.getJSONObject("Keys");
             // JDBC object to execute sql queries
@@ -405,7 +425,7 @@ public class WeatherAPI {
             }
             StringBuilder query = new StringBuilder();
             query.append("INSERT INTO ");
-            query.append(name);
+            query.append(tableName);
             query.append(" (");
             query.append(keysBuilder); // Epoch, WindSpeed, WindDir
             query.append(")\nVALUES\n");

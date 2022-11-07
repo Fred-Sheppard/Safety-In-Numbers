@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Fix ordering of data entered into database&#10;&#10;- Before entering data, use ArrayLists and TreeMaps to sort keys&#10;- That way, it will always match the table's headers">
+    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Move calling of parse() and upload() to separate function parseAndUpload">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/temp.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/TableNames.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -295,7 +297,14 @@
       <option name="project" value="LOCAL" />
       <updated>1667620306508</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Move calling of parse() and upload() to separate function parseAndUpload">
+      <created>1667809312355</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1667809312355</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -339,7 +348,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Move Model to single class&#10;&#10;&#10;- Change from individual files for each model&#10;to single class with variable inputs&#10;- These files have yet to be deleted" />
     <MESSAGE value="Add Models.txt&#10;&#10;&#10;- Models.txt is a list of all tried models, both working and otherwise&#10;- Added several new APIs" />
     <MESSAGE value="Add info on api intervals" />
     <MESSAGE value="Add several RapidAPI APIs&#10;&#10;&#10;- Add enum to Model to handle various API types&#10;- Add getRapid() function for RapidAPI" />
@@ -364,7 +372,8 @@
     <MESSAGE value="Add logic to transfer data from &quot;Reformat&quot; to SQL database&#10;&#10;- Todo deal with random ordering of JSON" />
     <MESSAGE value="Bypass saving responses into GET folder, pipe directly into saveData&#10;&#10;- Uses JSONObject.parse() to retrieve an Object from a String" />
     <MESSAGE value="Fix ordering of data entered into database&#10;&#10;- Before entering data, use ArrayLists and TreeMaps to sort keys&#10;- That way, it will always match the table's headers" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix ordering of data entered into database&#10;&#10;- Before entering data, use ArrayLists and TreeMaps to sort keys&#10;- That way, it will always match the table's headers" />
+    <MESSAGE value="Move calling of parse() and upload() to separate function parseAndUpload" />
+    <option name="LAST_COMMIT_MESSAGE" value="Move calling of parse() and upload() to separate function parseAndUpload" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -377,11 +386,6 @@
           <properties class="java.sql.SQLException" package="java.sql" />
           <option name="timeStamp" value="19" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/WeatherAPI.java</url>
-          <line>418</line>
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
