@@ -40,23 +40,23 @@ public class WeatherAPI {
         lat = configs.getFloat("lat");
         lon = configs.getFloat("lon");
 
-//        Model model = new Model("OpenWeather_1h");
-//        Statement statement = initSQL();
-//        try {
-//            statement.executeUpdate("DELETE FROM OpenWeather_1h");
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//        String response = model.request();
-//        model.saveAndUpload(response, true);
-
-        JSONObject models = configs.getJSONObject("Models");
-        for (Object o : models.keys()) {
-            String modelName = (String) o;
-            Model model = new Model(modelName);
-            String response = model.request();
-            model.readAndUpload(response, false);
+        Model model = new Model("MetEir");
+        Statement statement = initSQL();
+        try {
+            statement.executeUpdate("DELETE FROM OpenWeather_1h");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+        String response = model.request();
+        model.readAndUpload(response, true);
+
+//        JSONObject models = configs.getJSONObject("Models");
+//        for (Object o : models.keys()) {
+//            String modelName = (String) o;
+//            Model model = new Model(modelName);
+//            String response = model.request();
+//            model.readAndUpload(response, false);
+//        }
     }
 
     // Loads JSON file, regardless if it's an Object or Array
@@ -179,7 +179,7 @@ public class WeatherAPI {
             System.out.print("Parsing...");
             if (root.equals("XML")) {
                 var arr = readXML(data, doLog);
-                JSONOBject subModels = config.getJSONObject("SubModels");
+                JSONArray subModels = config.getJSONArray("SubModels");
                 if (subModels == null) {
                     throw new RuntimeException("JSONObject SubModels not found in " + name);
                 }
@@ -354,19 +354,20 @@ public class WeatherAPI {
             }
             outputs[modelIndex].add(timeOutput);
         }
-        String filenames = """
-                Harmonie_1h
-                ECMWF_1h
-                ECMWF_3h
-                ECMWF_6h""";
-        System.out.print(filenames);
+        String[] filenames = {
+                "Harmonie_1h",
+                "ECMWF_1h",
+                "ECMWF_3h",
+                "ECMWF_6h"};
+        for (String s : filenames) {
+            System.out.print(s);
+        }
         if (doLog) {
-            for (String filename : filenames) {
+            for (int i = 0; i < filenames.length; i++) {
+                String filename = filenames[i];
                 String logPath = "logs/" + filename + ".txt";
                 PrintWriter pw = PApplet.createWriter(new File(logPath));
-                for (var v : output) {
-                    pw.println(v);
-                }
+                pw.println(outputs[i]);
                 pw.flush();
                 pw.close();
                 System.out.print("Logged to " + logPath + ". ");
