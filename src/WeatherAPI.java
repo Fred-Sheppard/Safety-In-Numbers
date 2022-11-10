@@ -35,6 +35,7 @@ public class WeatherAPI {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         // Todo add processing.core to lib
+        // Todo ((Number) o).doubleValue()
         System.out.println("WeatherAPI.java");
         configs = PApplet.loadJSONObject(new File("data/config.json"));
         lat = configs.getFloat("lat");
