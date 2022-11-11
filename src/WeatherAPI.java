@@ -5,10 +5,7 @@ import processing.data.JSONObject;
 import processing.data.XML;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -19,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.TreeMap;
 
@@ -34,8 +32,6 @@ public class WeatherAPI {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        // Todo add processing.core to lib
-        // Todo ((Number) o).doubleValue()
         // Todo JSONPath.getValue change readJson()
         //   to readObjectLayer and readArrayLayer
         // Todo remove all preview features
@@ -46,12 +42,19 @@ public class WeatherAPI {
 
         Model model = new Model("MetEir");
         Statement statement = initSQL();
-        try {
-            statement.executeUpdate("DELETE FROM OpenWeather_1h");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        String[] filenames = {
+                "Harmonie_1h",
+                "ECMWF_1h",
+                "ECMWF_3h",
+                "ECMWF_6h"};
+        for (String s : filenames) {
+            try {
+                statement.executeUpdate("DELETE FROM " + s);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
-        String response = model.request();
+        String response = model.request(true);
         model.readAndUpload(response, true);
 
 //        JSONObject models = configs.getJSONObject("Models");
@@ -166,7 +169,7 @@ public class WeatherAPI {
 
         // Returns response body for the url given in config.json
         @SuppressWarnings("unused")
-        String request() throws IOException, InterruptedException {
+        String request(boolean doLog) throws IOException, InterruptedException {
             System.out.print(name + ": Requesting...");
             HttpRequest request = switch (requestType) {
                 case GET -> get(url);
@@ -176,20 +179,27 @@ public class WeatherAPI {
             var client = HttpClient.newHttpClient();
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
             System.out.print("done. ");
+            if (doLog) {
+                PrintWriter output = PApplet.createWriter(new File("logs/" + name + ".json"));
+                output.println(response.body());
+                output.flush();
+                output.close();
+            }
             return response.body();
         }
 
         public void readAndUpload(String data, boolean doLog) {
             System.out.print("Parsing...");
             if (root.equals("XML")) {
+                // arr: array of four models
+                // ArrayList: ArrayList of timeframes
+                // TreeMap: Basically a JSONObject. Epoch, WindSpeed etc.
                 var arr = readXML(data, doLog);
                 JSONArray subModels = config.getJSONArray("SubModels");
                 if (subModels == null) {
-                    throw new RuntimeException("JSONObject SubModels not found in " + name);
+                    throw new RuntimeException("JSONObject SubModels not found in config.json/" + name);
                 }
                 for (int i = 0; i < arr.length; i++) {
-                    // Todo will this arraylist be in the correct order?
-                    //  If not, sort it and reorder submodels in config.json
                     ArrayList<TreeMap<String, Object>> treeMap = arr[i];
                     String modelName = subModels.getString(i);
                     upload(treeMap, modelName);
@@ -199,108 +209,120 @@ public class WeatherAPI {
             }
         }
 
-    public ArrayList<TreeMap<String, Object>> readJSON(String data, boolean doLog) {
-        ArrayList<TreeMap<String, Object>> output = new ArrayList<>();
-        // Source of data
-        Object jsonSource = parseJSON(data);
-        // Array of timeFrames
-        // new JSONArray(Aeris.json/response/periods)
-        JSONArray times = (JSONArray) JSONPath.getValue(jsonSource,
-                config.getString("Root"));
-        // List of keys you want to include
-        JSONObject myKeys = config.getJSONObject("Keys");
-        JSONObject myUnits = config.getJSONObject("Units");
-        for (int i = 0; i < times.size(); i++) {
-            JSONObject thisTime = times.getJSONObject(i);
-            TreeMap<String, Object> timeOutput = new TreeMap<>();
-            // Find their key's name, get value at this key
-            for (Object o : myKeys.keys()) {
-                // myMetric is the standardised name for outputting
-                // theirMetric is what they call the metric, and may be path through multiple json Objects
-                // e.g. Accu.json windSpeed: Wind/Speed/Value
-                String myMetric = (String) o; // windSpeed
-                String theirMetric = myKeys.getString(myMetric); //windSpeedKPH
-                Object value = JSONPath.getValue(thisTime, theirMetric); // 22.6
-                // Occurs if:
-                //   The path in config.json contains a typo
-                // OR
-                //   The timeframe does not contain this value
-                // e.g. Some OpenWeather timeframes don't contain a value for "rain"
-                if (value == null) {
+        public ArrayList<TreeMap<String, Object>> readJSON(String data, boolean doLog) {
+            ArrayList<TreeMap<String, Object>> output = new ArrayList<>();
+            // Source of data
+            Object jsonSource = parseJSON(data);
+            // Array of timeFrames
+            // new JSONArray(Aeris.json/response/periods)
+            JSONArray times = (JSONArray) JSONPath.getValue(jsonSource,
+                    config.getString("Root"));
+            // List of keys you want to include
+            JSONObject myKeys = config.getJSONObject("Keys");
+            JSONObject myUnits = config.getJSONObject("Units");
+            for (int i = 0; i < times.size(); i++) {
+                JSONObject thisTime = times.getJSONObject(i);
+                TreeMap<String, Object> timeOutput = new TreeMap<>();
+                // Find their key's name, get value at this key
+                for (Object o : myKeys.keys()) {
+                    // myMetric is the standardised name for outputting
+                    // theirMetric is what they call the metric, and may be path through multiple json Objects
+                    // e.g. Accu.json windSpeed: Wind/Speed/Value
+                    String myMetric = (String) o; // windSpeed
+                    String theirMetric = myKeys.getString(myMetric); //windSpeedKPH
+                    Object value = JSONPath.getValue(thisTime, theirMetric); // 22.6
+                    // Occurs if:
+                    //   The path in config.json contains a typo
+                    // OR
+                    //   The timeframe does not contain this value
+                    // e.g. Some OpenWeather timeframes don't contain a value for "rain"
+                    if (value == null) {
 //                        System.out.printf("%s: Could not find value at %s%n", name, theirMetric);
-                    timeOutput.put(myMetric, null);
-                    continue;
+                        timeOutput.put(myMetric, null);
+                        continue;
+                    }
+                    // Conversion factor between kts, kph etc.
+                    Object cFactor = myUnits.get(myMetric);
+                    // If there is a calculation to be done
+                    if (cFactor != null) {
+                        // Basically, multiply value by conversion factor
+//                    value = switch (value) {
+//                        case Integer v -> v.doubleValue() * (double) cFactor;
+//                        case Double v -> v * (double) cFactor;
+//                        default -> value;
+//                    };
+                        double dValue;
+                        if (value instanceof Integer || value instanceof Double) {
+                            dValue = ((Number) value).doubleValue() * (double) cFactor;
+                            value = dValue;
+                        }
+                    }
+                    // windSpeed: 12.5
+                    timeOutput.put(myMetric, value);
                 }
-                // Conversion factor between kts, kph etc.
-                Object cFactor = myUnits.get(myMetric);
-                // If there is a calculation to be done
-                if (cFactor != null) {
-                    // Basically, multiply value by conversion factor
-                    value = switch (value) {
-                        case Integer v -> v.doubleValue() * (double) cFactor;
-                        case Double v -> v * (double) cFactor;
-                        default -> value;
-                    };
+                // Add timeFrame to list of timeFrames
+                output.add(timeOutput);
+            }
+            System.out.print("done. ");
+            if (doLog) {
+                String logPath = "logs/" + name + ".txt";
+                PrintWriter pw = PApplet.createWriter(new File(logPath));
+                for (var v : output) {
+                    pw.println(v);
                 }
-                // windSpeed: 12.5
-                timeOutput.put(myMetric, value);
+                pw.flush();
+                pw.close();
+                System.out.print("Logged to " + logPath + ". ");
             }
-            // Add timeFrame to list of timeFrames
-            output.add(timeOutput);
+            return output;
         }
-        System.out.print("done. ");
-        if (doLog) {
-            String logPath = "logs/" + name + ".txt";
-            PrintWriter pw = PApplet.createWriter(new File(logPath));
-            for (var v : output) {
-                pw.println(v);
+
+        public ArrayList<TreeMap<String, Object>>[] readXML(String data, boolean doLog) {
+            XML xml = null;
+            try {
+                xml = XML.parse(data);
+            } catch (IOException | ParserConfigurationException | SAXException e) {
+                throw new RuntimeException(e);
             }
-            pw.flush();
-            pw.close();
-            System.out.print("Logged to " + logPath + ". ");
-        }
-        return output;
-    }
+            // MetEir has a SubModels object in config.json, with an array of keys
+            // One set of keys for each subModel
+            JSONObject[] keysArray = new JSONObject[4];
+            for (int i = 0; i < keysArray.length; i++) {
+                JSONArray subModels = config.getJSONArray("SubModels");
+                keysArray[i] = subModels.getJSONObject(i).getJSONObject("Keys");
+            }
+            // Start with Harmonie_1h
+            JSONObject myUnits = config.getJSONObject("Units");
 
-    public ArrayList<TreeMap<String, Object>>[] readXML(String data, boolean doLog) {
-        XML xml = null;
-        try {
-            xml = XML.parse(data);
-        } catch (IOException | ParserConfigurationException | SAXException e) {
-            throw new RuntimeException(e);
-        }
-        // List of metrics to request
-        JSONObject myKeys = config.getJSONObject("Keys");
-        JSONObject myUnits = config.getJSONObject("Units");
+            // MetEir.xml contains 4 model timeframes
+            // Each model spans a specific timeframe
+            // Output each to a separate file
 
-        // MetEir.xml contains 4 model timeframes
-        // Each model spans a specific timeframe
-        // Output each to a separate file
+            // Go through header at top of xml file, find time range for each model
+            // Save the starting time for each model to "cutoffs"
+            // When iterating through times, if the current time starts at a cutoff time,
+            // add the following times to the next file (outputs[modelIndex])
+            XML[] timeFrameCutOffs = xml.getChild("meta").getChildren("model");
+            // Set cutoff times
+            String[] cutoffs = new String[timeFrameCutOffs.length];
+            for (int i = 0; i < timeFrameCutOffs.length; i++) {
+                String from = timeFrameCutOffs[i].getString("from");
+                cutoffs[i] = from;
+            }
+            // Initialise outputs
+            @SuppressWarnings("unchecked")
+            ArrayList<TreeMap<String, Object>>[] outputs = new ArrayList[4];
+            for (int i = 0; i < outputs.length; i++) {
+                outputs[i] = new ArrayList<>();
+            }
 
-        // Go through header at top of xml file, find time range for each model
-        // Save the starting time for each model to "cutoffs"
-        // When iterating through times, if the current time starts at a cutoff time,
-        // add the following times to the next file (outputs[modelIndex])
-        XML[] timeFrameCutOffs = xml.getChild("meta").getChildren("model");
-        // Set cutoff times
-        String[] cutoffs = new String[timeFrameCutOffs.length];
-        for (int i = 0; i < timeFrameCutOffs.length; i++) {
-            String from = timeFrameCutOffs[i].getString("from");
-            cutoffs[i] = from;
-        }
-        // Initialise outputs
-        @SuppressWarnings("unchecked")
-        ArrayList<TreeMap<String, Object>>[] outputs = new ArrayList[4];
-        for (int i = 0; i < outputs.length; i++) {
-            outputs[i] = new ArrayList<>();
-        }
-
-        // If more xml models are added, this will have to be streamlined
-        // For now, the path can be hardcoded
-        XML[] times = xml.getChild("product").getChildren("time");
-        // Index of which file to output to
-        // Harmonie, ECMWF 1h, 3h, 6h
-        int modelIndex = 0;
+            // If more xml models are added, this will have to be streamlined
+            // For now, the path can be hardcoded
+            XML[] times = xml.getChild("product").getChildren("time");
+            // Index of which file to output to
+            // Harmonie, ECMWF 1h, 3h, 6h
+            int modelIndex = 0;
+            JSONObject myKeys = keysArray[modelIndex];
             /*
             From the MetEireann docs:
                 For each timestep of the API there are two distinct forecast blocks: A & B
@@ -308,199 +330,218 @@ public class WeatherAPI {
                 Block A is related to everything else
             So when iterating, every second timeFrame must be skipped
             */
-        for (int i = 0; i < times.length - 1; i += 2) {
-            XML thisTimeA = times[i];
-            TreeMap<String, Object> timeOutput = new TreeMap<>();
-            String s = thisTimeA.getString("from");
-            // If this time's "from" value is the same as the next cutoff,
-            // Start appending to that cutoff
-            if (modelIndex < cutoffs.length - 1) {
-                if (s.equals(cutoffs[modelIndex + 1])) {
-                    modelIndex++;
+            for (int i = 0; i < times.length - 1; i += 2) {
+                XML thisTimeA = times[i];
+                TreeMap<String, Object> timeOutput = new TreeMap<>();
+                String s = thisTimeA.getString("from");
+                // If this time's "from" value is the same as the next cutoff,
+                // Start appending to that cutoff
+                if (modelIndex < cutoffs.length - 1) {
+                    if (s.equals(cutoffs[modelIndex + 1])) {
+                        modelIndex++;
+                        myKeys = keysArray[modelIndex];
+                    }
+                }
+                OffsetDateTime z = OffsetDateTime.parse(s);
+                timeOutput.put("Epoch", z.toEpochSecond());
+
+                XML thisTimeB = times[i + 1];
+                XML precipitation = thisTimeB.getChild("location/precipitation");
+                timeOutput.put("Precipitation", precipitation.getFloat("value"));
+                timeOutput.put("POP", precipitation.getFloat("probability"));
+                for (Object o : myKeys.keys()) {
+                    // myMetric is the standardised name for outputting
+                    // theirMetric is the path to the value
+                    String myMetric = (String) o;
+                    String theirMetric = myKeys.getString(myMetric);
+                    // The final part of a path is an attribute and not a child
+                    // It must be split and treated differently
+                    String[] path = theirMetric.split("/");
+                    String attribute = path[path.length - 1];
+                    // We need: Child, Attribute
+                    // Child = Path - Attribute
+                    // e.g. location/windSpeed/mps ->
+                    // (Child) location/windSpeed/
+                    // (Attribute) mps
+                    String childPath = theirMetric.replace("/" + attribute, "");
+                    XML key = thisTimeA.getChild(childPath);
+                    // For further out timeframes, certain metrics aren't included, such as WindGust
+                    // Just skip these metrics if that's the case
+                    if (key == null) {
+                        // Moves on to next Metric e.g. WindGust -> WindSpeed
+                        continue;
+                    }
+                    double value = Double.parseDouble(key.getString(attribute));
+                    Object cFactor = myUnits.get(myMetric);
+                    // If there is a calculation to be done
+                    if (cFactor != null) {
+                        value *= (double) cFactor;
+                    }
+                    timeOutput.put(myMetric, value);
+                }
+                outputs[modelIndex].add(timeOutput);
+            }
+            String[] filenames = {
+                    "Harmonie_1h",
+                    "ECMWF_1h",
+                    "ECMWF_3h",
+                    "ECMWF_6h"};
+            for (String s : filenames) {
+                System.out.print(s + ", ");
+            }
+            if (doLog) {
+                for (int i = 0; i < filenames.length; i++) {
+                    String filename = filenames[i];
+                    String logPath = "logs/" + filename + ".json";
+                    PrintWriter pw = PApplet.createWriter(new File(logPath));
+                    pw.println(outputs[i]);
+                    pw.flush();
+                    pw.close();
+                    System.out.print("Logged to " + logPath + ". ");
+                }
+                System.out.print("done ");
+            }
+            return outputs;
+        }
+
+        public void upload(ArrayList<TreeMap<String, Object>> inputArray) {
+            upload(inputArray, name);
+        }
+
+        // Uploads data from the model's filename to SQL database
+        public void upload(ArrayList<TreeMap<String, Object>> inputArray, String tableName) {
+            System.out.print("Uploading...");
+            JSONObject keys = config.getJSONObject("Keys");
+            if (keys == null) {
+                String[] filenames = {
+                        "Harmonie_1h",
+                        "ECMWF_1h",
+                        "ECMWF_3h",
+                        "ECMWF_6h"};
+                int index = 0;
+                for (int i = 0; i < filenames.length; i++) {
+                    if (tableName.equals(filenames[i])) {
+                        index = i;
+                    }
+                }
+                JSONArray subModels = config.getJSONArray("SubModels");
+                keys = subModels.getJSONObject(index).getJSONObject("Keys");
+            }
+            // JDBC object to execute sql queries
+            Statement statement = initSQL();
+            // Array of eventual inputs into the table
+            // e.g. (1667523600, 10.9, 241),
+            StringBuilder[] inputsBuilders = new StringBuilder[inputArray.size()];
+            // Eventual list of headers
+            // e.g. (Epoch, WindSpeed, WindDir)
+            // Needs to be sorted first
+            @SuppressWarnings("unchecked")
+            // It's a Set of keys, it wil always contain Strings
+            ArrayList<String> keysList = new ArrayList<String>(keys.keys());
+            Collections.sort(keysList);
+            System.out.println(keysList);
+            StringBuilder keysBuilder = new StringBuilder();
+            // Iterate through sorted keys
+            for (String key : keysList) {
+                keysBuilder.append(key);
+                keysBuilder.append(","); // Epoch,
+            } // Epoch, WindSpeed, WindDir,
+            // Removes last comma
+            keysBuilder.deleteCharAt(keysBuilder.length() - 1); // Epoch, WindSpeed, WindDir
+            for (int i = 0; i < inputArray.size(); i++) {
+                // JSON Object for current time
+                TreeMap<String, Object> thisTime = inputArray.get(i);
+                // Init builder for list of inputs
+                inputsBuilders[i] = new StringBuilder();
+                StringBuilder builder = inputsBuilders[i];
+                builder.append("(");
+                for (String key : thisTime.keySet()) {
+                    Object val = thisTime.get(key); // 10.4
+                    String valStr = val == null ? null : val.toString();
+                    builder.append(valStr); // 10.4
+                    builder.append(","); // 10.4,
+                } // (1667523600, 10.9, 241,
+                builder.deleteCharAt(builder.length() - 1); // (1667523600, 10.9, 241
+                if (i < inputArray.size() - 1) {
+                    // There are more timeframes to parse
+                    builder.append("),\n"); // (1667523600, 10.9, 241),
+                } else {
+                    // Final timeframe parsed, add a semicolon
+                    builder.append(");\n"); // (1667523600, 10.9, 241);
                 }
             }
-            OffsetDateTime z = OffsetDateTime.parse(s);
-            timeOutput.put("Epoch", z.toEpochSecond());
-
-            XML thisTimeB = times[i + 1];
-            XML precipitation = thisTimeB.getChild("location/precipitation");
-            timeOutput.put("Precipitation", precipitation.getFloat("value"));
-            timeOutput.put("POP", precipitation.getFloat("probability"));
-            for (Object o : myKeys.keys()) {
-                // myMetric is the standardised name for outputting
-                // theirMetric is the path to the value
-                String myMetric = (String) o;
-                String theirMetric = myKeys.getString(myMetric);
-                // The final part of a path is an attribute and not a child
-                // It must be split and treated differently
-                String[] path = theirMetric.split("/");
-                String attribute = path[path.length - 1];
-                // We need: Child, Attribute
-                // Child = Path - Attribute
-                // e.g. location/windSpeed/mps ->
-                // (Child) location/windSpeed/
-                // (Attribute) mps
-                String childPath = theirMetric.replace("/" + attribute, "");
-                XML key = thisTimeA.getChild(childPath);
-                // For further out timeframes, certain metrics aren't included, such as WindGust
-                // Just skip these metrics if that's the case
-                if (key == null) {
-                    // Moves on to next Metric e.g. WindGust -> WindSpeed
-                    continue;
-                }
-                double value = Double.parseDouble(key.getString(attribute));
-                Object cFactor = myUnits.get(myMetric);
-                // If there is a calculation to be done
-                if (cFactor != null) {
-                    value *= (double) cFactor;
-                }
-                timeOutput.put(myMetric, value);
+            StringBuilder query = new StringBuilder();
+            query.append("INSERT INTO ");
+            query.append(tableName);
+            query.append(" (");
+            query.append(keysBuilder); // Epoch, WindSpeed, WindDir
+            query.append(")\nVALUES\n");
+            for (StringBuilder sb : inputsBuilders) {
+                query.append(sb);
             }
-            outputs[modelIndex].add(timeOutput);
-        }
-        String[] filenames = {
-                "Harmonie_1h",
-                "ECMWF_1h",
-                "ECMWF_3h",
-                "ECMWF_6h"};
-        for (String s : filenames) {
-            System.out.print(s);
-        }
-        if (doLog) {
-            for (int i = 0; i < filenames.length; i++) {
-                String filename = filenames[i];
-                String logPath = "logs/" + filename + ".txt";
-                PrintWriter pw = PApplet.createWriter(new File(logPath));
-                pw.println(outputs[i]);
-                pw.flush();
-                pw.close();
-                System.out.print("Logged to " + logPath + ". ");
+            // INSERT INTO test4 (Epoch, WindSpeed, WindDir)
+            // VALUES
+            // (1667523600, 10.9, 241),
+            // (1667526326, 11.2, 356);
+            try {
+                int response = statement.executeUpdate(query.toString());
+                System.out.printf("Query OK, %d rows affected%n", response);
+            } catch (SQLException e) {
+                System.out.println(query);
+                throw new RuntimeException(e);
             }
         }
-        return outputs;
-    }
 
-    public void upload(ArrayList<TreeMap<String, Object>> inputArray) {
-        upload(inputArray, name);
-    }
+        public void setUrl(String s) {
+            url = s;
+        }
 
-    // Uploads data from the model's filename to SQL database
-    public void upload(ArrayList<TreeMap<String, Object>> inputArray, String tableName) {
-        System.out.print("Uploading...");
-        JSONObject keys = config.getJSONObject("Keys");
-        // JDBC object to execute sql queries
-        Statement statement = initSQL();
-        // Array of eventual inputs into the table
-        // e.g. (1667523600, 10.9, 241),
-        StringBuilder[] inputsBuilders = new StringBuilder[inputArray.size()];
-        // Eventual list of headers
-        // e.g. (Epoch, WindSpeed, WindDir)
-        // Needs to be sorted first
-        @SuppressWarnings("unchecked")
-        // It's a Set of keys, it wil always contain Strings
-        ArrayList<String> keysList = new ArrayList<String>(keys.keys());
-        Collections.sort(keysList);
-        StringBuilder keysBuilder = new StringBuilder();
-        // Iterate through sorted keys
-        for (String key : keysList) {
-            keysBuilder.append(key);
-            keysBuilder.append(","); // Epoch,
-        } // Epoch, WindSpeed, WindDir,
-        // Removes last comma
-        keysBuilder.deleteCharAt(keysBuilder.length() - 1); // Epoch, WindSpeed, WindDir
-        for (int i = 0; i < inputArray.size(); i++) {
-            // JSON Object for current time
-            TreeMap<String, Object> thisTime = inputArray.get(i);
-            // Init builder for list of inputs
-            inputsBuilders[i] = new StringBuilder();
-            StringBuilder builder = inputsBuilders[i];
-            builder.append("(");
-            for (String key : thisTime.keySet()) {
-                Object val = thisTime.get(key); // 10.4
-                String valStr = val == null ? null : val.toString();
-                builder.append(valStr); // 10.4
-                builder.append(","); // 10.4,
-            } // (1667523600, 10.9, 241,
-            builder.deleteCharAt(builder.length() - 1); // (1667523600, 10.9, 241
-            if (i < inputArray.size() - 1) {
-                // There are more timeframes to parse
-                builder.append("),\n"); // (1667523600, 10.9, 241),
-            } else {
-                // Final timeframe parsed, add a semicolon
-                builder.append(");\n"); // (1667523600, 10.9, 241);
-            }
+        @SuppressWarnings("unused")
+        public void setUrl(float lat, float lon) {
+            setUrl(String.format(config.getString("URL"), lat, lon));
         }
-        StringBuilder query = new StringBuilder();
-        query.append("INSERT INTO ");
-        query.append(tableName);
-        query.append(" (");
-        query.append(keysBuilder); // Epoch, WindSpeed, WindDir
-        query.append(")\nVALUES\n");
-        for (StringBuilder sb : inputsBuilders) {
-            query.append(sb);
+
+        public void setUrlFromConfig() {
+            setUrl(String.format(config.getString("URL"), lat, lon));
         }
-        // INSERT INTO test4 (Epoch, WindSpeed, WindDir)
-        // VALUES
-        // (1667523600, 10.9, 241),
-        // (1667526326, 11.2, 356);
-        try {
-            int response = statement.executeUpdate(query.toString());
-            System.out.printf("Query OK, %d rows affected%n", response);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+
+        @SuppressWarnings("unused")
+        public void setHeader(String s) {
+            header = s;
+        }
+
+        @SuppressWarnings("unused")
+        public void setRoot(String s) {
+            root = s;
+        }
+
+        public String toString() {
+            return name + " " + url;
+        }
+
+        HttpRequest get(String postEndpoint) {
+            return HttpRequest.newBuilder()
+                    .uri(URI.create(postEndpoint))
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
+        }
+
+        HttpRequest post(String postEndpoint, String data) {
+            return HttpRequest.newBuilder()
+                    .uri(URI.create(postEndpoint))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(data))
+                    .build();
+        }
+
+        HttpRequest getRapid(String postEndpoint, String data) {
+            return HttpRequest.newBuilder()
+                    .uri(URI.create(postEndpoint))
+                    .header("X-RapidAPI-Key", "RAPID_API_KEY")
+                    .header("X-RapidAPI-Host", data)
+                    .method("GET", HttpRequest.BodyPublishers.noBody())
+                    .build();
         }
     }
-
-    public void setUrl(String s) {
-        url = s;
-    }
-
-    @SuppressWarnings("unused")
-    public void setUrl(float lat, float lon) {
-        setUrl(String.format(config.getString("URL"), lat, lon));
-    }
-
-    public void setUrlFromConfig() {
-        setUrl(String.format(config.getString("URL"), lat, lon));
-    }
-
-    @SuppressWarnings("unused")
-    public void setHeader(String s) {
-        header = s;
-    }
-
-    @SuppressWarnings("unused")
-    public void setRoot(String s) {
-        root = s;
-    }
-
-    public String toString() {
-        return name + " " + url;
-    }
-
-    HttpRequest get(String postEndpoint) {
-        return HttpRequest.newBuilder()
-                .uri(URI.create(postEndpoint))
-                .header("Content-Type", "application/json")
-                .GET()
-                .build();
-    }
-
-    HttpRequest post(String postEndpoint, String data) {
-        return HttpRequest.newBuilder()
-                .uri(URI.create(postEndpoint))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(data))
-                .build();
-    }
-
-    HttpRequest getRapid(String postEndpoint, String data) {
-        return HttpRequest.newBuilder()
-                .uri(URI.create(postEndpoint))
-                .header("X-RapidAPI-Key", "RAPID_API_KEY")
-                .header("X-RapidAPI-Host", data)
-                .method("GET", HttpRequest.BodyPublishers.noBody())
-                .build();
-    }
-}
 }

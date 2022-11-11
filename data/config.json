@@ -86,7 +86,9 @@
         "WindGust": "location/windGust/mps",
         "Temperature": "location/temperature/value",
         "Pressure": "location/pressure/value",
-        "POP": "precipitation/probability"
+        "POP": "precipitation/probability",
+        "Epoch": "",
+        "Precipitation": ""
       },
       "Units": {
         "WindSpeed": 1.94384,
