@@ -5,10 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add saving all models to sql&#10;&#10;- Bypass saving to Refactor/, pipe straight to upload()&#10;- Upload examples of http request responses&#10;- Add optional logging in uploadAndSave()&#10;- Add progress logging to console">
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/core.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/core.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/ECMWF_1h.json" beforeDir="false" afterPath="$PROJECT_DIR$/logs/ECMWF_1h.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/ECMWF_3h.txt" beforeDir="false" afterPath="$PROJECT_DIR$/logs/ECMWF_3h.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/Harmonie_1h.json" beforeDir="false" afterPath="$PROJECT_DIR$/logs/Harmonie_1h.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WeatherAPI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/WeatherAPI.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -29,7 +29,7 @@
     <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="school2" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -53,10 +53,11 @@
     "DefaultHtmlFileTemplate": "HTML File",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "ignore.preview.features.used": "true",
     "jdk.selected.JAVA_MODULE": "17",
-    "last_opened_file_path": "C:/Personal/Code/WeatherAPI/lib/mysql-connector-java-8.0.30.jar",
-    "project.structure.last.edited": "Modules",
+    "last_opened_file_path": "C:/Personal/Code/WeatherAPI/lib/core.jar",
+    "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "terminal"
@@ -378,11 +379,11 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <breakpoint enabled="true" type="java-exception">
+        <breakpoint type="java-exception">
           <properties class="java.lang.NullPointerException" package="java.lang" />
           <option name="timeStamp" value="18" />
         </breakpoint>
-        <breakpoint enabled="true" type="java-exception">
+        <breakpoint type="java-exception">
           <properties class="java.sql.SQLException" package="java.sql" />
           <option name="timeStamp" value="19" />
         </breakpoint>
