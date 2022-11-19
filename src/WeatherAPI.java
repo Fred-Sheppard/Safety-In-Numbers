@@ -5,18 +5,17 @@ import processing.data.JSONObject;
 import processing.data.XML;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.TreeMap;
 
@@ -31,39 +30,53 @@ public class WeatherAPI {
         RAPIDAPI
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        // Todo JSONPath.getValue change readJson()
-        //   to readObjectLayer and readArrayLayer
-        // Todo remove all preview features
+    static Connection sqlConnection;
+    static Statement sqlStatement;
+
+    public static void main(String[] args) throws IOException, InterruptedException, SQLException {
         System.out.println("WeatherAPI.java");
         configs = PApplet.loadJSONObject(new File("data/config.json"));
         lat = configs.getFloat("lat");
         lon = configs.getFloat("lon");
+        sqlStatement = initSQL();
 
-        Model model = new Model("MetEir");
-        Statement statement = initSQL();
-        String[] filenames = {
-                "Harmonie_1h",
-                "ECMWF_1h",
-                "ECMWF_3h",
-                "ECMWF_6h"};
-        for (String s : filenames) {
-            try {
-                statement.executeUpdate("DELETE FROM " + s);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        String response = model.request(true);
-        model.readAndUpload(response, true);
-
-//        JSONObject models = configs.getJSONObject("Models");
-//        for (Object o : models.keys()) {
-//            String modelName = (String) o;
-//            Model model = new Model(modelName);
-//            String response = model.request();
-//            model.readAndUpload(response, false);
+//        Model model = new Model("MetEir");
+//        String[] filenames = {
+//                "Harmonie_1h",
+//                "ECMWF_1h",
+//                "ECMWF_3h",
+//                "ECMWF_6h"};
+//        for (String s : filenames) {
+//            try {
+//                sqlStatement.executeUpdate("DELETE FROM " + s);
+//            } catch (SQLException e) {
+//                throw new RuntimeException(e);
+//            }
 //        }
+//        String response = model.request(true);
+//        model.readAndUpload(response, true);
+
+        JSONObject models = configs.getJSONObject("Models");
+        for (Object o : models.keys()) {
+            String modelName = (String) o;
+            if (modelName.equals("MetEir")) {
+                String[] filenames = {
+                        "Harmonie_1h",
+                        "ECMWF_1h",
+                        "ECMWF_3h",
+                        "ECMWF_6h"};
+                for (String s : filenames) {
+                    sqlStatement.executeUpdate("DELETE FROM " + s);
+                }
+            } else {
+                sqlStatement.executeUpdate("DELETE FROM " + modelName);
+            }
+            Model model = new Model(modelName);
+            String response = model.request(false);
+            model.readAndUpload(response, false);
+        }
+        sqlStatement.close();
+        sqlConnection.close();
     }
 
     // Loads JSON file, regardless if it's an Object or Array
@@ -98,11 +111,10 @@ public class WeatherAPI {
     }
 
     public static Statement initSQL() {
-        Connection connection = null;
         try {
-            connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/models", "root", "12345678");
-            return connection.createStatement();
+            sqlConnection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/models", "root", "1234");
+            return sqlConnection.createStatement();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -110,13 +122,10 @@ public class WeatherAPI {
 
     @SuppressWarnings("unused")
     public static void clearTables() throws SQLException {
-        Connection connection = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/models", "root", "12345678");
-        Statement statement = connection.createStatement();
         String s = "delete from %s";
         String[] data = PApplet.loadStrings(new File("data/temp.txt"));
         for (String s1 : data) {
-            statement.executeUpdate(String.format(s, s1));
+            sqlStatement.executeUpdate(String.format(s, s1));
         }
     }
 
@@ -168,7 +177,7 @@ public class WeatherAPI {
         }
 
         // Returns response body for the url given in config.json
-        @SuppressWarnings("unused")
+        @SuppressWarnings({"unused", "SameParameterValue"})
         String request(boolean doLog) throws IOException, InterruptedException {
             System.out.print(name + ": Requesting...");
             HttpRequest request = switch (requestType) {
@@ -180,7 +189,7 @@ public class WeatherAPI {
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
             System.out.print("done. ");
             if (doLog) {
-                PrintWriter output = PApplet.createWriter(new File("logs/" + name + ".json"));
+                PrintWriter output = PApplet.createWriter(new File("logs/parse/" + name + ".json"));
                 output.println(response.body());
                 output.flush();
                 output.close();
@@ -188,7 +197,7 @@ public class WeatherAPI {
             return response.body();
         }
 
-        public void readAndUpload(String data, boolean doLog) {
+        public void readAndUpload(String data, boolean doLog) throws SQLException {
             System.out.print("Parsing...");
             if (root.equals("XML")) {
                 // arr: array of four models
@@ -265,7 +274,7 @@ public class WeatherAPI {
             }
             System.out.print("done. ");
             if (doLog) {
-                String logPath = "logs/" + name + ".txt";
+                String logPath = "logs/parse/" + name + ".txt";
                 PrintWriter pw = PApplet.createWriter(new File(logPath));
                 for (var v : output) {
                     pw.println(v);
@@ -284,14 +293,7 @@ public class WeatherAPI {
             } catch (IOException | ParserConfigurationException | SAXException e) {
                 throw new RuntimeException(e);
             }
-            // MetEir has a SubModels object in config.json, with an array of keys
-            // One set of keys for each subModel
-            JSONObject[] keysArray = new JSONObject[4];
-            for (int i = 0; i < keysArray.length; i++) {
-                JSONArray subModels = config.getJSONArray("SubModels");
-                keysArray[i] = subModels.getJSONObject(i).getJSONObject("Keys");
-            }
-            // Start with Harmonie_1h
+            JSONObject myKeys = config.getJSONObject("Keys");
             JSONObject myUnits = config.getJSONObject("Units");
 
             // MetEir.xml contains 4 model timeframes
@@ -306,8 +308,7 @@ public class WeatherAPI {
             // Set cutoff times
             String[] cutoffs = new String[timeFrameCutOffs.length];
             for (int i = 0; i < timeFrameCutOffs.length; i++) {
-                String from = timeFrameCutOffs[i].getString("from");
-                cutoffs[i] = from;
+                cutoffs[i] = timeFrameCutOffs[i].getString("from");
             }
             // Initialise outputs
             @SuppressWarnings("unchecked")
@@ -322,7 +323,6 @@ public class WeatherAPI {
             // Index of which file to output to
             // Harmonie, ECMWF 1h, 3h, 6h
             int modelIndex = 0;
-            JSONObject myKeys = keysArray[modelIndex];
             /*
             From the MetEireann docs:
                 For each timestep of the API there are two distinct forecast blocks: A & B
@@ -339,7 +339,6 @@ public class WeatherAPI {
                 if (modelIndex < cutoffs.length - 1) {
                     if (s.equals(cutoffs[modelIndex + 1])) {
                         modelIndex++;
-                        myKeys = keysArray[modelIndex];
                     }
                 }
                 OffsetDateTime z = OffsetDateTime.parse(s);
@@ -392,54 +391,42 @@ public class WeatherAPI {
             if (doLog) {
                 for (int i = 0; i < filenames.length; i++) {
                     String filename = filenames[i];
-                    String logPath = "logs/" + filename + ".json";
+                    String logPath = "logs/parse/" + filename + ".json";
                     PrintWriter pw = PApplet.createWriter(new File(logPath));
                     pw.println(outputs[i]);
                     pw.flush();
                     pw.close();
                     System.out.print("Logged to " + logPath + ". ");
                 }
-                System.out.print("done ");
+                System.out.println("done. ");
             }
             return outputs;
         }
 
-        public void upload(ArrayList<TreeMap<String, Object>> inputArray) {
+        public void upload(ArrayList<TreeMap<String, Object>> inputArray) throws SQLException {
             upload(inputArray, name);
         }
 
         // Uploads data from the model's filename to SQL database
-        public void upload(ArrayList<TreeMap<String, Object>> inputArray, String tableName) {
+        public void upload(ArrayList<TreeMap<String, Object>> inputArray, String tableName) throws SQLException {
             System.out.print("Uploading...");
-            JSONObject keys = config.getJSONObject("Keys");
-            if (keys == null) {
-                String[] filenames = {
-                        "Harmonie_1h",
-                        "ECMWF_1h",
-                        "ECMWF_3h",
-                        "ECMWF_6h"};
-                int index = 0;
-                for (int i = 0; i < filenames.length; i++) {
-                    if (tableName.equals(filenames[i])) {
-                        index = i;
-                    }
-                }
-                JSONArray subModels = config.getJSONArray("SubModels");
-                keys = subModels.getJSONObject(index).getJSONObject("Keys");
+            // Gets list of columns, i.e. what needs to be queried
+            String keyQuery = String.format("select column_name from information_schema.columns where table_name='%s'", tableName);
+            ResultSet keyResponse = sqlStatement.executeQuery(keyQuery);
+            ArrayList<String> keysList = new ArrayList<>();
+            while (keyResponse.next()) {
+                // SQL indexes from 1
+                keysList.add(keyResponse.getString(1));
             }
+            Collections.sort(keysList);
             // JDBC object to execute sql queries
-            Statement statement = initSQL();
             // Array of eventual inputs into the table
             // e.g. (1667523600, 10.9, 241),
             StringBuilder[] inputsBuilders = new StringBuilder[inputArray.size()];
             // Eventual list of headers
             // e.g. (Epoch, WindSpeed, WindDir)
             // Needs to be sorted first
-            @SuppressWarnings("unchecked")
             // It's a Set of keys, it wil always contain Strings
-            ArrayList<String> keysList = new ArrayList<String>(keys.keys());
-            Collections.sort(keysList);
-            System.out.println(keysList);
             StringBuilder keysBuilder = new StringBuilder();
             // Iterate through sorted keys
             for (String key : keysList) {
@@ -449,7 +436,7 @@ public class WeatherAPI {
             // Removes last comma
             keysBuilder.deleteCharAt(keysBuilder.length() - 1); // Epoch, WindSpeed, WindDir
             for (int i = 0; i < inputArray.size(); i++) {
-                // JSON Object for current time
+                // JSON Object for current timeframe
                 TreeMap<String, Object> thisTime = inputArray.get(i);
                 // Init builder for list of inputs
                 inputsBuilders[i] = new StringBuilder();
@@ -484,7 +471,7 @@ public class WeatherAPI {
             // (1667523600, 10.9, 241),
             // (1667526326, 11.2, 356);
             try {
-                int response = statement.executeUpdate(query.toString());
+                int response = sqlStatement.executeUpdate(query.toString());
                 System.out.printf("Query OK, %d rows affected%n", response);
             } catch (SQLException e) {
                 System.out.println(query);
