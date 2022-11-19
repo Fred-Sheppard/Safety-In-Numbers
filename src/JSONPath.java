@@ -15,6 +15,8 @@ public class JSONPath {
      * @return Value at path
      */
     static Object getValue(Object json, String path) {
+        // Todo rename tree() to readObject, readArray
+        //  Remove preview language features
         String[] pathArray = path.split("/", 0);
         return readJSON(json, pathArray, 0);
     }
