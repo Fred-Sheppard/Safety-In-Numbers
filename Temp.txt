@@ -1,12 +1,12 @@
-create table Visual_1d  (
+create table ECMWF_6h  (
 Epoch bigint primary key,
 POP int,
 Precipitation float,
 Pressure float,
 Temperature float,
 WindDir int,
-WindGust float,
 WindSpeed float);
+WindGust float,
 
 create table daily  (
 Epoch bigint primary key,
