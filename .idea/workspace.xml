@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f796d723-951c-46fc-a5ca-8f189a105c35" name="Changes" comment="Add saving all models to sql&#10;&#10;- Bypass saving to Refactor/, pipe straight to upload()&#10;- Upload examples of http request responses&#10;- Add optional logging in uploadAndSave()&#10;- Add progress logging to console">
+    <list default="true" id="2f51585c-0ade-42a9-8b3d-c80d1f7ba927" name="Changes" comment="Added keysArray to readXML, which breaks everything.&#10; &#10;Todo: Reset readXML to as it was before 11/11/2022">
+      <change afterPath="$PROJECT_DIR$/SQL cmd.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Temp.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Temp.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +78,7 @@
       <recent name="C:\Users\frede\AppData\Roaming\JetBrains\IdeaIC2022.2\scratches" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.WeatherAPI">
+  <component name="RunManager" selected="Java Scratch.Scratch">
     <configuration name="WeatherAPI" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="WeatherAPI" />
       <module name="WeatherAPI" />
