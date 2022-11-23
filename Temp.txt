@@ -1,5 +1,6 @@
 create table ECMWF_6h  (
 Epoch bigint primary key,
+Offset int,
 POP int,
 Precipitation float,
 Pressure float,
@@ -8,7 +9,7 @@ WindDir int,
 WindSpeed float);
 WindGust float,
 
-create table daily  (
+create table daily_1h  (
 Epoch bigint primary key,
 POP int,
 Precipitation float,
@@ -18,6 +19,11 @@ Temperature_Min float,
 WindDir int,
 WindGust float,
 WindSpeed float);
+
+
+
+
+
 
 import random
 

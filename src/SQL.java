@@ -28,35 +28,40 @@ class SQL {
         }
     }
 
-    static void makeDatabases() throws SQLException {
-        // Todo Create list of all models and how far in the future databases should index to
-        //  e.g. accu+0h, accu+1h, ... , accu+72h
-        //  How far should each go?
+    @SuppressWarnings("unused")
+    public static void makeDatabases() throws SQLException {
         JSONObject json = PApplet.loadJSONObject(new File("SQL cmd.json"));
-        Connection connection = DriverManager.getConnection(
+        Connection connectionIn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/models", "root", "1234");
-        DatabaseMetaData md = connection.getMetaData();
-        ResultSet rs = md.getTables("models", null, "%", null);
-        ArrayList<StringBuilder> builders = new ArrayList<>();
-        while (rs.next()) {
-            String table = rs.getString(3);
-            String[] split = table.split("_");
-            for (int i = 0; i < 12; i++) {
-                StringBuilder builder = new StringBuilder();
-                String tableName = split[0] + "+" + i + split[1].charAt(1);
-                builder.append(String.format("create table %s (%n", tableName));
-                ResultSet columns = md.getColumns(null, null, table, null);
-                while (columns.next()) {
-                    String metric = columns.getString(4);
-                    String command = json.getString(metric);
-                    builder.append(command);
+        Connection connectionOut = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/weathermodels", "root", "1234");
+        DatabaseMetaData metaData = connectionIn.getMetaData();
+        Statement statement = connectionOut.createStatement();
+        ResultSet tables = metaData.getTables("models", null, "%", null);
+        ArrayList<String> builders = new ArrayList<>();
+        while (tables.next()) {
+            String table = tables.getString(3);
+            StringBuilder builder = new StringBuilder();
+            builder.append(String.format("create table %s (%n", table));
+            ResultSet columns = metaData.getColumns("models", null, table, null);
+            int columnIndex = 0;
+            while (columns.next()) {
+                columnIndex++; // Starts at 1
+                if (columnIndex == 2) {
+                    builder.append("Offset int,");
                     builder.append("\n");
                 }
-                builders.add(builder);
+                String metric = columns.getString(4);
+                String command = json.getString(metric);
+                builder.append(command);
+                builder.append("\n");
             }
-            break;
+            builders.add(builder.toString());
         }
-        builders.forEach(System.out::println);
+        for (String builder : builders) {
+            System.out.println(builder);
+            statement.executeUpdate(builder);
+        }
     }
 }
 
