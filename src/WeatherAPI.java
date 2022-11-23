@@ -113,7 +113,7 @@ public class WeatherAPI {
     public static Statement initSQL() {
         try {
             sqlConnection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/models", "root", "1234");
+                    "jdbc:mysql://localhost:3306/weathermodels", "root", "1234");
             return sqlConnection.createStatement();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -232,6 +232,8 @@ public class WeatherAPI {
             for (int i = 0; i < times.size(); i++) {
                 JSONObject thisTime = times.getJSONObject(i);
                 TreeMap<String, Object> timeOutput = new TreeMap<>();
+                // e.g. Accu+3h. Offset = 3
+                timeOutput.put("Offset", i);
                 // Find their key's name, get value at this key
                 for (Object o : myKeys.keys()) {
                     // myMetric is the standardised name for outputting
@@ -333,6 +335,8 @@ public class WeatherAPI {
             for (int i = 0; i < times.length - 1; i += 2) {
                 XML thisTimeA = times[i];
                 TreeMap<String, Object> timeOutput = new TreeMap<>();
+                // e.g. Accu+3h. Offset = 3
+                timeOutput.put("Offset", i);
                 String s = thisTimeA.getString("from");
                 // If this time's "from" value is the same as the next cutoff,
                 // Start appending to that cutoff
@@ -411,7 +415,7 @@ public class WeatherAPI {
         public void upload(ArrayList<TreeMap<String, Object>> inputArray, String tableName) throws SQLException {
             System.out.print("Uploading...");
             // Gets list of columns, i.e. what needs to be queried
-            String keyQuery = String.format("select column_name from information_schema.columns where table_name='%s'", tableName);
+            String keyQuery = String.format("select column_name from information_schema.columns where table_schema='weathermodels' and table_name='%s'", tableName);
             ResultSet keyResponse = sqlStatement.executeQuery(keyQuery);
             ArrayList<String> keysList = new ArrayList<>();
             while (keyResponse.next()) {

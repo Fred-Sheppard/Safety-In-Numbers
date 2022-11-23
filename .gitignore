@@ -1,5 +1,6 @@
 output/
 logs/
+.idea/
 
 ### IntelliJ IDEA ###
 out/
@@ -30,3 +31,4 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
