@@ -1,13 +1,18 @@
-create table ECMWF_6h  (
-Epoch bigint primary key,
-Offset int,
-POP int,
-Precipitation float,
-Pressure float,
-Temperature float,
-WindDir int,
-WindSpeed float);
-WindGust float,
+create table accu_1d
+(
+    Epoch           bigint,
+    ID              int primary key,
+    Offset          int,
+    POP             int,
+    Precipitation   float,
+    RequestTime     bigint,
+    Temperature_Max float,
+    Temperature_Min float,
+    WindDir         int,
+    WindGust        float,
+    WindSpeed       float
+);
+
 
 create table daily_1h  (
 Epoch bigint primary key,

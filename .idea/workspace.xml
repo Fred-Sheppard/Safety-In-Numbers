@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="WeatherAPI:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f51585c-0ade-42a9-8b3d-c80d1f7ba927" name="Changes" comment="Begin logic to init all databases&#10;&#10;- accu+0h, accu+1h&#10;- Todo finish this logic. Create file that decides how many hours out to go">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/WeatherAPI_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SQL cmd.json" beforeDir="false" afterPath="$PROJECT_DIR$/SQL cmd.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Temp.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Temp.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/TableNames.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TableNames.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/SQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQL.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,18 +66,26 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;ignore.preview.features.used&quot;: &quot;true&quot;,
     &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Personal/Code/WeatherAPI/lib/core.jar&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Personal/Code/WeatherAPI/data&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.grazie&quot;
   },
   &quot;keyToStringList&quot;: {
     &quot;ChangesTree.GroupingKeys&quot;: [
       &quot;module&quot;,
       &quot;directory&quot;
+    ],
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ],
     &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
       &quot;JAVA&quot;,
@@ -78,11 +98,11 @@
       <recent name="C:\Personal\Code\WeatherAPI\data" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Personal\Code\WeatherAPI" />
       <recent name="C:\Personal\Code\WeatherAPI\logs\Examples" />
       <recent name="C:\Personal\Code\WeatherAPI\logs" />
       <recent name="C:\Personal\Code\WeatherAPI\Outputs" />
       <recent name="C:\Personal\Code\WeatherAPI\src\" />
-      <recent name="C:\Users\frede\AppData\Roaming\JetBrains\IdeaIC2022.2\scratches" />
     </key>
   </component>
   <component name="RunManager">
@@ -92,6 +112,10 @@
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration name="WeatherAPI.jar" type="JarApplication" temporary="true">
+      <option name="JAR_PATH" value="$PROJECT_DIR$/out/artifacts/WeatherAPI_jar/WeatherAPI.jar" />
+      <method v="2" />
     </configuration>
     <configuration name="Scratch" type="Java Scratch">
       <option name="MAIN_CLASS_NAME" value="Scratch" />
@@ -105,8 +129,14 @@
     </configuration>
     <list>
       <item itemvalue="Application.WeatherAPI" />
+      <item itemvalue="JAR Application.WeatherAPI.jar" />
       <item itemvalue="Java Scratch.Scratch" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JAR Application.WeatherAPI.jar" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
@@ -119,6 +149,9 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1664919519100</updated>
+      <workItem from="1669320629132" duration="135000" />
+      <workItem from="1669320767343" duration="6242000" />
+      <workItem from="1669327395661" duration="2217000" />
     </task>
     <task id="LOCAL-00001" summary="Update .gitignore">
       <created>1664919998475</created>
@@ -325,6 +358,9 @@
     </task>
     <option name="localTasksCounter" value="30" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.History.Properties">
     <option name="COLUMN_ID_ORDER">

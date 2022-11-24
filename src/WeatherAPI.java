@@ -59,18 +59,6 @@ public class WeatherAPI {
         JSONObject models = configs.getJSONObject("Models");
         for (Object o : models.keys()) {
             String modelName = (String) o;
-            if (modelName.equals("MetEir")) {
-                String[] filenames = {
-                        "Harmonie_1h",
-                        "ECMWF_1h",
-                        "ECMWF_3h",
-                        "ECMWF_6h"};
-                for (String s : filenames) {
-                    sqlStatement.executeUpdate("DELETE FROM " + s);
-                }
-            } else {
-                sqlStatement.executeUpdate("DELETE FROM " + modelName);
-            }
             Model model = new Model(modelName);
             String response = model.request(false);
             model.readAndUpload(response, false);
@@ -117,15 +105,6 @@ public class WeatherAPI {
             return sqlConnection.createStatement();
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public static void clearTables() throws SQLException {
-        String s = "delete from %s";
-        String[] data = PApplet.loadStrings(new File("data/temp.txt"));
-        for (String s1 : data) {
-            sqlStatement.executeUpdate(String.format(s, s1));
         }
     }
 
@@ -234,6 +213,8 @@ public class WeatherAPI {
                 TreeMap<String, Object> timeOutput = new TreeMap<>();
                 // e.g. Accu+3h. Offset = 3
                 timeOutput.put("Offset", i);
+                OffsetDateTime odt = OffsetDateTime.now();
+                timeOutput.put("RequestTime", odt.toEpochSecond());
                 // Find their key's name, get value at this key
                 for (Object o : myKeys.keys()) {
                     // myMetric is the standardised name for outputting
@@ -337,6 +318,8 @@ public class WeatherAPI {
                 TreeMap<String, Object> timeOutput = new TreeMap<>();
                 // e.g. Accu+3h. Offset = 3
                 timeOutput.put("Offset", i);
+                OffsetDateTime odt = OffsetDateTime.now();
+                timeOutput.put("RequestTime", odt.toEpochSecond());
                 String s = thisTimeA.getString("from");
                 // If this time's "from" value is the same as the next cutoff,
                 // Start appending to that cutoff
@@ -415,7 +398,8 @@ public class WeatherAPI {
         public void upload(ArrayList<TreeMap<String, Object>> inputArray, String tableName) throws SQLException {
             System.out.print("Uploading...");
             // Gets list of columns, i.e. what needs to be queried
-            String keyQuery = String.format("select column_name from information_schema.columns where table_schema='weathermodels' and table_name='%s'", tableName);
+            String keyQuery = String.format("select column_name from information_schema.columns where table_schema='weathermodels'" +
+                    " and table_name='%s'", tableName);
             ResultSet keyResponse = sqlStatement.executeQuery(keyQuery);
             ArrayList<String> keysList = new ArrayList<>();
             while (keyResponse.next()) {
@@ -434,6 +418,7 @@ public class WeatherAPI {
             StringBuilder keysBuilder = new StringBuilder();
             // Iterate through sorted keys
             for (String key : keysList) {
+                if (key.equalsIgnoreCase("ID")) continue;
                 keysBuilder.append(key);
                 keysBuilder.append(","); // Epoch,
             } // Epoch, WindSpeed, WindDir,
@@ -446,7 +431,7 @@ public class WeatherAPI {
                 inputsBuilders[i] = new StringBuilder();
                 StringBuilder builder = inputsBuilders[i];
                 builder.append("(");
-                for (String key : thisTime.keySet()) {
+                for (String key : thisTime.keySet()) { // WindSpeed
                     Object val = thisTime.get(key); // 10.4
                     String valStr = val == null ? null : val.toString();
                     builder.append(valStr); // 10.4
@@ -478,7 +463,7 @@ public class WeatherAPI {
                 int response = sqlStatement.executeUpdate(query.toString());
                 System.out.printf("Query OK, %d rows affected%n", response);
             } catch (SQLException e) {
-                System.out.println(query);
+                System.out.println("\n" + query);
                 throw new RuntimeException(e);
             }
         }

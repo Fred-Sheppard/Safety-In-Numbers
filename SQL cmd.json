@@ -1,11 +1,11 @@
 {
   "Epoch": "Epoch bigint,",
-  "Index": "Index int primary key",
+  "ID": "ID int primary key auto_increment,",
   "Offset": "Offset int,",
   "POP": "POP int,",
   "Precipitation": "Precipitation float,",
   "Pressure": "Pressure float,",
-  "RequestTime": "RequestTime bigint",
+  "RequestTime": "RequestTime bigint,",
   "Temperature": "Temperature float,",
   "Temperature_Max": "Temperature_Max float,",
   "Temperature_Min": "Temperature_Min float,",
