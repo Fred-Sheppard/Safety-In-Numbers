@@ -12,7 +12,7 @@ class SQL {
     }
 
     public static void dbFromFile() throws SQLException {
-        JSONObject json = PApplet.loadJSONObject(new File("SQL cmd.json"));
+        JSONObject json = PApplet.loadJSONObject(new File("OtherFiles/SQL cmd.json"));
         Connection connectionIn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/models", "root", "1234");
         Connection connectionOut = DriverManager.getConnection(

@@ -1,0 +1,168 @@
+create table Accu_1d  (
+ID int primary key auto_increment,
+Epoch bigint,
+Offset int,
+POP int,
+Precipitation float,
+RequestTime bigint,
+Temperature_Max float,
+Temperature_Min float,
+WindDir int,
+WindGust float,
+WindSpeed float);
+
+create table Accu_1h  (
+ID int primary key auto_increment,
+Epoch bigint,
+Offset int,
+POP int,
+Precipitation float,
+RequestTime bigint,
+Temperature float,
+WindDir int,
+WindGust float,
+WindSpeed float);
+
+create table Aeris_1d  (
+ID int primary key auto_increment,
+Epoch bigint,
+Offset int,
+POP int,
+Precipitation float,
+Pressure float,
+RequestTime bigint,
+Temperature_Max float,
+Temperature_Min float,
+WindDir int,
+WindGust float,
+WindSpeed float);
+
+create table Aeris_1h  (
+ID int primary key auto_increment,
+Epoch bigint,
+Offset int,
+POP int,
+Precipitation float,
+Pressure float,
+RequestTime bigint,
+Temperature float,
+WindDir int,
+WindGust float,
+WindSpeed float);
+
+create table ECMWF_1h  (
+ID int primary key auto_increment,
+Epoch bigint,
+Offset int,
+POP int,
+Precipitation float,
+Pressure float,
+RequestTime bigint,
+Temperature float,
+WindDir int,
+WindSpeed float);
+
+create table ECMWF_3h  (
+ID int primary key auto_increment,
+Epoch bigint,
+Offset int,
+POP int,
+Precipitation float,
+Pressure float,
+RequestTime bigint,
+Temperature float,
+WindDir int,
+WindSpeed float);
+
+create table ECMWF_6h  (
+ID int primary key auto_increment,
+Epoch bigint,
+Offset int,
+POP int,
+Precipitation float,
+Pressure float,
+RequestTime bigint,
+Temperature float,
+WindDir int,
+WindSpeed float);
+
+create table Harmonie_1h  (
+ID int primary key auto_increment,
+Epoch bigint,
+Offset int,
+POP int,
+Precipitation float,
+Pressure float,
+RequestTime bigint,
+Temperature float,
+WindDir int,
+WindGust float,
+WindSpeed float);
+
+create table OpenWeather_1d  (
+ID int primary key auto_increment,
+Epoch bigint,
+Offset int,
+POP int,
+Precipitation float,
+Pressure float,
+RequestTime bigint,
+Temperature_Max float,
+Temperature_Min float,
+WindDir int,
+WindGust float,
+WindSpeed float);
+
+create table OpenWeather_1h  (
+ID int primary key auto_increment,
+Epoch bigint,
+Offset int,
+POP int,
+Precipitation float,
+Pressure float,
+RequestTime bigint,
+Temperature float,
+WindDir int,
+WindGust float,
+WindSpeed float);
+
+create table Visual_1d  (
+ID int primary key auto_increment,
+Epoch bigint,
+Offset int,
+POP int,
+Precipitation float,
+Pressure float,
+RequestTime bigint,
+Temperature float,
+WindDir int,
+WindGust float,
+WindSpeed float);
+
+create table Visual_1h  (
+ID int primary key auto_increment,
+Epoch bigint,
+Offset int,
+POP int,
+Precipitation float,
+Pressure float,
+RequestTime bigint,
+Temperature float,
+WindDir int,
+WindGust float,
+WindSpeed float);
+
+create table WeatherBit_1d  (
+ID int primary key auto_increment,
+Epoch bigint,
+Offset int,
+POP int,
+Precipitation float,
+Pressure float,
+RequestTime bigint,
+Temperature_Max float,
+Temperature_Min float,
+WindDir int,
+WindGust float,
+WindSpeed float);
+
