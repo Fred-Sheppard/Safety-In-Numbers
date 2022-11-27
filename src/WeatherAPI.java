@@ -32,36 +32,35 @@ public class WeatherAPI {
 
     static Connection sqlConnection;
     static Statement sqlStatement;
+    static String PATH;
 
-    public static void main(String[] args) throws IOException, InterruptedException, SQLException {
+
+    public static void main(String[] args) throws SQLException {
         System.out.println("WeatherAPI.java");
-        configs = PApplet.loadJSONObject(new File("data/config.json"));
+        // Path to directory containing jar file
+        File jarPath = new File(WeatherAPI.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+        if (jarPath.toString().contains(".jar")) {
+            // If being run from a jar file
+            PATH = jarPath.getParentFile().getAbsolutePath() + "/";
+        } else {
+            // Run from inside IDE
+            PATH = "";
+        }
+        configs = PApplet.loadJSONObject(new File(PATH + "config/config.json"));
         lat = configs.getFloat("lat");
         lon = configs.getFloat("lon");
         sqlStatement = initSQL();
-
-//        Model model = new Model("MetEir");
-//        String[] filenames = {
-//                "Harmonie_1h",
-//                "ECMWF_1h",
-//                "ECMWF_3h",
-//                "ECMWF_6h"};
-//        for (String s : filenames) {
-//            try {
-//                sqlStatement.executeUpdate("DELETE FROM " + s);
-//            } catch (SQLException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-//        String response = model.request(true);
-//        model.readAndUpload(response, true);
 
         JSONObject models = configs.getJSONObject("Models");
         for (Object o : models.keys()) {
             String modelName = (String) o;
             Model model = new Model(modelName);
-            String response = model.request(false);
-            model.readAndUpload(response, false);
+            try {
+                String response = model.request(false);
+                model.readAndUpload(response, false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         sqlStatement.close();
         sqlConnection.close();
@@ -98,10 +97,12 @@ public class WeatherAPI {
         }
     }
 
-    public static Statement initSQL() {
+    private static Statement initSQL() {
+        String sqlPath = configs.getString("SQLPath") + configs.getString("SQLDatabase");
+        String sqlUser = configs.getString("SQLUser");
+        String sqlPass = configs.getString("SQLPassword");
         try {
-            sqlConnection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/weathermodels", "root", "1234");
+            sqlConnection = DriverManager.getConnection(sqlPath, sqlUser, sqlPass);
             return sqlConnection.createStatement();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -168,7 +169,7 @@ public class WeatherAPI {
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
             System.out.print("done. ");
             if (doLog) {
-                PrintWriter output = PApplet.createWriter(new File("logs/parse/" + name + ".json"));
+                PrintWriter output = PApplet.createWriter(new File(PATH + "logs/parse/" + name + ".json"));
                 output.println(response.body());
                 output.flush();
                 output.close();
@@ -257,7 +258,7 @@ public class WeatherAPI {
             }
             System.out.print("done. ");
             if (doLog) {
-                String logPath = "logs/parse/" + name + ".txt";
+                String logPath = PATH + "logs/parse/" + name + ".txt";
                 PrintWriter pw = PApplet.createWriter(new File(logPath));
                 for (var v : output) {
                     pw.println(v);
@@ -378,7 +379,7 @@ public class WeatherAPI {
             if (doLog) {
                 for (int i = 0; i < filenames.length; i++) {
                     String filename = filenames[i];
-                    String logPath = "logs/parse/" + filename + ".json";
+                    String logPath = PATH + "logs/parse/" + filename + ".json";
                     PrintWriter pw = PApplet.createWriter(new File(logPath));
                     pw.println(outputs[i]);
                     pw.flush();
@@ -398,14 +399,21 @@ public class WeatherAPI {
         public void upload(ArrayList<TreeMap<String, Object>> inputArray, String tableName) throws SQLException {
             System.out.print("Uploading...");
             // Gets list of columns, i.e. what needs to be queried
-            String keyQuery = String.format("select column_name from information_schema.columns where table_schema='weathermodels'" +
-                    " and table_name='%s'", tableName);
+            String keyQuery = String.format("select column_name from information_schema.columns where table_schema='%s'" +
+                    " and table_name='%s'", configs.getString("SQLDatabase"), tableName);
             ResultSet keyResponse = sqlStatement.executeQuery(keyQuery);
+            // If the response returns empty
+            if (!keyResponse.next()) {
+                System.out.println("Error querying table " + tableName + ". Possible typo?");
+                return;
+            }
             ArrayList<String> keysList = new ArrayList<>();
-            while (keyResponse.next()) {
+            // By querying keyResponse.next() above, the head has been moved to the next index
+            // So, to read the 1st element, use a do while loop. next() is only called after the first read
+            do {
                 // SQL indexes from 1
                 keysList.add(keyResponse.getString(1));
-            }
+            } while (keyResponse.next());
             Collections.sort(keysList);
             // JDBC object to execute sql queries
             // Array of eventual inputs into the table

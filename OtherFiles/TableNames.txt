@@ -1,0 +1,13 @@
+Accu_1d
+Accu_1h
+Aeris_1d
+Aeris_1h
+Ecmwf_1h
+Ecmwf_3h
+Ecmwf_6h
+Harmonie_1h
+Openweather_1d
+Openweather_1h
+Visual_1d
+Visual_1h
+Weatherbit_1d
