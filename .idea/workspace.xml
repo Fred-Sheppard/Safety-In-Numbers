@@ -9,24 +9,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f51585c-0ade-42a9-8b3d-c80d1f7ba927" name="Changes" comment="Add ID, RequestTime to SQL upload&#10;&#10;- Update to IntelliJ Ultimate, hence the new files&#10;- Finish function in SQL.java to initialise databases">
-      <change afterPath="$PROJECT_DIR$/META-INF/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OtherFiles/Create Tables.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/mariadb-java-client-3.1.0.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/WeatherAPI_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/WeatherAPI_jar.xml" afterDir="false" />
+    <list default="true" id="2f51585c-0ade-42a9-8b3d-c80d1f7ba927" name="Changes" comment="Export as jar to PI&#10;&#10;- Switch to mariaDB from MySQL: easier to config on a PI&#10;- Add logic to set jar file's path&#10;- Move sql path to config.json&#10;- Add try block to loop in main, if one fails the loop will continue&#10;- Add error catching if the database returns null&#10;- Move several text files to OtherFiles/">
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models.txt" beforeDir="false" afterPath="$PROJECT_DIR$/OtherFiles/Models.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Range.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources.txt" beforeDir="false" afterPath="$PROJECT_DIR$/OtherFiles/Resources.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SQL cmd.json" beforeDir="false" afterPath="$PROJECT_DIR$/OtherFiles/SQL cmd.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TableNames.txt" beforeDir="false" afterPath="$PROJECT_DIR$/OtherFiles/TableNames.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Temp.txt" beforeDir="false" afterPath="$PROJECT_DIR$/OtherFiles/Temp.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeatherAPI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/WeatherAPI.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/config/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/mysql-connector-java-8.0.30.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQL.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -79,43 +64,43 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "ignore.preview.features.used": "true",
-    "jdk.selected.JAVA_MODULE": "17",
-    "last_opened_file_path": "C:/Personal/Code/WeatherAPI/out/artifacts/WeatherAPI_jar",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Artifacts",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.general"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;ignore.preview.features.used&quot;: &quot;true&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Personal/Code/WeatherAPI/out/artifacts/WeatherAPI_jar&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.general&quot;
   },
-  "keyToStringList": {
-    "ChangesTree.GroupingKeys": [
-      "module",
-      "directory"
+  &quot;keyToStringList&quot;: {
+    &quot;ChangesTree.GroupingKeys&quot;: [
+      &quot;module&quot;,
+      &quot;directory&quot;
     ],
-    "DatabaseDriversLRU": [
-      "mysql",
-      "mariadb"
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;,
+      &quot;mariadb&quot;
     ],
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "JAVA",
-      "PDE"
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;JAVA&quot;,
+      &quot;PDE&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Personal\Code\WeatherAPI\lib" />
@@ -184,7 +169,10 @@
       <workItem from="1669475823076" duration="3064000" />
       <workItem from="1669566459969" duration="3183000" />
       <workItem from="1669572009377" duration="4292000" />
-      <workItem from="1669582973597" duration="374000" />
+      <workItem from="1669582973597" duration="1318000" />
+      <workItem from="1669660854925" duration="607000" />
+      <workItem from="1669669657591" duration="2499000" />
+      <workItem from="1669742833506" duration="318000" />
     </task>
     <task id="LOCAL-00001" summary="Update .gitignore">
       <created>1664919998475</created>
@@ -403,7 +391,14 @@
       <option name="project" value="LOCAL" />
       <updated>1669329939177</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Export as jar to PI&#10;&#10;- Switch to mariaDB from MySQL: easier to config on a PI&#10;- Add logic to set jar file's path&#10;- Move sql path to config.json&#10;- Add try block to loop in main, if one fails the loop will continue&#10;- Add error catching if the database returns null&#10;- Move several text files to OtherFiles/">
+      <created>1669583871308</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1669583871308</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -450,7 +445,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Add unfinished logic to refactor json" />
     <MESSAGE value="Add jsonPathToObject() function" />
     <MESSAGE value="Add logic to find root of each model&#10;&#10;&#10;- Add list of models to Vars.json, each with a &quot;Root&quot; value" />
     <MESSAGE value="Add logic to write any metric to file from json data&#10;&#10;&#10;- Enter metrics in &quot;Keys&quot; Object in Vars.json&#10;- Will be outputted to output/Refactor/Accu.json for example" />
@@ -475,7 +469,8 @@
     <MESSAGE value="Begin logic to init all databases&#10;&#10;- accu+0h, accu+1h&#10;- Todo finish this logic. Create file that decides how many hours out to go" />
     <MESSAGE value="Add ID, RequestTime to SQL upload&#10;&#10;- Update to IntelliJ Ultimate, hence the new files&#10;- Finish function in SQL.java to initialise databases" />
     <MESSAGE value="squash! Add ID, RequestTime to SQL upload" />
-    <option name="LAST_COMMIT_MESSAGE" value="squash! Add ID, RequestTime to SQL upload" />
+    <MESSAGE value="Export as jar to PI&#10;&#10;- Switch to mariaDB from MySQL: easier to config on a PI&#10;- Add logic to set jar file's path&#10;- Move sql path to config.json&#10;- Add try block to loop in main, if one fails the loop will continue&#10;- Add error catching if the database returns null&#10;- Move several text files to OtherFiles/" />
+    <option name="LAST_COMMIT_MESSAGE" value="Export as jar to PI&#10;&#10;- Switch to mariaDB from MySQL: easier to config on a PI&#10;- Add logic to set jar file's path&#10;- Move sql path to config.json&#10;- Add try block to loop in main, if one fails the loop will continue&#10;- Add error catching if the database returns null&#10;- Move several text files to OtherFiles/" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
