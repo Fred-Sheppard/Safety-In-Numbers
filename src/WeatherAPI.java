@@ -22,7 +22,7 @@ import java.util.TreeMap;
 public class WeatherAPI {
 
     static float lat, lon;
-    public static JSONObject configs;
+    public static JSONObject globalConfig;
 
     enum RequestType {
         GET,
@@ -37,6 +37,7 @@ public class WeatherAPI {
 
     public static void main(String[] args) throws SQLException {
         System.out.println("WeatherAPI.java");
+        System.out.println(OffsetDateTime.now());
         // Path to directory containing jar file
         File jarPath = new File(WeatherAPI.class.getProtectionDomain().getCodeSource().getLocation().getPath());
         if (jarPath.toString().contains(".jar")) {
@@ -46,12 +47,13 @@ public class WeatherAPI {
             // Run from inside IDE
             PATH = "";
         }
-        configs = PApplet.loadJSONObject(new File(PATH + "config/config.json"));
-        lat = configs.getFloat("lat");
-        lon = configs.getFloat("lon");
+        globalConfig = PApplet.loadJSONObject(new File(PATH + "config/config.json"));
+        lat = globalConfig.getFloat("lat");
+        lon = globalConfig.getFloat("lon");
         sqlStatement = initSQL();
 
-        JSONObject models = configs.getJSONObject("Models");
+        JSONObject models = globalConfig.getJSONObject("Models");
+        int errors = 0;
         for (Object o : models.keys()) {
             String modelName = (String) o;
             Model model = new Model(modelName);
@@ -60,10 +62,13 @@ public class WeatherAPI {
                 model.readAndUpload(response, false);
             } catch (Exception e) {
                 e.printStackTrace();
+                errors++;
             }
         }
         sqlStatement.close();
         sqlConnection.close();
+        System.out.printf("Complete. %d errors", errors);
+        System.out.print("\n\n");
     }
 
     // Loads JSON file, regardless if it's an Object or Array
@@ -98,9 +103,9 @@ public class WeatherAPI {
     }
 
     private static Statement initSQL() {
-        String sqlPath = configs.getString("SQLPath") + configs.getString("SQLDatabase");
-        String sqlUser = configs.getString("SQLUser");
-        String sqlPass = configs.getString("SQLPassword");
+        String sqlPath = globalConfig.getString("SQLPath") + globalConfig.getString("SQLDatabase");
+        String sqlUser = globalConfig.getString("SQLUser");
+        String sqlPass = globalConfig.getString("SQLPassword");
         try {
             sqlConnection = DriverManager.getConnection(sqlPath, sqlUser, sqlPass);
             return sqlConnection.createStatement();
@@ -112,7 +117,7 @@ public class WeatherAPI {
     static class Model {
 
         // Contains data for the model found in config.json, under the model name
-        private final JSONObject config;
+        private final JSONObject modelConfig;
         // URL to be used for HTTP requests
         private String url; // "https://aerisweather1.p.rapidapi.com/forecasts/%f,%f?plimit=72&filter=1hr"
         // Header data to be used with RapidAPI requests
@@ -127,15 +132,15 @@ public class WeatherAPI {
         Model(String name) {
             this.name = name;
             // Entry in config.json that contains values for url, root, keys etc
-            config = (JSONObject) JSONPath.getValue(configs, "Models/" + name);
+            modelConfig = (JSONObject) JSONPath.getValue(globalConfig, "Models/" + name);
             // Url to be used for HTTP requests
             setUrlFromConfig();
             // Value to be passed as a header in RapidAPI requests
-            header = config.getString("Header");
+            header = modelConfig.getString("Header");
             // JSON path to the array of time periods in the http request response.
-            root = config.getString("Root");
+            root = modelConfig.getString("Root");
             // Integer value of RequestType. Can be between 0 and the enum values' length -1
-            int typeIndex = config.getInt("RequestType");
+            int typeIndex = modelConfig.getInt("RequestType");
             int maxIndexAllowed = RequestType.values().length - 1;
             if (typeIndex > maxIndexAllowed) {
                 System.out.printf("Error. RequestType in %s cannot be greater than %d. Value: %d%n", name, maxIndexAllowed, typeIndex);
@@ -152,7 +157,7 @@ public class WeatherAPI {
         @SuppressWarnings("unused")
         Model(String name, boolean testing) {
             this.name = name;
-            config = new JSONObject();
+            modelConfig = new JSONObject();
             requestType = RequestType.GET;
         }
 
@@ -184,7 +189,7 @@ public class WeatherAPI {
                 // ArrayList: ArrayList of timeframes
                 // TreeMap: Basically a JSONObject. Epoch, WindSpeed etc.
                 var arr = readXML(data, doLog);
-                JSONArray subModels = config.getJSONArray("SubModels");
+                JSONArray subModels = modelConfig.getJSONArray("SubModels");
                 if (subModels == null) {
                     throw new RuntimeException("JSONObject SubModels not found in config.json/" + name);
                 }
@@ -205,10 +210,10 @@ public class WeatherAPI {
             // Array of timeFrames
             // new JSONArray(Aeris.json/response/periods)
             JSONArray times = (JSONArray) JSONPath.getValue(jsonSource,
-                    config.getString("Root"));
+                    modelConfig.getString("Root"));
             // List of keys you want to include
-            JSONObject myKeys = config.getJSONObject("Keys");
-            JSONObject myUnits = config.getJSONObject("Units");
+            JSONObject myKeys = modelConfig.getJSONObject("Keys");
+            JSONObject myUnits = modelConfig.getJSONObject("Units");
             for (int i = 0; i < times.size(); i++) {
                 JSONObject thisTime = times.getJSONObject(i);
                 TreeMap<String, Object> timeOutput = new TreeMap<>();
@@ -277,8 +282,8 @@ public class WeatherAPI {
             } catch (IOException | ParserConfigurationException | SAXException e) {
                 throw new RuntimeException(e);
             }
-            JSONObject myKeys = config.getJSONObject("Keys");
-            JSONObject myUnits = config.getJSONObject("Units");
+            JSONObject myKeys = modelConfig.getJSONObject("Keys");
+            JSONObject myUnits = modelConfig.getJSONObject("Units");
 
             // MetEir.xml contains 4 model timeframes
             // Each model spans a specific timeframe
@@ -400,7 +405,7 @@ public class WeatherAPI {
             System.out.print("Uploading...");
             // Gets list of columns, i.e. what needs to be queried
             String keyQuery = String.format("select column_name from information_schema.columns where table_schema='%s'" +
-                    " and table_name='%s'", configs.getString("SQLDatabase"), tableName);
+                    " and table_name='%s'", globalConfig.getString("SQLDatabase"), tableName);
             ResultSet keyResponse = sqlStatement.executeQuery(keyQuery);
             // If the response returns empty
             if (!keyResponse.next()) {
@@ -482,11 +487,11 @@ public class WeatherAPI {
 
         @SuppressWarnings("unused")
         public void setUrl(float lat, float lon) {
-            setUrl(String.format(config.getString("URL"), lat, lon));
+            setUrl(String.format(modelConfig.getString("URL"), lat, lon));
         }
 
         public void setUrlFromConfig() {
-            setUrl(String.format(config.getString("URL"), lat, lon));
+            setUrl(String.format(modelConfig.getString("URL"), lat, lon));
         }
 
         @SuppressWarnings("unused")
