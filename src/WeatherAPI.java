@@ -8,11 +8,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.sql.*;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -52,23 +54,25 @@ public class WeatherAPI {
         lon = globalConfig.getFloat("lon");
         sqlStatement = initSQL();
 
+        appendToLogs(PATH + "log.txt", OffsetDateTime.now() + "\n");
         JSONObject models = globalConfig.getJSONObject("Models");
-        int errors = 0;
+        int errorCount = 0;
         for (Object o : models.keys()) {
             String modelName = (String) o;
             Model model = new Model(modelName);
             try {
-                String response = model.request(false);
-                model.readAndUpload(response, false);
+                String response = model.request();
+                model.readAndUpload(response);
             } catch (Exception e) {
-                e.printStackTrace();
-                errors++;
+                appendToLogs(PATH + "log.txt", e.toString());
+                errorCount++;
             }
         }
         sqlStatement.close();
         sqlConnection.close();
-        System.out.printf("Complete. %d errors", errors);
-        System.out.print("\n\n");
+        String message = String.format("Complete. %d errors%n%n", errorCount);
+        appendToLogs(PATH + "log.txt", message);
+        System.out.print(message);
     }
 
     // Loads JSON file, regardless if it's an Object or Array
@@ -113,6 +117,15 @@ public class WeatherAPI {
             throw new RuntimeException(e);
         }
     }
+
+    private static void appendToLogs(String path, String message) {
+        try {
+            Files.write(Paths.get(path), (message).getBytes(), StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     static class Model {
 
@@ -163,32 +176,40 @@ public class WeatherAPI {
 
         // Returns response body for the url given in config.json
         @SuppressWarnings({"unused", "SameParameterValue"})
-        String request(boolean doLog) throws IOException, InterruptedException {
+        String request() throws IOException, InterruptedException {
             System.out.print(name + ": Requesting...");
-            HttpRequest request = switch (requestType) {
-                case GET -> get(url);
-                case POST -> post(url, header);
-                case RAPIDAPI -> getRapid(url, header);
-            };
+            HttpRequest request;
+            try {
+                request = switch (requestType) {
+                    case GET -> get(url);
+                    case POST -> post(url, header);
+                    case RAPIDAPI -> getRapid(url, header);
+                };
+            } catch (Exception e) {
+                throw new RuntimeException(String.format("%s: Error in HTTP url %nurl=%s%n", name, url));
+            }
             var client = HttpClient.newHttpClient();
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.print("done. ");
-            if (doLog) {
-                PrintWriter output = PApplet.createWriter(new File(PATH + "logs/parse/" + name + ".json"));
-                output.println(response.body());
-                output.flush();
-                output.close();
+            if (response.body().equals("") || response.body() == null) {
+                throw new RuntimeException(String.format("%s: HTTP returned empty or null%nurl=%s%n", name, url));
             }
+            System.out.print("done. ");
             return response.body();
         }
 
-        public void readAndUpload(String data, boolean doLog) throws SQLException {
+        public void readAndUpload(String data) {
             System.out.print("Parsing...");
             if (root.equals("XML")) {
                 // arr: array of four models
                 // ArrayList: ArrayList of timeframes
                 // TreeMap: Basically a JSONObject. Epoch, WindSpeed etc.
-                var arr = readXML(data, doLog);
+                ArrayList<TreeMap<String, Object>>[] arr;
+                try {
+                    arr = readXML(data);
+                } catch (Exception e) {
+                    throw new RuntimeException(String.format("%s: Error in parsing data.%n%s%n",
+                            name, data));
+                }
                 JSONArray subModels = modelConfig.getJSONArray("SubModels");
                 if (subModels == null) {
                     throw new RuntimeException("JSONObject SubModels not found in config.json/" + name);
@@ -196,17 +217,35 @@ public class WeatherAPI {
                 for (int i = 0; i < arr.length; i++) {
                     ArrayList<TreeMap<String, Object>> treeMap = arr[i];
                     String modelName = subModels.getString(i);
-                    upload(treeMap, modelName);
+                    try {
+                        upload(treeMap, modelName);
+                    } catch (Exception e) {
+                        throw new RuntimeException(String.format("%s: Error in uploading to sql. %n%s%n",
+                                name, data));
+                    }
                 }
             } else {
-                upload(readJSON(data, doLog));
+                ArrayList<TreeMap<String, Object>> parsedData;
+                try {
+                    parsedData = readJSON(data);
+                } catch (Exception e) {
+                    throw new RuntimeException(String.format("%s: Error in parsing data. %n%s%n",
+                            name, data));
+                }
+                upload(parsedData);
             }
         }
 
-        public ArrayList<TreeMap<String, Object>> readJSON(String data, boolean doLog) {
+        public ArrayList<TreeMap<String, Object>> readJSON(String data) {
             ArrayList<TreeMap<String, Object>> output = new ArrayList<>();
             // Source of data
-            Object jsonSource = parseJSON(data);
+            Object jsonSource;
+            try {
+                jsonSource = parseJSON(data);
+            } catch (Exception e) {
+                throw new RuntimeException(String.format("%s: Error parsing json. %n%s%n",
+                        name, data));
+            }
             // Array of timeFrames
             // new JSONArray(Aeris.json/response/periods)
             JSONArray times = (JSONArray) JSONPath.getValue(jsonSource,
@@ -243,12 +282,6 @@ public class WeatherAPI {
                     Object cFactor = myUnits.get(myMetric);
                     // If there is a calculation to be done
                     if (cFactor != null) {
-                        // Basically, multiply value by conversion factor
-//                    value = switch (value) {
-//                        case Integer v -> v.doubleValue() * (double) cFactor;
-//                        case Double v -> v * (double) cFactor;
-//                        default -> value;
-//                    };
                         double dValue;
                         if (value instanceof Integer || value instanceof Double) {
                             dValue = ((Number) value).doubleValue() * (double) cFactor;
@@ -262,20 +295,10 @@ public class WeatherAPI {
                 output.add(timeOutput);
             }
             System.out.print("done. ");
-            if (doLog) {
-                String logPath = PATH + "logs/parse/" + name + ".txt";
-                PrintWriter pw = PApplet.createWriter(new File(logPath));
-                for (var v : output) {
-                    pw.println(v);
-                }
-                pw.flush();
-                pw.close();
-                System.out.print("Logged to " + logPath + ". ");
-            }
             return output;
         }
 
-        public ArrayList<TreeMap<String, Object>>[] readXML(String data, boolean doLog) {
+        public ArrayList<TreeMap<String, Object>>[] readXML(String data) {
             XML xml = null;
             try {
                 xml = XML.parse(data);
@@ -381,23 +404,16 @@ public class WeatherAPI {
             for (String s : filenames) {
                 System.out.print(s + ", ");
             }
-            if (doLog) {
-                for (int i = 0; i < filenames.length; i++) {
-                    String filename = filenames[i];
-                    String logPath = PATH + "logs/parse/" + filename + ".json";
-                    PrintWriter pw = PApplet.createWriter(new File(logPath));
-                    pw.println(outputs[i]);
-                    pw.flush();
-                    pw.close();
-                    System.out.print("Logged to " + logPath + ". ");
-                }
-                System.out.println("done. ");
-            }
             return outputs;
         }
 
-        public void upload(ArrayList<TreeMap<String, Object>> inputArray) throws SQLException {
-            upload(inputArray, name);
+        public void upload(ArrayList<TreeMap<String, Object>> inputArray) {
+            try {
+                upload(inputArray, name);
+            } catch (Exception e) {
+                throw new RuntimeException(String.format("%s: Error in parsing data. %n%s%n",
+                        name, inputArray));
+            }
         }
 
         // Uploads data from the model's filename to SQL database
@@ -409,8 +425,8 @@ public class WeatherAPI {
             ResultSet keyResponse = sqlStatement.executeQuery(keyQuery);
             // If the response returns empty
             if (!keyResponse.next()) {
-                System.out.println("Error querying table " + tableName + ". Possible typo?");
-                return;
+                throw new RuntimeException(String.format("Error querying table for %s. Possible typo? %nTableName=%s%n",
+                        tableName, tableName));
             }
             ArrayList<String> keysList = new ArrayList<>();
             // By querying keyResponse.next() above, the head has been moved to the next index
@@ -476,8 +492,8 @@ public class WeatherAPI {
                 int response = sqlStatement.executeUpdate(query.toString());
                 System.out.printf("Query OK, %d rows affected%n", response);
             } catch (SQLException e) {
-                System.out.println("\n" + query);
-                throw new RuntimeException(e);
+                throw new RuntimeException(String.format("Error uploading in %s. %n%s%n",
+                        name, query));
             }
         }
 
