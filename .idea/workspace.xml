@@ -9,9 +9,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f51585c-0ade-42a9-8b3d-c80d1f7ba927" name="Changes" comment="Export as jar to PI&#10;&#10;- Switch to mariaDB from MySQL: easier to config on a PI&#10;- Add logic to set jar file's path&#10;- Move sql path to config.json&#10;- Add try block to loop in main, if one fails the loop will continue&#10;- Add error catching if the database returns null&#10;- Move several text files to OtherFiles/">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+    <list default="true" id="2f51585c-0ade-42a9-8b3d-c80d1f7ba927" name="Changes" comment="Began upgrading logging system">
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/WeatherAPI_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/WeatherAPI_jar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JarFile/WeatherAPI.jar" beforeDir="false" afterPath="$PROJECT_DIR$/JarFile/WeatherAPI.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,6 +57,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectId" id="2FghDy6kTkPfAZEQmCfKXolx10W" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="false" id="Update" />
@@ -75,7 +80,7 @@
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;ignore.preview.features.used&quot;: &quot;true&quot;,
     &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Personal/Code/WeatherAPI/out/artifacts/WeatherAPI_jar&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Personal/Code/WeatherAPI/JarFile&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -103,6 +108,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Personal\Code\WeatherAPI\JarFile" />
       <recent name="C:\Personal\Code\WeatherAPI\lib" />
       <recent name="C:\Personal\Code\WeatherAPI\data" />
     </key>
@@ -114,7 +120,7 @@
       <recent name="C:\Personal\Code\WeatherAPI\Outputs" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.WeatherAPI">
+  <component name="RunManager">
     <configuration name="WeatherAPI" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="WeatherAPI" />
       <module name="WeatherAPI" />
@@ -173,6 +179,10 @@
       <workItem from="1669660854925" duration="607000" />
       <workItem from="1669669657591" duration="2499000" />
       <workItem from="1669742833506" duration="318000" />
+      <workItem from="1669757589117" duration="141000" />
+      <workItem from="1669843251639" duration="3463000" />
+      <workItem from="1669920093679" duration="1193000" />
+      <workItem from="1670014161240" duration="6226000" />
     </task>
     <task id="LOCAL-00001" summary="Update .gitignore">
       <created>1664919998475</created>
@@ -398,7 +408,28 @@
       <option name="project" value="LOCAL" />
       <updated>1669583871308</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Improve logging to console/file&#10;&#10;- Rename configs to globalConfig&#10;- Rename config to modelConfig">
+      <created>1669757715958</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1669757715958</updated>
+    </task>
+    <task id="LOCAL-00034" summary="Improve logging to console/file&#10;&#10;- Rename configs to globalConfig&#10;- Rename config to modelConfig&#10;- Upload jarfile">
+      <created>1669846004956</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1669846004956</updated>
+    </task>
+    <task id="LOCAL-00035" summary="Began upgrading logging system">
+      <created>1669846765593</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1669846765593</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -445,9 +476,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Add jsonPathToObject() function" />
-    <MESSAGE value="Add logic to find root of each model&#10;&#10;&#10;- Add list of models to Vars.json, each with a &quot;Root&quot; value" />
-    <MESSAGE value="Add logic to write any metric to file from json data&#10;&#10;&#10;- Enter metrics in &quot;Keys&quot; Object in Vars.json&#10;- Will be outputted to output/Refactor/Accu.json for example" />
     <MESSAGE value="Add loadJSON() function&#10;&#10;&#10;- Will load a JSON Object or Array without having to know what type it is" />
     <MESSAGE value="Add saveXML() function&#10;&#10;&#10;- If Root is set to &quot;XML&quot; in config.json, then saveXML is called by saveData().&#10;- As of right now, it is only called for MetEir.xml" />
     <MESSAGE value="Add conversion logic in saveData() between kts, kph etc." />
@@ -470,7 +498,10 @@
     <MESSAGE value="Add ID, RequestTime to SQL upload&#10;&#10;- Update to IntelliJ Ultimate, hence the new files&#10;- Finish function in SQL.java to initialise databases" />
     <MESSAGE value="squash! Add ID, RequestTime to SQL upload" />
     <MESSAGE value="Export as jar to PI&#10;&#10;- Switch to mariaDB from MySQL: easier to config on a PI&#10;- Add logic to set jar file's path&#10;- Move sql path to config.json&#10;- Add try block to loop in main, if one fails the loop will continue&#10;- Add error catching if the database returns null&#10;- Move several text files to OtherFiles/" />
-    <option name="LAST_COMMIT_MESSAGE" value="Export as jar to PI&#10;&#10;- Switch to mariaDB from MySQL: easier to config on a PI&#10;- Add logic to set jar file's path&#10;- Move sql path to config.json&#10;- Add try block to loop in main, if one fails the loop will continue&#10;- Add error catching if the database returns null&#10;- Move several text files to OtherFiles/" />
+    <MESSAGE value="Improve logging to console/file&#10;&#10;- Rename configs to globalConfig&#10;- Rename config to modelConfig" />
+    <MESSAGE value="Improve logging to console/file&#10;&#10;- Rename configs to globalConfig&#10;- Rename config to modelConfig&#10;- Upload jarfile" />
+    <MESSAGE value="Began upgrading logging system" />
+    <option name="LAST_COMMIT_MESSAGE" value="Began upgrading logging system" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

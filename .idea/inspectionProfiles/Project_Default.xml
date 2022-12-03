@@ -34,6 +34,7 @@
           <option value="http://tiles.apache.org/" />
           <option value="http://dataservice.accuweather.com" />
           <option value="http://metwdb-openaccess.ichec.ie" />
+          <option value="http://www.accuweather.com" />
         </list>
       </option>
     </inspection_tool>
