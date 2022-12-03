@@ -9,12 +9,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f51585c-0ade-42a9-8b3d-c80d1f7ba927" name="Changes" comment="Improve logging, now fully describes errors&#10;&#10;- On the pi side, System.out is no longer piped to log.txt, so there is less clutter&#10;- Removed doLog boolean in methods">
-      <change afterPath="$PROJECT_DIR$/log.txt" afterDir="false" />
+    <list default="true" id="2f51585c-0ade-42a9-8b3d-c80d1f7ba927" name="Changes" comment="Change Files.write to PrintWriter for logging&#10;&#10;- BufferedWriters are better for multiple writes, Files.write is slow to initialise">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JarFile/WeatherAPI.jar" beforeDir="false" afterPath="$PROJECT_DIR$/JarFile/WeatherAPI.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OtherFiles/Temp.txt" beforeDir="false" afterPath="$PROJECT_DIR$/OtherFiles/Temp.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,43 +67,43 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;ignore.preview.features.used&quot;: &quot;true&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Personal/Code/WeatherAPI/JarFile&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.general&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "ignore.preview.features.used": "true",
+    "jdk.selected.JAVA_MODULE": "17",
+    "last_opened_file_path": "C:/Personal/Code/WeatherAPI/JarFile",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "database.query.execution"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;ChangesTree.GroupingKeys&quot;: [
-      &quot;module&quot;,
-      &quot;directory&quot;
+  "keyToStringList": {
+    "ChangesTree.GroupingKeys": [
+      "module",
+      "directory"
     ],
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;,
-      &quot;mariadb&quot;
+    "DatabaseDriversLRU": [
+      "mysql",
+      "mariadb"
     ],
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;JAVA&quot;,
-      &quot;PDE&quot;
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "JAVA",
+      "PDE"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Personal\Code\WeatherAPI\JarFile" />
@@ -175,7 +173,7 @@
       <workItem from="1669843251639" duration="3463000" />
       <workItem from="1669920093679" duration="1193000" />
       <workItem from="1670014161240" duration="6805000" />
-      <workItem from="1670080814491" duration="2592000" />
+      <workItem from="1670080814491" duration="3746000" />
     </task>
     <task id="LOCAL-00001" summary="Update .gitignore">
       <created>1664919998475</created>
@@ -429,7 +427,14 @@
       <option name="project" value="LOCAL" />
       <updated>1670026313478</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="Change Files.write to PrintWriter for logging&#10;&#10;- BufferedWriters are better for multiple writes, Files.write is slow to initialise">
+      <created>1670083537887</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1670083537887</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -476,7 +481,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Add saveXML() function&#10;&#10;&#10;- If Root is set to &quot;XML&quot; in config.json, then saveXML is called by saveData().&#10;- As of right now, it is only called for MetEir.xml" />
     <MESSAGE value="Add conversion logic in saveData() between kts, kph etc." />
     <MESSAGE value="Begin logic to request all models&#10;&#10;- Add &quot;Queries&quot; to config.json. This is a list of all urls that should be queried.&#10;- Move REQUESTTYPE to &#10;- TODO Make separate configs for different time frames i.e. 1h, 1d" />
     <MESSAGE value="Begin logic to request all models&#10;&#10;- Add &quot;Queries&quot; to config.json. This is a list of all urls that should be queried&#10;- Move REQUESTTYPE (was APITYPE) to config.json &#10;- TODO Make separate configs for different time frames i.e. 1h, 1d" />
@@ -501,7 +505,8 @@
     <MESSAGE value="Improve logging to console/file&#10;&#10;- Rename configs to globalConfig&#10;- Rename config to modelConfig&#10;- Upload jarfile" />
     <MESSAGE value="Began upgrading logging system" />
     <MESSAGE value="Improve logging, now fully describes errors&#10;&#10;- On the pi side, System.out is no longer piped to log.txt, so there is less clutter&#10;- Removed doLog boolean in methods" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improve logging, now fully describes errors&#10;&#10;- On the pi side, System.out is no longer piped to log.txt, so there is less clutter&#10;- Removed doLog boolean in methods" />
+    <MESSAGE value="Change Files.write to PrintWriter for logging&#10;&#10;- BufferedWriters are better for multiple writes, Files.write is slow to initialise" />
+    <option name="LAST_COMMIT_MESSAGE" value="Change Files.write to PrintWriter for logging&#10;&#10;- BufferedWriters are better for multiple writes, Files.write is slow to initialise" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

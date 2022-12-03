@@ -1,35 +1,3 @@
-create table accu_1d
-(
-    Epoch           bigint,
-    ID              int primary key,
-    Offset          int,
-    POP             int,
-    Precipitation   float,
-    RequestTime     bigint,
-    Temperature_Max float,
-    Temperature_Min float,
-    WindDir         int,
-    WindGust        float,
-    WindSpeed       float
-);
-
-
-create table daily_1h  (
-Epoch bigint primary key,
-POP int,
-Precipitation float,
-Pressure float,
-Temperature_Max float,
-Temperature_Min float,
-WindDir int,
-WindGust float,
-WindSpeed float);
-
-
-
-
-
-
 import random
 
 
