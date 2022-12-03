@@ -5,16 +5,11 @@ import processing.data.JSONObject;
 import processing.data.XML;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.sql.*;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -35,9 +30,10 @@ public class WeatherAPI {
     static Connection sqlConnection;
     static Statement sqlStatement;
     static String PATH;
+    static PrintWriter logger;
 
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, IOException {
         System.out.println("WeatherAPI.java");
         System.out.println(OffsetDateTime.now());
         // Path to directory containing jar file
@@ -53,8 +49,10 @@ public class WeatherAPI {
         lat = globalConfig.getFloat("lat");
         lon = globalConfig.getFloat("lon");
         sqlStatement = initSQL();
+        logger = new PrintWriter(new BufferedWriter(new FileWriter("log.txt", true)));
 
-        appendToLogs(PATH + "log.txt", OffsetDateTime.now() + "\n");
+        logger.println();
+        logger.println(OffsetDateTime.now());
         JSONObject models = globalConfig.getJSONObject("Models");
         int errorCount = 0;
         for (Object o : models.keys()) {
@@ -64,15 +62,19 @@ public class WeatherAPI {
                 String response = model.request();
                 model.readAndUpload(response);
             } catch (Exception e) {
-                appendToLogs(PATH + "log.txt", e.toString());
+                logger.println(e);
                 errorCount++;
+                System.out.println();
             }
         }
         sqlStatement.close();
         sqlConnection.close();
-        String message = String.format("Complete. %d errors%n%n", errorCount);
-        appendToLogs(PATH + "log.txt", message);
-        System.out.print(message);
+        String message = String.format("Complete. %d errors", errorCount);
+        logger.println(message);
+        logger.println();
+        logger.flush();
+        logger.close();
+        System.out.println(message);
     }
 
     // Loads JSON file, regardless if it's an Object or Array
@@ -115,14 +117,6 @@ public class WeatherAPI {
             return sqlConnection.createStatement();
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private static void appendToLogs(String path, String message) {
-        try {
-            Files.write(Paths.get(path), (message).getBytes(), StandardOpenOption.APPEND);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

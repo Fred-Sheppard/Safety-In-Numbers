@@ -1,7 +1,8 @@
 {
   "lat": 52.930166,
   "lon": -8.282975,
-  "SQLPath": "jdbc:mariadb://localhost:3306/WeatherModels",
+  "SQLPath": "jdbc:mariadb://localhost:3307/",
+  "SQLDatabase": "WeatherModels",
   "SQLUser": "root",
   "SQLPassword": "1234",
   "Models": {
