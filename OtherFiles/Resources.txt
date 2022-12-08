@@ -1,3 +1,6 @@
 SQL Cheatsheet: https://www.w3schools.com/sql/sql_create_table.asp
 Interfacing with JDBC: https://www.youtube.com/watch?v=e8g9eNnFpHQ&ab_channel=WittCode
 Jar file path: https://stackoverflow.com/questions/8775303/read-properties-file-outside-jar-file
+Check if SQL response is empty: https://javarevisited.blogspot.com/2016/10/how-to-check-if-resultset-is-empty-in-Java-JDBC.html#axzz7mueiayIp
+GET request: https://techndeck.com/get-request-using-java-11-httpclient-api/
+POST request: https://techndeck.com/post-request-with-json-using-java-11-httpclient-api/

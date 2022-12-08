@@ -1,8 +1,6 @@
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 
-//import java.nio.file.InvalidPathException;
-
 public class JSONPath {
 
     /**
@@ -24,8 +22,8 @@ public class JSONPath {
         if (index >= path.length) return o;
         String s = path[index];
         // Fixes problems with empty strings due to .split();
-        if (s.equals("")) return readJSON(o, path, ++index);
-        // Rip preview features
+        if (s.equals("")) return readJSON(o, path, index + 1);
+        // Rip preview features. You just weren't scalable
 //        Object child = switch (o) {
 //            case JSONObject j -> j.get(s);
 //            case JSONArray j -> j.get(Integer.parseInt(s));
@@ -46,16 +44,15 @@ public class JSONPath {
         }
         // Used to throw an error, but we don't always want that
         // With at typo in the path, an error is more beneficial
-        // However, sometimes Model timeframes simply don't include a metric for some reason
+        // However, sometimes Model timeframes simply don't include a metric
         // e.g. OpenWeather leaves out a value for "rain" occasionally
         // In that case, we should simply inform the user and move on
         if (child == null) {
 //            throw new InvalidPathException(s, "JSONReader: Object \"" + s + "\" does not exist");
             return null;
         }
-
         // Read next layer
-        return readJSON(child, path, ++index);
+        return readJSON(child, path, index + 1);
     }
 
 }
