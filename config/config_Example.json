@@ -1,0 +1,210 @@
+{
+  "lat": 53.0,
+  "lon": -8.0,
+  "SQLPath": "jdbc:mariadb://localhost:3307/",
+  "SQLDatabase": "WeatherModels",
+  "SQLUser": "root",
+  "SQLPassword": "mySuperSecurePassword",
+  "Models": {
+    "Accu_1h": {
+      "Root": "",
+      "RequestType": 0,
+      "URL": "https://urltoapi.com",
+      "Keys": {
+        "Epoch": "EpochDateTime",
+        "WindSpeed": "Wind/Speed/Value",
+        "WindGust": "WindGust/Speed/Value",
+        "WindDir": "Wind/Direction/Degrees",
+        "Temperature": "Temperature/Value",
+        "Precipitation": "TotalLiquid/Value",
+        "Pop": "PrecipitationProbability"
+      },
+      "Units": {
+        "WindGust": 0.539957,
+        "WindSpeed": 0.539957
+      }
+    },
+    "Accu_1d": {
+      "Root": "DailyForecasts",
+      "RequestType": 0,
+      "URL": "https://urltoapi.com",
+      "Keys": {
+        "WindSpeed": "Day/Wind/Speed/Value",
+        "WindDir": "Day/Wind/Direction/Degrees",
+        "Epoch": "EpochDate",
+        "WindGust": "Day/WindGust/Speed/Value",
+        "Temperature_Max": "Temperature/Maximum/Value",
+        "Temperature_Min": "Temperature/Minimum/Value",
+        "Precipitation": "Day/TotalLiquid/Value",
+        "POP": "Day/PrecipitationProbability"
+      },
+      "Units": {
+        "WindSpeed": 0.539957,
+        "WindGust": 0.539957
+      }
+    },
+    "Aeris_1h": {
+      "Root": "response/0/periods",
+      "RequestType": 2,
+      "URL": "https://urltoapi.com",
+      "Header": "aerisweather1.p.rapidapi.com",
+      "Keys": {
+        "WindSpeed": "windSpeedKTS",
+        "WindDir": "windDirDEG",
+        "WindGust": "windGustKTS",
+        "Temperature": "tempC",
+        "Epoch": "timestamp",
+        "Pressure": "pressureMB",
+        "Precipitation": "precipMM",
+        "POP": "pop"
+      },
+      "Units": {
+      }
+    },
+    "Aeris_1d": {
+      "Root": "response/0/periods",
+      "RequestType": 2,
+      "URL": "https://urltoapi.com",
+      "Header": "aerisweather1.p.rapidapi.com",
+      "Keys": {
+        "WindSpeed": "windSpeedKTS",
+        "WindDir": "windDirDEG",
+        "WindGust": "windGustKTS",
+        "Temperature_Max": "maxTempC",
+        "Temperature_Min": "minTempC",
+        "Epoch": "timestamp",
+        "Pressure": "pressureMB",
+        "Precipitation": "precipMM",
+        "POP": "pop"
+      },
+      "Units": {
+      }
+    },
+    "MetEir": {
+      "Root": "XML",
+      "RequestType": 0,
+      "URL": "https://urltoapi.com",
+      "Keys": {
+        "WindSpeed": "location/windSpeed/mps",
+        "WindDir": "location/windDirection/deg",
+        "WindGust": "location/windGust/mps",
+        "Temperature": "location/temperature/value",
+        "Pressure": "location/pressure/value",
+        "POP": "precipitation/probability",
+        "Epoch": "",
+        "Precipitation": ""
+      },
+      "Units": {
+        "WindSpeed": 1.94384,
+        "WindGust": 1.94384
+      },
+      "SubModels": [
+        "Harmonie_1h",
+        "ECMWF_1h",
+        "ECMWF_3h",
+        "ECMWF_6h"
+      ]
+    },
+    "OpenWeather_1h": {
+      "Root": "hourly",
+      "RequestType": 0,
+      "URL": "https://urltoapi.com",
+      "Keys": {
+        "WindSpeed": "wind_speed",
+        "WindDir": "wind_deg",
+        "WindGust": "wind_gust",
+        "Temperature": "temp",
+        "Epoch": "dt",
+        "Pressure": "pressure",
+        "Precipitation": "rain/1h",
+        "POP": "pop"
+      },
+      "Units": {
+        "WindSpeed": 1.94384,
+        "WindGust": 1.94384,
+        "POP": 100.0
+      }
+    },
+    "OpenWeather_1d": {
+      "Root": "daily",
+      "RequestType": 0,
+      "URL": "https://urltoapi.com",
+      "Keys": {
+        "WindSpeed": "wind_speed",
+        "WindDir": "wind_deg",
+        "WindGust": "wind_gust",
+        "Temperature_Max": "temp/max",
+        "Temperature_Min": "temp/min",
+        "Epoch": "dt",
+        "Pressure": "pressure",
+        "Precipitation": "rain",
+        "POP": "pop"
+      },
+      "Units": {
+        "WindSpeed": 1.94384,
+        "WindGust": 1.94384,
+        "POP": 100.0
+      }
+    },
+    "Visual_1h": {
+      "Root": "locations/52.930164,-8.282975/values",
+      "RequestType": 2,
+      "URL": "https://urltoapi.com",
+      "Header": "visual-crossing-weather.p.rapidapi.com",
+      "Keys": {
+        "WindSpeed": "wspd",
+        "WindDir": "wdir",
+        "WindGust": "wgust",
+        "Temperature": "temp",
+        "Epoch": "datetime",
+        "Pressure": "sealevelpressure",
+        "Precipitation": "precip",
+        "POP": "pop"
+      },
+      "Units": {
+        "WindSpeed": 0.539957,
+        "WindGust": 0.539957
+      }
+    },
+    "Visual_1d": {
+      "Root": "locations/52.930164,-8.282975/values",
+      "RequestType": 2,
+      "URL": "https://urltoapi.com",
+      "Header": "visual-crossing-weather.p.rapidapi.com",
+      "Keys": {
+        "WindSpeed": "wspd",
+        "WindDir": "wdir",
+        "WindGust": "wgust",
+        "Temperature": "temp",
+        "Epoch": "datetime",
+        "Pressure": "sealevelpressure",
+        "Precipitation": "precip",
+        "POP": "pop"
+      },
+      "Units": {
+        "WindSpeed": 0.539957,
+        "WindGust": 0.539957
+      }
+    },
+    "WeatherBit_1d": {
+      "Root": "data",
+      "RequestType": 0,
+      "URL": "https://urltoapi.com",
+      "Keys": {
+        "WindSpeed": "wind_spd",
+        "WindDir": "wind_dir",
+        "WindGust": "wind_gust_spd",
+        "Temperature_Max": "max_temp",
+        "Temperature_Min": "min_temp",
+        "Epoch": "ts",
+        "Pressure": "pres",
+        "Precipitation": "precip",
+        "POP": "pop"
+      },
+      "Units": {
+        "WindSpeed": 1.94384,
+        "WindGust": 1.94384
+      }
+    }
+  }
+}

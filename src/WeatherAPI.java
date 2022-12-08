@@ -45,14 +45,29 @@ public class WeatherAPI {
             // Run from inside IDE
             PATH = "";
         }
-        globalConfig = PApplet.loadJSONObject(new File(PATH + "config/config.json"));
+        logger = new PrintWriter(new BufferedWriter(new FileWriter(PATH + "log.txt", true)));
+
+        File configFile;
+        if (args != null) {
+            if (args.length == 1) {
+                configFile = new File(args[0]);
+            } else {
+                logger.printf("Invalid number of arguments to file: %d%n", args.length);
+                configFile = new File(PATH + "config/config.json");
+            }
+        } else {
+            configFile = new File(PATH + "config/config.json");
+        }
+        globalConfig = PApplet.loadJSONObject(configFile);
+        System.out.println(configFile);
+
         lat = globalConfig.getFloat("lat");
         lon = globalConfig.getFloat("lon");
         sqlStatement = initSQL();
-        logger = new PrintWriter(new BufferedWriter(new FileWriter("log.txt", true)));
 
         logger.println();
         logger.println(OffsetDateTime.now());
+        logger.println(configFile);
         JSONObject models = globalConfig.getJSONObject("Models");
         int errorCount = 0;
         for (Object o : models.keys()) {
@@ -169,7 +184,6 @@ public class WeatherAPI {
         }
 
         // Returns response body for the url given in config.json
-        @SuppressWarnings({"unused", "SameParameterValue"})
         String request() throws IOException, InterruptedException {
             System.out.print(name + ": Requesting...");
             HttpRequest request;
@@ -235,6 +249,7 @@ public class WeatherAPI {
             // Source of data
             Object jsonSource;
             try {
+                // Using PApplet's parser
                 jsonSource = parseJSON(data);
             } catch (Exception e) {
                 throw new RuntimeException(String.format("%s: Error parsing json. %n%s%n",
@@ -246,20 +261,22 @@ public class WeatherAPI {
                     modelConfig.getString("Root"));
             // List of keys you want to include
             JSONObject myKeys = modelConfig.getJSONObject("Keys");
+            // List of conversion factors to multiply by
             JSONObject myUnits = modelConfig.getJSONObject("Units");
             for (int i = 0; i < times.size(); i++) {
                 JSONObject thisTime = times.getJSONObject(i);
                 TreeMap<String, Object> timeOutput = new TreeMap<>();
-                // e.g. Accu+3h. Offset = 3
+                // Amount of hours/days in the future the request lies
                 timeOutput.put("Offset", i);
                 OffsetDateTime odt = OffsetDateTime.now();
+                // Time of request in Unix time
                 timeOutput.put("RequestTime", odt.toEpochSecond());
                 // Find their key's name, get value at this key
                 for (Object o : myKeys.keys()) {
                     // myMetric is the standardised name for outputting
                     // theirMetric is what they call the metric, and may be path through multiple json Objects
-                    // e.g. Accu.json windSpeed: Wind/Speed/Value
-                    String myMetric = (String) o; // windSpeed
+                    // e.g. Accu.json WindSpeed: Wind/Speed/Value
+                    String myMetric = (String) o; // WindSpeed
                     String theirMetric = myKeys.getString(myMetric); //windSpeedKPH
                     Object value = JSONPath.getValue(thisTime, theirMetric); // 22.6
                     // Occurs if:
@@ -276,13 +293,12 @@ public class WeatherAPI {
                     Object cFactor = myUnits.get(myMetric);
                     // If there is a calculation to be done
                     if (cFactor != null) {
-                        double dValue;
+                        double factorAsDouble = (double) cFactor;
                         if (value instanceof Integer || value instanceof Double) {
-                            dValue = ((Number) value).doubleValue() * (double) cFactor;
-                            value = dValue;
+                            value = ((Number) value).doubleValue() * factorAsDouble;
                         }
                     }
-                    // windSpeed: 12.5
+                    // WindSpeed: 12.5
                     timeOutput.put(myMetric, value);
                 }
                 // Add timeFrame to list of timeFrames
@@ -304,12 +320,12 @@ public class WeatherAPI {
 
             // MetEir.xml contains 4 model timeframes
             // Each model spans a specific timeframe
-            // Output each to a separate file
+            // Save each to a unique ArrayList
 
             // Go through header at top of xml file, find time range for each model
             // Save the starting time for each model to "cutoffs"
             // When iterating through times, if the current time starts at a cutoff time,
-            // add the following times to the next file (outputs[modelIndex])
+            //   add the following times to the next ArrayList (outputs[modelIndex])
             XML[] timeFrameCutOffs = xml.getChild("meta").getChildren("model");
             // Set cutoff times
             String[] cutoffs = new String[timeFrameCutOffs.length];
@@ -339,8 +355,9 @@ public class WeatherAPI {
             for (int i = 0; i < times.length - 1; i += 2) {
                 XML thisTimeA = times[i];
                 TreeMap<String, Object> timeOutput = new TreeMap<>();
-                // e.g. Accu+3h. Offset = 3
+                // Amount of hours/days in the future the request lies
                 timeOutput.put("Offset", i);
+                // Time of request in Unix time
                 OffsetDateTime odt = OffsetDateTime.now();
                 timeOutput.put("RequestTime", odt.toEpochSecond());
                 String s = thisTimeA.getString("from");
@@ -354,10 +371,13 @@ public class WeatherAPI {
                 OffsetDateTime z = OffsetDateTime.parse(s);
                 timeOutput.put("Epoch", z.toEpochSecond());
 
+                // Block B
                 XML thisTimeB = times[i + 1];
                 XML precipitation = thisTimeB.getChild("location/precipitation");
                 timeOutput.put("Precipitation", precipitation.getFloat("value"));
                 timeOutput.put("POP", precipitation.getFloat("probability"));
+
+                // Block A
                 for (Object o : myKeys.keys()) {
                     // myMetric is the standardised name for outputting
                     // theirMetric is the path to the value
@@ -410,12 +430,14 @@ public class WeatherAPI {
             }
         }
 
-        // Uploads data from the model's filename to SQL database
+        // Uploads data to SQL table sharing a name with the given tableName
+        // The comments at the end of lines show what the query looks like after that line is
         public void upload(ArrayList<TreeMap<String, Object>> inputArray, String tableName) throws SQLException {
             System.out.print("Uploading...");
             // Gets list of columns, i.e. what needs to be queried
-            String keyQuery = String.format("select column_name from information_schema.columns where table_schema='%s'" +
-                    " and table_name='%s'", globalConfig.getString("SQLDatabase"), tableName);
+            String keyQuery = String.format(
+                    "select column_name from information_schema.columns where table_schema='%s' and table_name='%s'",
+                    globalConfig.getString("SQLDatabase"), tableName);
             ResultSet keyResponse = sqlStatement.executeQuery(keyQuery);
             // If the response returns empty
             if (!keyResponse.next()) {
@@ -425,12 +447,12 @@ public class WeatherAPI {
             ArrayList<String> keysList = new ArrayList<>();
             // By querying keyResponse.next() above, the head has been moved to the next index
             // So, to read the 1st element, use a do while loop. next() is only called after the first read
+            // https://javarevisited.blogspot.com/2016/10/how-to-check-if-resultset-is-empty-in-Java-JDBC.html#axzz7mueiayIp
             do {
                 // SQL indexes from 1
                 keysList.add(keyResponse.getString(1));
             } while (keyResponse.next());
             Collections.sort(keysList);
-            // JDBC object to execute sql queries
             // Array of eventual inputs into the table
             // e.g. (1667523600, 10.9, 241),
             StringBuilder[] inputsBuilders = new StringBuilder[inputArray.size()];
@@ -441,6 +463,7 @@ public class WeatherAPI {
             StringBuilder keysBuilder = new StringBuilder();
             // Iterate through sorted keys
             for (String key : keysList) {
+                // "ID" is the databases iterator column, and is filled automatically by SQL
                 if (key.equalsIgnoreCase("ID")) continue;
                 keysBuilder.append(key);
                 keysBuilder.append(","); // Epoch,
@@ -456,10 +479,12 @@ public class WeatherAPI {
                 builder.append("(");
                 for (String key : thisTime.keySet()) { // WindSpeed
                     Object val = thisTime.get(key); // 10.4
+                    // If null, just upload as null
                     String valStr = val == null ? null : val.toString();
                     builder.append(valStr); // 10.4
                     builder.append(","); // 10.4,
                 } // (1667523600, 10.9, 241,
+                //Removes final comma
                 builder.deleteCharAt(builder.length() - 1); // (1667523600, 10.9, 241
                 if (i < inputArray.size() - 1) {
                     // There are more timeframes to parse
@@ -496,8 +521,8 @@ public class WeatherAPI {
         }
 
         @SuppressWarnings("unused")
-        public void setUrl(float lat, float lon) {
-            setUrl(String.format(modelConfig.getString("URL"), lat, lon));
+        public void setUrl(String url, float lat, float lon) {
+            setUrl(String.format(url, lat, lon));
         }
 
         public void setUrlFromConfig() {
@@ -518,6 +543,8 @@ public class WeatherAPI {
             return name + " " + url;
         }
 
+        // GET request
+        // https://techndeck.com/get-request-using-java-11-httpclient-api/
         HttpRequest get(String postEndpoint) {
             return HttpRequest.newBuilder()
                     .uri(URI.create(postEndpoint))
@@ -526,6 +553,8 @@ public class WeatherAPI {
                     .build();
         }
 
+        // POST request
+        // https://techndeck.com/post-request-with-json-using-java-11-httpclient-api/
         HttpRequest post(String postEndpoint, String data) {
             return HttpRequest.newBuilder()
                     .uri(URI.create(postEndpoint))
@@ -534,6 +563,8 @@ public class WeatherAPI {
                     .build();
         }
 
+        // GET request that appends additional headers, for use with rapidapi.com
+        // Code from rapidapi.com's request builder (very cool btw)
         HttpRequest getRapid(String postEndpoint, String data) {
             return HttpRequest.newBuilder()
                     .uri(URI.create(postEndpoint))
