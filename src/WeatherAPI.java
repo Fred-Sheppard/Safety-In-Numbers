@@ -48,7 +48,7 @@ public class WeatherAPI {
         logger = new PrintWriter(new BufferedWriter(new FileWriter(PATH + "log.txt", true)));
 
         File configFile;
-        if (args != null) {
+        if (args.length > 0) {
             if (args.length == 1) {
                 configFile = new File(args[0]);
             } else {

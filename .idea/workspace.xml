@@ -9,14 +9,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f51585c-0ade-42a9-8b3d-c80d1f7ba927" name="Changes" comment="Add local and pi databases to SQL plugin">
-      <change afterPath="$PROJECT_DIR$/config/config_Example.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+    <list default="true" id="2f51585c-0ade-42a9-8b3d-c80d1f7ba927" name="Changes" comment="Add ability in args to specify config file to be used&#10;&#10;- Update config/README.md&#10;- Clean up code comments&#10;- Update Resources.txt&#10;- Change ++index to index+1 in JSONPath.java (This really shouldn't break anything at all, but I'll keep an eye on it)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JarFile/WeatherAPI.jar" beforeDir="false" afterPath="$PROJECT_DIR$/JarFile/WeatherAPI.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OtherFiles/Resources.txt" beforeDir="false" afterPath="$PROJECT_DIR$/OtherFiles/Resources.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/config/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/JSONPath.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/JSONPath.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WeatherAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WeatherAPI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -72,44 +66,44 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "database.data.extractors.current.export.id": "Comma-separated (CSV)_id",
-    "ignore.preview.features.used": "true",
-    "jdk.selected.JAVA_MODULE": "17",
-    "last_opened_file_path": "C:/Personal/Code/WeatherAPI/config",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Artifacts",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "database.query.execution"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
+    &quot;ignore.preview.features.used&quot;: &quot;true&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Personal/Code/WeatherAPI/config&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;database.query.execution&quot;
   },
-  "keyToStringList": {
-    "ChangesTree.GroupingKeys": [
-      "module",
-      "directory"
+  &quot;keyToStringList&quot;: {
+    &quot;ChangesTree.GroupingKeys&quot;: [
+      &quot;module&quot;,
+      &quot;directory&quot;
     ],
-    "DatabaseDriversLRU": [
-      "mysql",
-      "mariadb"
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;,
+      &quot;mariadb&quot;
     ],
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "JAVA",
-      "PDE"
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;JAVA&quot;,
+      &quot;PDE&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Personal\Code\WeatherAPI\config" />
@@ -172,7 +166,7 @@
       <workItem from="1670162940944" duration="736000" />
       <workItem from="1670275739362" duration="1370000" />
       <workItem from="1670281744608" duration="51000" />
-      <workItem from="1670522589759" duration="5774000" />
+      <workItem from="1670522589759" duration="8859000" />
     </task>
     <task id="LOCAL-00001" summary="Update .gitignore">
       <created>1664919998475</created>
@@ -440,7 +434,14 @@
       <option name="project" value="LOCAL" />
       <updated>1670084651661</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Add ability in args to specify config file to be used&#10;&#10;- Update config/README.md&#10;- Clean up code comments&#10;- Update Resources.txt&#10;- Change ++index to index+1 in JSONPath.java (This really shouldn't break anything at all, but I'll keep an eye on it)">
+      <created>1670539124210</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1670539124210</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -487,7 +488,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Begin logic to request all models&#10;&#10;- Add &quot;Queries&quot; to config.json. This is a list of all urls that should be queried.&#10;- Move REQUESTTYPE to &#10;- TODO Make separate configs for different time frames i.e. 1h, 1d" />
     <MESSAGE value="Begin logic to request all models&#10;&#10;- Add &quot;Queries&quot; to config.json. This is a list of all urls that should be queried&#10;- Move REQUESTTYPE (was APITYPE) to config.json &#10;- TODO Make separate configs for different time frames i.e. 1h, 1d" />
     <MESSAGE value="Begin logic to request all models&#10;&#10;- Refactor Model constructor to make use of this logic&#10;- Add &quot;Queries&quot; to config.json. This is a list of all urls that should be queried&#10;- Move REQUESTTYPE (was APITYPE) to config.json &#10;- TODO Make separate configs for different time frames i.e. 1h, 1d" />
     <MESSAGE value="Main() now requests all models in config.json then refactors the results&#10;&#10;&#10;- Removed &quot;Queries&quot; from config.json, moved url to &quot;Models&quot;&#10;- Add unique entry in &quot;Models&quot; for each timestep e.g. Accu_1h, Accu_1d&#10;- Add urls to API docs in Models.txt&#10;- Add logic to prevent errors through incorrect requestType values" />
@@ -512,7 +512,8 @@
     <MESSAGE value="Improve logging, now fully describes errors&#10;&#10;- On the pi side, System.out is no longer piped to log.txt, so there is less clutter&#10;- Removed doLog boolean in methods" />
     <MESSAGE value="Change Files.write to PrintWriter for logging&#10;&#10;- BufferedWriters are better for multiple writes, Files.write is slow to initialise" />
     <MESSAGE value="Add local and pi databases to SQL plugin" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add local and pi databases to SQL plugin" />
+    <MESSAGE value="Add ability in args to specify config file to be used&#10;&#10;- Update config/README.md&#10;- Clean up code comments&#10;- Update Resources.txt&#10;- Change ++index to index+1 in JSONPath.java (This really shouldn't break anything at all, but I'll keep an eye on it)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add ability in args to specify config file to be used&#10;&#10;- Update config/README.md&#10;- Clean up code comments&#10;- Update Resources.txt&#10;- Change ++index to index+1 in JSONPath.java (This really shouldn't break anything at all, but I'll keep an eye on it)" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
