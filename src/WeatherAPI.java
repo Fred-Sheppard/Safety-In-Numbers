@@ -16,20 +16,35 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.TreeMap;
 
+
+/*
+    Class to read a set of weather models in config.json,
+    Query their API using java.net's HTTP library,
+    Parse the data
+    And upload to a MariaDB MySQL database
+*/
 public class WeatherAPI {
 
     static float lat, lon;
+    // JSON file containing list of weather models,
+    // latitude and longitude and SQL credentials
     public static JSONObject globalConfig;
 
+    // Types of HTTP request possible
+    // RapidAPI uses a GET request with additional headers, and gets its own function
     enum RequestType {
         GET,
         POST,
         RAPIDAPI
     }
 
+    // SQL objects for querying the database
     static Connection sqlConnection;
     static Statement sqlStatement;
+    // Path to parent directory of where the code is being run from
+    // Either the main class's or the jar file's directory
     static String PATH;
+    // Object to write to logs.txt, which logs time of app running and any errors encountered
     static PrintWriter logger;
 
 
@@ -45,21 +60,22 @@ public class WeatherAPI {
             // Run from inside IDE
             PATH = "";
         }
+        // true appends to existing file
         logger = new PrintWriter(new BufferedWriter(new FileWriter(PATH + "log.txt", true)));
 
-        File configFile;
+        File configFilePath;
         if (args.length > 0) {
             if (args.length == 1) {
-                configFile = new File(args[0]);
+                configFilePath = new File(args[0]);
             } else {
                 logger.printf("Invalid number of arguments to file: %d%n", args.length);
-                configFile = new File(PATH + "config/config.json");
+                configFilePath = new File(PATH + "config/config.json");
             }
         } else {
-            configFile = new File(PATH + "config/config.json");
+            configFilePath = new File(PATH + "config/config.json");
         }
-        globalConfig = PApplet.loadJSONObject(configFile);
-        System.out.println(configFile);
+        globalConfig = PApplet.loadJSONObject(configFilePath);
+        System.out.println(configFilePath);
 
         lat = globalConfig.getFloat("lat");
         lon = globalConfig.getFloat("lon");
@@ -67,14 +83,17 @@ public class WeatherAPI {
 
         logger.println();
         logger.println(OffsetDateTime.now());
-        logger.println(configFile);
+        logger.println(configFilePath);
         JSONObject models = globalConfig.getJSONObject("Models");
         int errorCount = 0;
+        // For every model in config.json
         for (Object o : models.keys()) {
             String modelName = (String) o;
             Model model = new Model(modelName);
             try {
+                // HTTP request
                 String response = model.request();
+                // Parse and upload the data to SQL
                 model.readAndUpload(response);
             } catch (Exception e) {
                 logger.println(e);
