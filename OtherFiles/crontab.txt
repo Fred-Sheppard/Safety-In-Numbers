@@ -1,0 +1,5 @@
+# Every 3 hours, at the 5th minute, request all models
+05 06,09,12,15,18,21 * * * java -jar ~/WeatherAPI/WeatherAPI.jar ~/WeatherAPI/config/config.json
+
+# Every other hour, don't request Visual
+05 0-5,7,8,10,11,13,14,16,17,19,20,22,23 * * * java -jar ~/WeatherAPI/WeatherAPI.jar ~/WeatherAPI/config/configNoVisual.json
