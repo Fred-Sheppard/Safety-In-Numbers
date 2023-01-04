@@ -17,34 +17,50 @@ import java.util.Collections;
 import java.util.TreeMap;
 
 
-/*
-    Class to read a set of weather models in config.json,
-    Query their API using java.net's HTTP library,
-    Parse the data
-    And upload to a MariaDB MySQL database
-*/
+/**
+ * Class to read a set of weather models in config.json,
+ * Query their API using java.net's HTTP library,
+ * Parse the data
+ * And upload to a MariaDB MySQL database.
+ */
 public class WeatherAPI {
 
+    /**
+     * The coordinates of the location for the forecasts
+     */
     static float lat, lon;
-    // JSON file containing list of weather models,
-    // latitude and longitude and SQL credentials
+    /**
+     * JSON file containing list of weather models,
+     * latitude and longitude and SQL credentials
+     */
     public static JSONObject globalConfig;
 
-    // Types of HTTP request possible
-    // RapidAPI uses a GET request with additional headers, and gets its own function
+    /**
+     * Types of HTTP request possible
+     * RapidAPI uses a GET request with additional headers, and gets its own function
+     */
     enum RequestType {
         GET,
         POST,
         RAPIDAPI
     }
 
-    // SQL objects for querying the database
+    /**
+     * SQL object for querying the database
+     */
     static Connection sqlConnection;
+    /**
+     * SQL object for querying the database
+     */
     static Statement sqlStatement;
-    // Path to parent directory of where the code is being run from
-    // Either the main class's or the jar file's directory
+    /**
+     * Path to parent directory of where the code is being run from
+     * Either the main class's or the jar file's directory
+     */
     static String PATH;
-    // Object to write to logs.txt, which logs time of app running and any errors encountered
+    /**
+     * Object to write to logs.txt, which logs time of app running and any errors encountered
+     */
     static PrintWriter logger;
 
 
@@ -60,6 +76,7 @@ public class WeatherAPI {
             // Run from inside IDE
             PATH = "";
         }
+        // Log to "log.txt" in the same directory as the running jar file
         // true appends to existing file
         logger = new PrintWriter(new BufferedWriter(new FileWriter(PATH + "log.txt", true)));
 
@@ -111,10 +128,13 @@ public class WeatherAPI {
         System.out.println(message);
     }
 
-    // Loads JSON file, regardless if it's an Object or Array
-    @SuppressWarnings("unused")
-    public static Object loadJSON(String filename) {
-        File file = new File(filename);
+    /**
+     * Loads JSON file, regardless if it's an Object or Array.
+     *
+     * @param path Path to the file to be parsed
+     */
+    public static Object loadJSON(String path) {
+        File file = new File(path);
         try {
             return PApplet.loadJSONObject(file);
         } catch (RuntimeException e) {
@@ -122,7 +142,11 @@ public class WeatherAPI {
         }
     }
 
-    // Parses a JSON String, regardless if it's an Object or Array
+    /**
+     * Parses a JSON String, regardless if it's an Object or Array.
+     *
+     * @param data JSON data in String format
+     */
     public static Object parseJSON(String data) {
         try {
             return JSONObject.parse(data);
@@ -131,17 +155,29 @@ public class WeatherAPI {
         }
     }
 
-    // Taken from processing.data.XML
-    @SuppressWarnings("unused")
-    public static XML loadXML(String filename, String options) {
+
+    /**
+     * Function to load and parse an XML file.
+     * Taken from processing.data.XML.
+     *
+     * @param path    Path to file to be parsed
+     * @param options Options for loading - use null as default
+     * @return XML object created from the parsed data
+     */
+    public static XML loadXML(String path, String options) {
         try {
-            BufferedReader reader = PApplet.createReader(new File(filename));
+            BufferedReader reader = PApplet.createReader(new File(path));
             return new XML(reader, options);
         } catch (ParserConfigurationException | SAXException | IOException var4) {
             throw new RuntimeException(var4);
         }
     }
 
+    /**
+     * Creates a new SQL statement from the database path found in config.json.
+     *
+     * @return new SQL Statement
+     */
     private static Statement initSQL() {
         String sqlPath = globalConfig.getString("SQLPath") + globalConfig.getString("SQLDatabase");
         String sqlUser = globalConfig.getString("SQLUser");
@@ -155,30 +191,47 @@ public class WeatherAPI {
     }
 
 
+    /**
+     * Class containing various methods for requesting, parsing and uploading forecast data
+     */
     static class Model {
 
-        // Contains data for the model found in config.json, under the model name
+        /**
+         * Contains data for the model found in config.json, under the model name
+         */
         private final JSONObject modelConfig;
-        // URL to be used for HTTP requests
+        /**
+         * URL to be used for HTTP requests
+         */
         private String url; // "https://aerisweather1.p.rapidapi.com/forecasts/%f,%f?plimit=72&filter=1hr"
-        // Header data to be used with RapidAPI requests
+        /**
+         * Header data to be used with RapidAPI requests
+         */
         private String header; // "aerisweather1.p.rapidapi.com"
-        // Name of input and output file
+        /**
+         * Name of input and output file
+         */
         public String name; // Aeris_1h.json
-        // Type of HTTP request that will be called. GET, POST or RAPIDAPI
+        /**
+         * Type of HTTP request that will be called. GET, POST or RAPIDAPI
+         */
         private final RequestType requestType; // GET
-        // JSON path to the array of time periods in the http request response.
+        /**
+         * JSON path to the array of time periods in the http request response.
+         */
         private String root; // "response/0/periods"
 
+        /**
+         * Creates a new Model, retrieving data from config.json
+         *
+         * @param name The name of the model's entry in config.json
+         */
         Model(String name) {
             this.name = name;
-            // Entry in config.json that contains values for url, root, keys etc
             modelConfig = (JSONObject) JSONPath.getValue(globalConfig, "Models/" + name);
             // Url to be used for HTTP requests
             setUrlFromConfig();
-            // Value to be passed as a header in RapidAPI requests
             header = modelConfig.getString("Header");
-            // JSON path to the array of time periods in the http request response.
             root = modelConfig.getString("Root");
             // Integer value of RequestType. Can be between 0 and the enum values' length -1
             int typeIndex = modelConfig.getInt("RequestType");
@@ -202,7 +255,11 @@ public class WeatherAPI {
             requestType = RequestType.GET;
         }
 
-        // Returns response body for the url given in config.json
+        /**
+         * Runs a HTTP request to the url found in config.json
+         *
+         * @return response body
+         */
         String request() throws IOException, InterruptedException {
             System.out.print(name + ": Requesting...");
             HttpRequest request;
@@ -224,6 +281,11 @@ public class WeatherAPI {
             return response.body();
         }
 
+        /**
+         * Reads the supplied data, and sends the data to be uploaded.
+         *
+         * @param data HTTP request response body
+         */
         public void readAndUpload(String data) {
             System.out.print("Parsing...");
             if (root.equals("XML")) {
@@ -263,6 +325,12 @@ public class WeatherAPI {
             }
         }
 
+        /**
+         * Standardises the parsed JSON data, ensuring all models use the same format
+         *
+         * @param data Parsed JSON data
+         * @return A list of key-value pairs whose keys match those in config.json
+         */
         public ArrayList<TreeMap<String, Object>> readJSON(String data) {
             ArrayList<TreeMap<String, Object>> output = new ArrayList<>();
             // Source of data
@@ -327,6 +395,12 @@ public class WeatherAPI {
             return output;
         }
 
+        /**
+         * Standardises the parsed XML data, ensuring all models use the same format
+         *
+         * @param data Parsed XML data
+         * @return A list of key-value pairs whose keys match those in config.json
+         */
         public ArrayList<TreeMap<String, Object>>[] readXML(String data) {
             XML xml = null;
             try {
@@ -337,14 +411,17 @@ public class WeatherAPI {
             JSONObject myKeys = modelConfig.getJSONObject("Keys");
             JSONObject myUnits = modelConfig.getJSONObject("Units");
 
-            // MetEir.xml contains 4 model timeframes
-            // Each model spans a specific timeframe
-            // Save each to a unique ArrayList
+            /*
+             MetEir.xml contains 4 model timeframes
+             Each model spans a specific timeframe
+             Save each to a unique ArrayList
 
-            // Go through header at top of xml file, find time range for each model
-            // Save the starting time for each model to "cutoffs"
-            // When iterating through times, if the current time starts at a cutoff time,
-            //   add the following times to the next ArrayList (outputs[modelIndex])
+             Go through header at top of xml file, find time range for each model
+             Save the starting time for each model to "cutoffs"
+             When iterating through times, if the current time starts at a cutoff time,
+               add the following times to the next ArrayList (outputs[modelIndex])
+            */
+
             XML[] timeFrameCutOffs = xml.getChild("meta").getChildren("model");
             // Set cutoff times
             String[] cutoffs = new String[timeFrameCutOffs.length];
@@ -406,11 +483,13 @@ public class WeatherAPI {
                     // It must be split and treated differently
                     String[] path = theirMetric.split("/");
                     String attribute = path[path.length - 1];
-                    // We need: Child, Attribute
-                    // Child = Path - Attribute
-                    // e.g. location/windSpeed/mps ->
-                    // (Child) location/windSpeed/
-                    // (Attribute) mps
+                    /*
+                     We need: Child, Attribute
+                     Child = Path - Attribute
+                     e.g. location/windSpeed/mps ->
+                     (Child) location/windSpeed/
+                     (Attribute) mps
+                    */
                     String childPath = theirMetric.replace("/" + attribute, "");
                     XML key = thisTimeA.getChild(childPath);
                     // For further out timeframes, certain metrics aren't included, such as WindGust
@@ -440,6 +519,11 @@ public class WeatherAPI {
             return outputs;
         }
 
+        /**
+         * Uploads data to SQL, sending any errors to be logged
+         *
+         * @param inputArray Standardised data to be uploaded
+         */
         public void upload(ArrayList<TreeMap<String, Object>> inputArray) {
             try {
                 upload(inputArray, name);
@@ -449,8 +533,13 @@ public class WeatherAPI {
             }
         }
 
-        // Uploads data to SQL table sharing a name with the given tableName
-        // The comments at the end of lines show what the query looks like after that line is
+
+        /**
+         * Uploads data into MariaDB database
+         *
+         * @param inputArray Standardised data to be uploaded
+         * @param tableName  The name of the table to upload to
+         */
         public void upload(ArrayList<TreeMap<String, Object>> inputArray, String tableName) throws SQLException {
             System.out.print("Uploading...");
             // Gets list of columns, i.e. what needs to be queried
@@ -539,7 +628,6 @@ public class WeatherAPI {
             url = s;
         }
 
-        @SuppressWarnings("unused")
         public void setUrl(String url, float lat, float lon) {
             setUrl(String.format(url, lat, lon));
         }
@@ -548,12 +636,10 @@ public class WeatherAPI {
             setUrl(String.format(modelConfig.getString("URL"), lat, lon));
         }
 
-        @SuppressWarnings("unused")
         public void setHeader(String s) {
             header = s;
         }
 
-        @SuppressWarnings("unused")
         public void setRoot(String s) {
             root = s;
         }
@@ -562,31 +648,48 @@ public class WeatherAPI {
             return name + " " + url;
         }
 
-        // GET request
-        // https://techndeck.com/get-request-using-java-11-httpclient-api/
-        HttpRequest get(String postEndpoint) {
+        /**
+         * Performs a HTTP GET request.
+         * <a href="https://techndeck.com/get-request-using-java-11-httpclient-api/">Techndeck.com</a>.
+         *
+         * @param url URL to be queried
+         * @return HTTP response
+         */
+        HttpRequest get(String url) {
             return HttpRequest.newBuilder()
-                    .uri(URI.create(postEndpoint))
+                    .uri(URI.create(url))
                     .header("Content-Type", "application/json")
                     .GET()
                     .build();
         }
 
-        // POST request
-        // https://techndeck.com/post-request-with-json-using-java-11-httpclient-api/
-        HttpRequest post(String postEndpoint, String data) {
+        /**
+         * Performs a HTTP POST request.
+         * <a href="https://techndeck.com/post-request-with-json-using-java-11-httpclient-api/">Techndeck.com</a>.
+         *
+         * @param url  URL to be queried
+         * @param data JSON data to send in POST request
+         * @return HTTP response
+         */
+        HttpRequest post(String url, String data) {
             return HttpRequest.newBuilder()
-                    .uri(URI.create(postEndpoint))
+                    .uri(URI.create(url))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(data))
                     .build();
         }
 
-        // GET request that appends additional headers, for use with rapidapi.com
-        // Code from rapidapi.com's request builder (very cool btw)
-        HttpRequest getRapid(String postEndpoint, String data) {
+        /**
+         * GET request that appends additional headers, for use with rapidapi.com
+         * Code from rapidapi.com's request builder
+         *
+         * @param url  URL to be queried
+         * @param data Header data
+         * @return HTTP response
+         */
+        HttpRequest getRapid(String url, String data) {
             return HttpRequest.newBuilder()
-                    .uri(URI.create(postEndpoint))
+                    .uri(URI.create(url))
                     .header("X-RapidAPI-Key", "c4bcddcd70msh61696ab501cad75p134af7jsndf9884823caf")
                     .header("X-RapidAPI-Host", data)
                     .method("GET", HttpRequest.BodyPublishers.noBody())

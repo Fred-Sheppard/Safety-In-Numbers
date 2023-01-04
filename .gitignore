@@ -1,6 +1,3 @@
-output/
-logs/
-
 ### IntelliJ IDEA ###
 out/
 !**/src/main/**/out/
@@ -31,3 +28,7 @@ bin/
 ### Mac OS ###
 .DS_Store
 
+### Custom ###
+output/
+logs/
+.idea/workspace.xml
