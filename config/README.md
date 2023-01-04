@@ -29,8 +29,8 @@ RAPIDAPI appends an additional header tag to the GET request
 
 ### URL:
 
-Url to be used within the HTTP request.
-Urls use %f in place of latitude and longitude, for use with String.format().
+URL to be used within the HTTP request.
+URLs use %f in place of latitude and longitude, for use with String.format().
 
 ### Keys:
 
