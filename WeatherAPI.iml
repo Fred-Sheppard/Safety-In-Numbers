@@ -19,5 +19,15 @@
     </orderEntry>
     <orderEntry type="library" name="core" level="project" />
     <orderEntry type="library" name="mariadb-java-client-3.1.0" level="project" />
+    <orderEntry type="library" name="influxdb-java-2.23" level="project" />
+    <orderEntry type="library" name="retrofit-2.9.0" level="project" />
+    <orderEntry type="library" name="okio-1.13.0" level="project" />
+    <orderEntry type="library" name="moshi-1.14.0" level="project" />
+    <orderEntry type="library" name="logging-interceptor-4.10.0" level="project" />
+    <orderEntry type="library" name="converter-moshi-2.9.0" level="project" />
+    <orderEntry type="library" name="okhttp-4.10.0" level="project" />
+    <orderEntry type="library" name="annotations-13.0" level="project" />
+    <orderEntry type="library" name="kotlin-stdlib-common-1.8.0" level="project" />
+    <orderEntry type="library" name="adapter-rxjava3-2.9.0" level="project" />
   </component>
 </module>
