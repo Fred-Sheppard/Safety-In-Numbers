@@ -26,25 +26,14 @@ import java.util.TreeMap;
 public class WeatherAPI {
 
     /**
-     * The coordinates of the location for the forecasts
-     */
-    static float lat, lon;
-    /**
      * JSON file containing list of weather models,
      * latitude and longitude and SQL credentials
      */
     public static JSONObject globalConfig;
-
     /**
-     * Types of HTTP request possible
-     * RapidAPI uses a GET request with additional headers, and gets its own function
+     * The coordinates of the location for the forecasts
      */
-    enum RequestType {
-        GET,
-        POST,
-        RAPIDAPI
-    }
-
+    static float lat, lon;
     /**
      * SQL object for querying the database
      */
@@ -62,7 +51,6 @@ public class WeatherAPI {
      * Object to write to logs.txt, which logs time of app running and any errors encountered
      */
     static PrintWriter logger;
-
 
     public static void main(String[] args) throws SQLException, IOException {
         System.out.println("WeatherAPI.java");
@@ -155,7 +143,6 @@ public class WeatherAPI {
         }
     }
 
-
     /**
      * Function to load and parse an XML file.
      * Taken from processing.data.XML.
@@ -190,6 +177,15 @@ public class WeatherAPI {
         }
     }
 
+    /**
+     * Types of HTTP request possible
+     * RapidAPI uses a GET request with additional headers, and gets its own function
+     */
+    enum RequestType {
+        GET,
+        POST,
+        RAPIDAPI
+    }
 
     /**
      * Class containing various methods for requesting, parsing and uploading forecast data
@@ -201,6 +197,14 @@ public class WeatherAPI {
          */
         private final JSONObject modelConfig;
         /**
+         * Type of HTTP request that will be called. GET, POST or RAPIDAPI
+         */
+        private final RequestType requestType; // GET
+        /**
+         * Name of input and output file
+         */
+        public String name; // Aeris_1h.json
+        /**
          * URL to be used for HTTP requests
          */
         private String url; // "https://aerisweather1.p.rapidapi.com/forecasts/%f,%f?plimit=72&filter=1hr"
@@ -208,14 +212,6 @@ public class WeatherAPI {
          * Header data to be used with RapidAPI requests
          */
         private String header; // "aerisweather1.p.rapidapi.com"
-        /**
-         * Name of input and output file
-         */
-        public String name; // Aeris_1h.json
-        /**
-         * Type of HTTP request that will be called. GET, POST or RAPIDAPI
-         */
-        private final RequestType requestType; // GET
         /**
          * JSON path to the array of time periods in the http request response.
          */

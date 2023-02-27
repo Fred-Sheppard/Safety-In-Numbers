@@ -1,0 +1,28 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Data to plot
+data = [7.74, 7.24, 7.03, 8.77, 6.93, 7.97]
+
+# Set up the plot
+fig, ax = plt.subplots(figsize=(8, 6), facecolor='black')
+plt.style.use('dark_background')
+
+# Set up the bar chart
+colors = plt.cm.get_cmap('Blues')(np.linspace(.25, .75, len(data)))
+bars = ax.bar(['accu', 'aeris', 'ecmwf', 'harmonie', 'openweather', 'visual'], data, color=colors)
+
+# Add labels and title
+ax.set_ylabel('Values', color='white')
+ax.set_xlabel('Data sources', color='white')
+ax.set_title('Bar chart of data', color='white')
+
+# Set the tick colors
+ax.tick_params(axis='x', colors='white')
+ax.tick_params(axis='y', colors='white')
+
+# Add grid lines
+ax.grid(True, alpha=0.3)
+
+# Display the plot
+plt.show()
