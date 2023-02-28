@@ -1,7 +1,10 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="WeatherAPI:jar">
-    <output-path>$PROJECT_DIR$/JarFile</output-path>
+    <output-path>$PROJECT_DIR$/out/artifacts/WeatherAPI_jar</output-path>
     <root id="archive" name="WeatherAPI.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
       <element id="module-output" name="WeatherAPI" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/core.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/mariadb-java-client-3.1.0.jar" path-in-jar="/" />

@@ -39,7 +39,7 @@ public class MeanOfAllModels {
             while (resultSet.next()) { // For every Value in Table
                 long epoch = resultSet.getLong("Epoch");
                 double speed = resultSet.getDouble("WindSpeed");
-                // Visual uses milliseconds
+                // Convert millisecond time to seconds
                 epoch = (epoch > 1000000000000L) ? epoch / 1000 : epoch;
                 // Ignore newly calculated fields in Visual_1h - They came from the average itself!
                 if (isVisual && epoch > 1675620000L) {
