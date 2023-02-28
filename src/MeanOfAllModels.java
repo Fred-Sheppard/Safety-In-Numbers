@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -26,8 +27,9 @@ public class MeanOfAllModels {
         LinkedHashMap<Long, ArrayList<Double>> directionsAtEachTime = new LinkedHashMap<>();
         // Get the mean of all the tables at each point
         for (String table : tables) {
+            boolean isVisual = table.equals("visual_1h");
             // Visual uses nanosecond time
-            long timeConverter = (table.equals("visual_1h")) ? 1000 : 1;
+            long timeConverter = (isVisual) ? 1000 : 1;
             String query = String.format("""
                     SELECT * FROM %s
                     WHERE Epoch > %d
@@ -37,8 +39,14 @@ public class MeanOfAllModels {
             while (resultSet.next()) { // For every Value in Table
                 long epoch = resultSet.getLong("Epoch");
                 double speed = resultSet.getDouble("WindSpeed");
+                // Visual uses milliseconds
+                epoch = (epoch > 1000000000000L) ? epoch / 1000 : epoch;
+                // Ignore newly calculated fields in Visual_1h - They came from the average itself!
+                if (isVisual && epoch > 1675620000L) {
+                    break;
+                }
 
-                // If no the time or list is null, create a new list
+                // If the time or list is null, create a new list
                 ArrayList<Double> list = directionsAtEachTime.getOrDefault(epoch, new ArrayList<>());
                 // Append this wind speed
                 list.add(speed);
@@ -52,7 +60,7 @@ public class MeanOfAllModels {
                     .mapToDouble(Double::doubleValue)
                     .average()
                     .orElse(0);
-            output.printf("%d,%.2f\n", time * 1000, mean);
+            output.printf("%s,%.2f\n", Instant.ofEpochSecond(time), mean);
         });
         output.flush();
         output.close();
