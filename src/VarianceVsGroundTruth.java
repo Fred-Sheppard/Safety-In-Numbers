@@ -16,11 +16,11 @@ public class VarianceVsGroundTruth {
     public static void main(String[] args) throws SQLException, IOException {
         Statement weatherModelsSQL = DriverManager.getConnection(
                 "jdbc:mariadb://localhost:3307/WeatherModels", "root", "1234").createStatement();
-        Statement variance = DriverManager.getConnection(
-                "jdbc:mariadb://localhost:3307/variance", "root", "1234").createStatement();
-        String[] tables = {"Accu_1h", "Aeris_1h", "ECMWF_1h", "Harmonie_1h", "OpenWeather_1h", "Visual_1h" };
+        Statement offsetStatement = DriverManager.getConnection(
+                "jdbc:mariadb://localhost:3307/OffsetAverages", "root", "1234").createStatement();
+        String[] tables = {"Accu_1h", "Aeris_1h", "ECMWF_1h", "Harmonie_1h", "OpenWeather_1h", "Visual_1h"};
 
-        ArrayList<String> list = new ArrayList<>(Files.readAllLines(Paths.get("data/means.csv")));
+        ArrayList<String> list = new ArrayList<>(Files.readAllLines(Paths.get("data/MeanOfAllModels.csv")));
         HashMap<Instant, Double> map = new HashMap<>();
         // Skip headers
         for (int i = 1; i < list.size(); i++) {
@@ -30,25 +30,32 @@ public class VarianceVsGroundTruth {
         }
 
         for (String table : tables) {
+
             // Reset the table
-            variance.executeUpdate("drop table " + table);
-            variance.executeUpdate(String.format("""
+            offsetStatement.executeUpdate("drop table " + table);
+            offsetStatement.executeUpdate(String.format("""
                     create table %s
                     (
                         ID       bigint primary key auto_increment,
-                        Epoch    datetime,
-                        Variance float null
+                        `Offset` int,
+                        Variance float
                     );""", table));
+
+
             StringBuilder builder = new StringBuilder();
-            builder.append(String.format("insert into %s (Epoch, Variance)\nValues\n", table));
+            builder.append(String.format("insert into %s (`Offset`,Variance)\nVALUES\n", table));
             long multiplier = switch (table) {
                 case "Visual_1h" -> 1000L;
                 default -> 1L;
             };
-            int offset = 0;
-            if (table.equals("ECMWF_1h")) offset = 98;
+            int offset = switch (table) {
+                case "ECMWF_1h" -> 98;
+                default -> 0;
+            };
             // Loop through offsets
             while (true) {
+                double total = 0;
+                System.out.print("\r" + offset);
                 String query = String.format("""
                         SELECT * FROM %s
                         WHERE Epoch > %d
@@ -61,7 +68,11 @@ public class VarianceVsGroundTruth {
                 } catch (SQLException e) {
                     break;
                 }
-                while (resultSet.next()) {
+                // Check for offset too big
+                if (!resultSet.next()) break;
+                int count = 0;
+                do {
+                    count++;
                     long time = resultSet.getLong("Epoch");
                     double speed = resultSet.getDouble("WindSpeed");
                     Instant instant = switch (table) {
@@ -70,15 +81,21 @@ public class VarianceVsGroundTruth {
                     };
 
                     double diff = map.get(instant) - speed;
-                    String tuple = String.format("'%s', %.2f,\n", instant, diff);
-                    builder.append(tuple.replace("T", " ").replace("Z", ""));
+                    double abs = Math.abs(diff);
+                    total += abs;
                 }
+                while (resultSet.next());
+                double mean = total / count;
+                builder.append(String.format("(%d, %.2f),%n", offset, mean));
                 offset++;
             }
             builder.deleteCharAt(builder.length() - 1);
             builder.deleteCharAt(builder.length() - 1);
+            builder.deleteCharAt(builder.length() - 1);
             builder.append(";");
-            variance.executeUpdate(builder.toString());
+//            System.out.println(builder);
+            offsetStatement.executeUpdate(builder.toString());
+            break;
         }
     }
 }

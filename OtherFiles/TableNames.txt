@@ -11,3 +11,10 @@ Openweather_1h
 Visual_1d
 Visual_1h
 Weatherbit_1d
+
+Accu_1h
+Aeris_1h
+ECMWF_1h
+Harmonie_1h
+OpenWeather_1h
+Visual_1h
