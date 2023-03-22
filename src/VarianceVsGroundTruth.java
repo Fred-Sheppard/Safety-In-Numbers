@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 // Todo make all vs average
 // Todo migrate away from Processing.json
+// Todo currently using mean of all models. Switch to using boat data
 public class VarianceVsGroundTruth {
 
     public static void main(String[] args) throws SQLException, IOException {
