@@ -17,10 +17,10 @@ public class VarianceVsGroundTruth {
         Statement weatherModelsSQL = DriverManager.getConnection(
                 "jdbc:mariadb://localhost:3307/WeatherModels", "root", "1234").createStatement();
         Statement offsetStatement = DriverManager.getConnection(
-                "jdbc:mariadb://localhost:3307/offsets", "root", "1234").createStatement();
+                "jdbc:mariadb://localhost:3307/OffsetAverages", "root", "1234").createStatement();
         String[] tables = {"Accu_1h", "Aeris_1h", "ECMWF_1h", "Harmonie_1h", "OpenWeather_1h", "Visual_1h"};
 
-        ArrayList<String> list = new ArrayList<>(Files.readAllLines(Paths.get("data/means.csv")));
+        ArrayList<String> list = new ArrayList<>(Files.readAllLines(Paths.get("data/MeanOfAllModels.csv")));
         HashMap<Instant, Double> map = new HashMap<>();
         // Skip headers
         for (int i = 1; i < list.size(); i++) {
@@ -30,6 +30,7 @@ public class VarianceVsGroundTruth {
         }
 
         for (String table : tables) {
+
             // Reset the table
             offsetStatement.executeUpdate("drop table " + table);
             offsetStatement.executeUpdate(String.format("""
@@ -37,15 +38,12 @@ public class VarianceVsGroundTruth {
                     (
                         ID       bigint primary key auto_increment,
                         `Offset` int,
-                        Epoch    datetime,
-                        Variance float null,
-                        Absolute float null
+                        Variance float
                     );""", table));
 
-            double total = 0;
 
             StringBuilder builder = new StringBuilder();
-            builder.append(String.format("insert into %s (Epoch, `Offset`, Variance, Absolute)\nValues\n", table));
+            builder.append(String.format("insert into %s (`Offset`,Variance)\nVALUES\n", table));
             long multiplier = switch (table) {
                 case "Visual_1h" -> 1000L;
                 default -> 1L;
@@ -56,6 +54,7 @@ public class VarianceVsGroundTruth {
             };
             // Loop through offsets
             while (true) {
+                double total = 0;
                 System.out.print("\r" + offset);
                 String query = String.format("""
                         SELECT * FROM %s
@@ -71,7 +70,9 @@ public class VarianceVsGroundTruth {
                 }
                 // Check for offset too big
                 if (!resultSet.next()) break;
+                int count = 0;
                 do {
+                    count++;
                     long time = resultSet.getLong("Epoch");
                     double speed = resultSet.getDouble("WindSpeed");
                     Instant instant = switch (table) {
@@ -81,18 +82,20 @@ public class VarianceVsGroundTruth {
 
                     double diff = map.get(instant) - speed;
                     double abs = Math.abs(diff);
-                    String tuple = String.format("('%s', %d, %.2f, %.2f),%n", instant, offset, diff, abs);
-                    builder.append(tuple.replace("T", " ").replace("Z", ""));
+                    total += abs;
                 }
                 while (resultSet.next());
+                double mean = total / count;
+                builder.append(String.format("(%d, %.2f),%n", offset, mean));
                 offset++;
             }
-            builder.deleteCharAt(builder.length()-1);
-            builder.deleteCharAt(builder.length()-1);
-            builder.deleteCharAt(builder.length()-1);
+            builder.deleteCharAt(builder.length() - 1);
+            builder.deleteCharAt(builder.length() - 1);
+            builder.deleteCharAt(builder.length() - 1);
             builder.append(";");
-            offsetStatement.executeUpdate(builder.toString());
 //            System.out.println(builder);
+            offsetStatement.executeUpdate(builder.toString());
+            break;
         }
     }
 }
