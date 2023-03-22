@@ -53,7 +53,7 @@ public class MeanOfAllModels {
                 directionsAtEachTime.put(epoch, list);
             }
         }
-        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("means.csv")));
+        PrintWriter output = new PrintWriter(new BufferedWriter(new FileWriter("MeanOfAllModels.csv")));
         output.println("Time,Speed");
         directionsAtEachTime.forEach((time, list) -> {
             double mean = list.stream()
