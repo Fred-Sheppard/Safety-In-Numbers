@@ -64,7 +64,7 @@ public class VarianceVsGroundTruth {
 
                 if (!aliBabaResultSet.next()) continue;
                 double boatSpeed = aliBabaResultSet.getDouble(1);
-                double diff = boatSpeed - predictedSpeed;
+                double diff = predictedSpeed - boatSpeed;
                 double abs = Math.abs(diff);
                 String tuple = String.format("('%s', %.2f, %.2f),\n", instant, diff, abs);
                 builder.append(tuple.replace("T", " ").replace("Z", ""));
