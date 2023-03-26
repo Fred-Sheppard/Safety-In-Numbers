@@ -3,6 +3,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Class to compare the forecasted data for each model against the ground truth from the boat.
@@ -20,11 +22,12 @@ public class VarianceVsGroundTruth {
         Statement errorStatement = DriverManager.getConnection(
                 "jdbc:mariadb://localhost:3307/error", "root", "1234").createStatement();
         String[] tables = {"Accu_1h", "Aeris_1h", "ECMWF_1h", "Harmonie_1h", "OpenWeather_1h", "Visual_1h"};
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
 
         // Loop through tables
         for (String table : tables) {
 
-            // Reset table
+//             Reset table
             errorStatement.executeUpdate("DROP TABLE " + table);
             errorStatement.executeUpdate(String.format("""
                     create table %s
@@ -49,7 +52,7 @@ public class VarianceVsGroundTruth {
                     SELECT * FROM %s
                     WHERE Epoch > %d
                     AND Epoch < %d
-                    AND `Offset` = %d;""", table, 1673827200L * multiplier, 1676678400L * multiplier, offset);
+                    AND `Offset` = %d;""", table, 1673827200L * multiplier, 1678078800L * multiplier, offset);
             ResultSet forecastResults = weatherModelsSQL.executeQuery(query);
             while (forecastResults.next()) {
                 long time = forecastResults.getLong("Epoch");
@@ -59,8 +62,8 @@ public class VarianceVsGroundTruth {
                     default -> Instant.ofEpochSecond(time);
                 };
 
-                ResultSet aliBabaResultSet = aliBabaStatement.executeQuery(
-                        "SELECT WindSpeed FROM data WHERE Epoch = " + instant.toEpochMilli() / 1000);
+                ResultSet aliBabaResultSet = aliBabaStatement.executeQuery(String.format(
+                        "SELECT Speed FROM boatdata WHERE Time = '%s'", formatter.format(instant)));
 
                 if (!aliBabaResultSet.next()) continue;
                 double boatSpeed = aliBabaResultSet.getDouble(1);
