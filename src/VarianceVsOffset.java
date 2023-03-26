@@ -3,6 +3,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 public class VarianceVsOffset {
 
@@ -14,6 +16,7 @@ public class VarianceVsOffset {
         Statement offsetStatement = DriverManager.getConnection(
                 "jdbc:mariadb://localhost:3307/OffsetAverages", "root", "1234").createStatement();
         String[] tables = {"Accu_1h", "Aeris_1h", "ECMWF_1h", "Harmonie_1h", "OpenWeather_1h", "Visual_1h"};
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
 
         for (String table : tables) {
 
@@ -23,13 +26,13 @@ public class VarianceVsOffset {
                     create table %s
                     (
                         ID       bigint primary key auto_increment,
-                        `Offset` int,
+                        Offset_ int,
                         Variance float
                     );""", table));
 
 
             StringBuilder builder = new StringBuilder();
-            builder.append(String.format("insert into %s (`Offset`,Variance)\nVALUES\n", table));
+            builder.append(String.format("insert into %s (Offset_,Variance)%nVALUES%n", table));
             long multiplier = switch (table) {
                 case "Visual_1h" -> 1000L;
                 default -> 1L;
@@ -47,7 +50,7 @@ public class VarianceVsOffset {
                         SELECT Epoch, Windspeed FROM %s
                         WHERE Epoch > %d
                         AND Epoch < %d
-                        AND `Offset` = %d;""", table, 1673827200L * multiplier, 1676678400L * multiplier, offset);
+                        AND Offset_ = %d;""", table, 1673827200L * multiplier, 1679767201L * multiplier, offset);
                 ResultSet forecastResults;
                 // If offset goes out of bounds
                 try {
@@ -76,8 +79,8 @@ public class VarianceVsOffset {
                         default -> Instant.ofEpochSecond(time);
                     };
 
-                    ResultSet aliBabaResultSet = aliBabaStatement.executeQuery(
-                            "SELECT WindSpeed FROM data WHERE Epoch = " + instant.toEpochMilli() / 1000);
+                    ResultSet aliBabaResultSet = aliBabaStatement.executeQuery(String.format(
+                            "SELECT Speed FROM boatdata WHERE Time = '%s'", formatter.format(instant)));
 
                     if (!aliBabaResultSet.next()) continue;
                     double boatSpeed = aliBabaResultSet.getDouble(1);
@@ -93,9 +96,8 @@ public class VarianceVsOffset {
             builder.deleteCharAt(builder.length() - 1);
             builder.deleteCharAt(builder.length() - 1);
             builder.append(";");
-            System.out.println(builder);
+//            System.out.println(builder);
             offsetStatement.executeUpdate(builder.toString());
-//            break;
         }
     }
 }

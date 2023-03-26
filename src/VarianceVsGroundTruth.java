@@ -52,7 +52,7 @@ public class VarianceVsGroundTruth {
                     SELECT * FROM %s
                     WHERE Epoch > %d
                     AND Epoch < %d
-                    AND `Offset` = %d;""", table, 1673827200L * multiplier, 1678078800L * multiplier, offset);
+                    AND Offset_ = %d;""", table, 1673827200L * multiplier, 1679767200L * multiplier, offset);
             ResultSet forecastResults = weatherModelsSQL.executeQuery(query);
             while (forecastResults.next()) {
                 long time = forecastResults.getLong("Epoch");
