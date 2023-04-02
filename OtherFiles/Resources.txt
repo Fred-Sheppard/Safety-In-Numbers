@@ -6,3 +6,4 @@ GET request: https://techndeck.com/get-request-using-java-11-httpclient-api/
 POST request: https://techndeck.com/post-request-with-json-using-java-11-httpclient-api/
 Exit hook: https://stackoverflow.com/questions/5747803/running-code-on-program-exit-in-java
 Nested Expression Handling: https://chat.openai.com/chat
+Averaging angles: https://stackoverflow.com/questions/5343629/averaging-angles
