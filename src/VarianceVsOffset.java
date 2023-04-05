@@ -51,7 +51,9 @@ public class VarianceVsOffset {
             // Loop through offsets
             while (true) {
                 double total = 0;
-                System.out.print("\r" + offset);
+                double x = 0;
+                double y = 0;
+                System.out.print("\r" + table + ": " + offset);
                 String query = String.format("""
                         SELECT Epoch, WindDir FROM %s
                         WHERE Epoch > %d
@@ -93,9 +95,10 @@ public class VarianceVsOffset {
 //                    double diff = predictedSpeed - boatSpeed;
 //                    double abs = Math.abs(diff);
                     double abs = windDiff(boatDirection, predictedDirection);
-                    total += abs;
+                    x += Math.cos(Math.toRadians(abs));
+                    y += Math.sin(Math.toRadians(abs));
                 } while (forecastResults.next());
-                double mean = total / count;
+                double mean = Math.toDegrees(Math.atan2(y, x));
                 builder.append(String.format("(%d, %.2f),%n", offset, mean));
                 offset++;
             }
