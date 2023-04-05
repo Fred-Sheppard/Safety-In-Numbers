@@ -1,7 +1,4 @@
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -14,8 +11,9 @@ public class VarianceVsOffset {
         Statement aliBabaStatement = DriverManager.getConnection(
                 "jdbc:mariadb://localhost:3307/alibaba", "root", "1234").createStatement();
         Statement offsetStatement = DriverManager.getConnection(
-                "jdbc:mariadb://localhost:3307/DirectionVsOffset", "root", "1234").createStatement();
-        String[] tables = {"Accu_1h", "Aeris_1h", "ECMWF_1h", "Harmonie_1h", "OpenWeather_1h", "Visual_1h"};
+                "jdbc:mariadb://localhost:3307/speedvspressure", "root", "1234").createStatement();
+        String[] tables = {"Aeris_1h", "ECMWF_1h", "Harmonie_1h", "OpenWeather_1h", "Visual_1h"};
+        // NO ACCUWEATHER
 //        String[] tables = {"ECMWF_6h"};
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
 
@@ -30,39 +28,45 @@ public class VarianceVsOffset {
                     create table %s
                     (
                         ID       bigint primary key auto_increment,
-                        Offset_ int,
+                        Pressure int,
                         Variance float
                     );""", table));
 
 
             StringBuilder builder = new StringBuilder();
-            builder.append(String.format("insert into %s (Offset_,Variance)%nVALUES%n", table));
+            builder.append(String.format("insert into %s (Pressure,Variance)%nVALUES%n", table));
             long multiplier = switch (table) {
                 case "Visual_1h" -> 1000L;
                 default -> 1L;
             };
             int offset = switch (table) {
-                case "ECMWF_1h" -> 90;
+                case "ECMWF_1h" -> 98;
                 case "ECMWF_3h" -> 130;
                 case "ECMWF_6h" -> 152;
                 default -> 0;
             };
+            int pressure = 970;
             boolean lastResultSetWasEmpty = false;
             // Loop through offsets
             while (true) {
                 double total = 0;
                 double x = 0;
                 double y = 0;
-                System.out.print("\r" + table + ": " + offset);
+                System.out.print("\r" + table + ": " + pressure);
                 String query = String.format("""
-                        SELECT Epoch, WindDir FROM %s
-                        WHERE Epoch > %d
-                        AND Epoch < %d
-                        AND Offset_ = %d;""", table, 1673827200L * multiplier, 1679767201L * multiplier, offset);
+                                SELECT Epoch, WindSpeed FROM %s
+                                WHERE Epoch > %d
+                                AND Epoch < %d
+                                AND Pressure between %d and %d
+                                AND Offset_ = %d;""", table, 1673827200L * multiplier, 1679767201L * multiplier,
+                        pressure, pressure + 5, offset);
                 ResultSet forecastResults;
                 // If offset goes out of bounds
                 try {
                     forecastResults = weatherModelsSQL.executeQuery(query);
+                } catch (SQLSyntaxErrorException se) {
+                    System.out.println(query);
+                    throw se;
                 } catch (SQLException e) {
                     break;
                 }
@@ -70,7 +74,7 @@ public class VarianceVsOffset {
                 if (!forecastResults.next()) {
                     if (!lastResultSetWasEmpty) {
                         lastResultSetWasEmpty = true;
-                        offset++;
+                        pressure += 10;
                         continue;
                     } else {
                         break;
@@ -81,26 +85,30 @@ public class VarianceVsOffset {
                 do {
                     count++;
                     long time = forecastResults.getLong("Epoch");
-                    double predictedDirection = forecastResults.getDouble("WindDir");
+                    double predictedSpeed = forecastResults.getDouble("WindSpeed");
                     Instant instant = switch (table) {
                         case "Visual_1h" -> Instant.ofEpochMilli(time);
                         default -> Instant.ofEpochSecond(time);
                     };
 
                     ResultSet aliBabaResultSet = aliBabaStatement.executeQuery(String.format(
-                            "SELECT Direction FROM boatdata WHERE Time = '%s'", formatter.format(instant)));
+                            "SELECT Speed FROM boatdata WHERE Time = '%s'", formatter.format(instant)));
 
                     if (!aliBabaResultSet.next()) continue;
-                    double boatDirection = aliBabaResultSet.getDouble(1);
-//                    double diff = predictedSpeed - boatSpeed;
-//                    double abs = Math.abs(diff);
-                    double abs = windDiff(boatDirection, predictedDirection);
-                    x += Math.cos(Math.toRadians(abs));
-                    y += Math.sin(Math.toRadians(abs));
+                    double boatSpeed = aliBabaResultSet.getDouble(1);
+                    double diff = predictedSpeed - boatSpeed;
+                    double abs = Math.abs(diff);
+                    total += abs;
+                    count++;
+
+//                    double abs = windDiff(boatDirection, predictedDirection);
+//                    x += Math.cos(Math.toRadians(abs));
+//                    y += Math.sin(Math.toRadians(abs));
                 } while (forecastResults.next());
-                double mean = Math.toDegrees(Math.atan2(y, x));
-                builder.append(String.format("(%d, %.2f),%n", offset, mean));
-                offset++;
+//                double mean = Math.toDegrees(Math.atan2(y, x));
+                double mean = total / count;
+                builder.append(String.format("(%d, %.2f),%n", pressure, mean));
+                pressure += 5;
             }
             builder.deleteCharAt(builder.length() - 1);
             builder.deleteCharAt(builder.length() - 1);
