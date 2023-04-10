@@ -49,7 +49,7 @@ Units to be used are as follows:
 | WindSpeed     |  kts  |
 | WindGust      |  kts  |
 | WindDir       |  deg  |
-| WindDir       |  °C   |
+| Temperature   |  °C   |
 | Pressure      | mbar  |
 | Precipitation |  mm   |
 | POP           | 0-100 |

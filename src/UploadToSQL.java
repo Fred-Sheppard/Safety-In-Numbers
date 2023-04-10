@@ -12,13 +12,18 @@ public class UploadToSQL {
                 "jdbc:mariadb://localhost:3307/alibaba", "root", "1234").createStatement()) {
 
             // Read the CSV file and store its contents in a HashMap
-            HashMap<String, String> directionMap = new HashMap<>();
+            HashMap<String, Integer> directionMap = new HashMap<>();
             BufferedReader csvReader = new BufferedReader(new FileReader("data/Direction_N.csv"));
             String row;
             csvReader.readLine();
             while ((row = csvReader.readLine()) != null) {
                 String[] data = row.split(",");
-                directionMap.put(data[0].replace("Z", ":00"), data[1]);
+                String time = data[0].replace("Z", ":00");
+                int direction = Integer.parseInt(data[1]);
+                if (direction < 0) {
+                    direction = Math.abs(direction) + 180;
+                }
+                directionMap.put(time, direction);
             }
             csvReader.close();
 
@@ -26,10 +31,9 @@ public class UploadToSQL {
             ResultSet rs = stmt.executeQuery("SELECT * FROM boatdata");
             while (rs.next()) {
                 String time = rs.getString("Time").replace(" ", "T");
-                String newDirection = directionMap.get(time);
-                if (newDirection != null) {
-                    stmt.executeUpdate("UPDATE boatdata SET Direction='" + newDirection + "' WHERE Time='" + time + "'");
-                }
+                int newDirection = directionMap.get(time);
+                stmt.executeUpdate("UPDATE boatdata SET Direction='" + newDirection + "' WHERE Time='" + time + "'");
+//                System.out.println("UPDATE boatdata SET Direction='" + newDirection + "' WHERE Time='" + time + "'");
             }
 
             System.out.println("Directions updated successfully!");
