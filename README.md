@@ -60,12 +60,21 @@ To read about my implementation, check out the [report]() submitted to ISE.
 ### Wind Speed
 
 ![image](https://user-images.githubusercontent.com/42094954/231562945-418d5e24-e974-417f-b4fe-2e3bb6586b3c.png)
+<p style="text-align: center; font-size: small"><em>
+Figure 1. Graph of predicted wind speeds, with the ground truth in purple. 
+</em></p>
+
+
 
 The graph above displays the predicted wind speeds of each model, along with the ground truth in purple. A clear correlation can be seen, which serves to validate the programmes collection logic. However, there is at times a large variance between models for the same time period. This proves that models don't always agree, which justifies my reasoning for undertaking this project in the first place.
 
 This data relates to `Offset = 0`, the first hour from the forecast. In order to explore how each forecast's varies as they predict further into the future, I next graphed the absolute error from ground truth against forecast offset.
 
 ![ErrorVsOffset](https://user-images.githubusercontent.com/42094954/231563073-b437c3a8-0dcb-4274-aa59-125e714a6954.png)
+
+<p style="text-align: center; font-size: small"><em>
+Figure 2. Graph of absolute wind speed error against offset.
+</em></p>
 
 We can make several conclusions from the data above.
 - First, the most accurate model appears to be OpenWeatherMap, closely followed by AerisWeather. The mean error for OpenWeatherMap is 2.23 knts, while AerisWeather's is 2.37 knts. They both provide short-range forecasts, predicting 2 and 3 days into the future respectively.
@@ -77,7 +86,15 @@ We can make several conclusions from the data above.
 
 ![image](https://user-images.githubusercontent.com/42094954/231563157-7dce0a9a-0f7f-4e4d-b559-e181db4c5867.png)
 
+<p style="text-align: center; font-size: small"><em>
+Figure 3. Graph of predicted temperature.
+</em></p>
+
 ![image](https://user-images.githubusercontent.com/42094954/231563230-51c7670a-6803-41aa-bbbf-cba094d69080.png)
+
+<p style="text-align: center; font-size: small"><em>
+Figure 4. Graph of predicted pressure.
+</em></p>
 
 Graphing temperature and pressure, we can see a much closer correlation between models. These metrics seem easier to predict, especially at short ranges. This in itself is interesting: even though the models are predicting the same value for temperature and pressure, they do not necessarily agree on wind speed and direction, even though pressure heavily influences the wind.
 
@@ -87,13 +104,25 @@ Direction is a tricky metric to deal with. Even graphing it is difficult; being 
 
 ![image](https://user-images.githubusercontent.com/42094954/231563411-c45cd18c-768a-4f95-afc1-5308b5cb5a51.png)
 
+<p style="text-align: center; font-size: small"><em>
+Figure 5. Graph of predicted wind speed. Irregularities can be seen due to the circular nature of wind direction.
+</em></p>
+
 In the above graph, there are several clusters that seem out of place. They don't quite fit into the trends of the graph. I discovered that if I repeat the graph, these clusters fit in perfectly with each other, as shown below.
 
 ![WindDir3](https://user-images.githubusercontent.com/42094954/231563441-cc54a4eb-c94f-49dd-876b-52b7a5510911.png)
 
+<p style="text-align: center; font-size: small"><em>
+Figure 6. Doubled graph of predicted wind speed. The original irregularities now match with the data around them.
+</em></p>
+
 Another issue associated with working with angles is averaging. One cannot simply find the arithmetic mean of a set of angles; the mean of 359° and 1° should be 0°, not 180°. I did not realise this in my initial agregation logic. Therefore, the ground truth direction data is not correct when aggregated. When graphed, it seems completely random and scattered.
 
 ![image](https://user-images.githubusercontent.com/42094954/231563538-77f0f770-9813-43e8-a94e-00e7c73b8bde.png)
+
+<p style="text-align: center; font-size: small"><em>
+Figure 7. Graph of predicted wind speed including the ground truth in blue. The ground truth data appears random and uncorrelated.
+</em></p>
 
 I researched this topic and tried various methods, however none of them returned data that seemed correct. This will remain a point to work on into the future.
 
@@ -101,6 +130,10 @@ While displaying direction data over time is difficult, there is another represe
 I found a [fantastic Grafana plugin](https://github.com/spectraphilic/grafana-windrose/) to display wind roses on a dashboard, which was created by [Spectraphilic](https://github.com/spectraphilic/).
 
 ![WindRoses](https://user-images.githubusercontent.com/42094954/231563558-01ccad4c-74d3-4e20-82a0-79fcf79179a9.png)
+
+<p style="text-align: center; font-size: small"><em>
+Figure 8. Wind roses of multiple models over the time period.
+</em></p>
 
 ## Conclusion
 
