@@ -23,12 +23,6 @@ public class JSONPath {
         String s = path[index];
         // Fixes problems with empty strings due to .split();
         if (s.equals("")) return readJSON(o, path, index + 1);
-        // Rip preview features. You just weren't scalable
-//        Object child = switch (o) {
-//            case JSONObject j -> j.get(s);
-//            case JSONArray j -> j.get(Integer.parseInt(s));
-//            default -> null;
-//        };
         Object child;
         if (o instanceof JSONObject) {
             // If JSONObject, read next layer with String key
