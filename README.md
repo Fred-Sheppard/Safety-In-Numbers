@@ -10,7 +10,7 @@ This repo relates to my [ISE submission project](https://software-engineering.ie
 forecasting model for my location, using a number of metrics including wind speed, wind direction, temperature, pressure
 and more.
 Work began on the project in September 2022, with this repo created on October 4.
-The project was submitted in April 2023, although work is still ongoing to improve my results. The submitted report may
+The project was submitted in April 2023, although work is still ongoing to improve the data. The submitted report may
 be found []here.
 
 ## Motivation
