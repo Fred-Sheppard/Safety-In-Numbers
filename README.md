@@ -11,7 +11,7 @@ forecasting model for my location, using a number of metrics including wind spee
 and more.
 Work began on the project in September 2022, with this repo created on October 4.
 The project was submitted in April 2023, although work is still ongoing to improve the data. The submitted report may
-be found []here.
+be found [here](https://github.com/Fred-Sheppard/Safety-In-Numbers/releases/tag/v1.0.0).
 
 ## Motivation
 
@@ -51,7 +51,7 @@ I was particularly interested in the accuracy of the models used by Met Eireann,
 
 ## Implementation
 
-To read about my implementation, check out the [report]() submitted to ISE.
+To read about my implementation, check out the [report](https://github.com/Fred-Sheppard/Safety-In-Numbers/releases/tag/v1.0.0) submitted to ISE.
 
 ## Results
 
