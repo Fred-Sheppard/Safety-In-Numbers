@@ -2,6 +2,8 @@
 
 A statistical analysis on the variation of location-based weather forecasts
 
+![WindRoses](https://user-images.githubusercontent.com/42094954/231563558-01ccad4c-74d3-4e20-82a0-79fcf79179a9.png)
+
 ## Summary
 
 This repo relates to my [ISE submission project](https://software-engineering.ie/about-the-ise-portfolio-submission/). The goal of the project is to evaluate the most accurate weather
@@ -57,13 +59,13 @@ To read about my implementation, check out the [report]() submitted to ISE.
 
 ### Wind Speed
 
-`WindSpeed.png`
+![image](https://user-images.githubusercontent.com/42094954/231562945-418d5e24-e974-417f-b4fe-2e3bb6586b3c.png)
 
 The graph above displays the predicted wind speeds of each model, along with the ground truth in purple. A clear correlation can be seen, which serves to validate the programmes collection logic. However, there is at times a large variance between models for the same time period. This proves that models don't always agree, which justifies my reasoning for undertaking this project in the first place.
 
 This data relates to `Offset = 0`, the first hour from the forecast. In order to explore how each forecast's varies as they predict further into the future, I next graphed the absolute error from ground truth against forecast offset.
 
-`ErrorVsOffset.png`
+![ErrorVsOffset](https://user-images.githubusercontent.com/42094954/231563073-b437c3a8-0dcb-4274-aa59-125e714a6954.png)
 
 We can make several conclusions from the data above.
 - First, the most accurate model appears to be OpenWeatherMap, closely followed by AerisWeather. The mean error for OpenWeatherMap is 2.23 knts, while AerisWeather's is 2.37 knts. They both provide short-range forecasts, predicting 2 and 3 days into the future respectively.
@@ -73,9 +75,9 @@ We can make several conclusions from the data above.
 
 ### Temperature and Pressure
 
-`Temperature.png`
+![image](https://user-images.githubusercontent.com/42094954/231563157-7dce0a9a-0f7f-4e4d-b559-e181db4c5867.png)
 
-`Pressure.png`
+![image](https://user-images.githubusercontent.com/42094954/231563230-51c7670a-6803-41aa-bbbf-cba094d69080.png)
 
 Graphing temperature and pressure, we can see a much closer correlation between models. These metrics seem easier to predict, especially at short ranges. This in itself is interesting: even though the models are predicting the same value for temperature and pressure, they do not necessarily agree on wind speed and direction, even though pressure heavily influences the wind.
 
@@ -83,28 +85,28 @@ Graphing temperature and pressure, we can see a much closer correlation between 
 
 Direction is a tricky metric to deal with. Even graphing it is difficult; being an angle, it is circular. 0° and 360° are the same. This can be clearly seen below.
 
-`Direction no edit.png`
+![image](https://user-images.githubusercontent.com/42094954/231563411-c45cd18c-768a-4f95-afc1-5308b5cb5a51.png)
 
 In the above graph, there are several clusters that seem out of place. They don't quite fit into the trends of the graph. I discovered that if I repeat the graph, these clusters fit in perfectly with each other, as shown below.
 
-`Direction looped.png`
+![WindDir3](https://user-images.githubusercontent.com/42094954/231563441-cc54a4eb-c94f-49dd-876b-52b7a5510911.png)
 
 Another issue associated with working with angles is averaging. One cannot simply find the arithmetic mean of a set of angles; the mean of 359° and 1° should be 0°, not 180°. I did not realise this in my initial agregation logic. Therefore, the ground truth direction data is not correct when aggregated. When graphed, it seems completely random and scattered.
 
-`Direction with ground truth.png`
+![image](https://user-images.githubusercontent.com/42094954/231563538-77f0f770-9813-43e8-a94e-00e7c73b8bde.png)
 
 I researched this topic and tried various methods, however none of them returned data that seemed correct. This will remain a point to work on into the future.
 
 While displaying direction data over time is difficult, there is another representation which uses frequency to display data. Wind roses have been used since the 13th century by Spanish and Italien sailors. They display the frequency of wind from each direction and speed over a certain time period.
 I found a [fantastic Grafana plugin](https://github.com/spectraphilic/grafana-windrose/) to display wind roses on a dashboard, which was created by [Spectraphilic](https://github.com/spectraphilic/).
 
-`Wind Roses.png`
+![WindRoses](https://user-images.githubusercontent.com/42094954/231563558-01ccad4c-74d3-4e20-82a0-79fcf79179a9.png)
 
 ## Conclusion
 
 From the above data, I have concluded that OpenWeatherMap is the best model for short-range forecasting, up to 48h, for my location. This is assuming wind speed is the most important factor for the user. For further into the future, ECMWF from Met Eireann is the most optimal.
 
-I intend to share my findings with the members of my local club so that they too may avail of an accurate forecast. What comes of them will depend on how the project evolves. If I can prove its accuracy, there may be good reason to create my own weather app that uses my discoveries. 
+I intend to share my findings with the members of my local club so that they too may avail of an accurate forecast. What comes of this will depend on how the project evolves. If I can prove its accuracy, there may be good reason to create my own weather app that uses my discoveries. 
 
 ## Afterword
 
@@ -122,3 +124,4 @@ There is still much that can be done to imporve this work. First, I want to fix 
 
 ~~Also rewrite it in Rust~~.
 
+Thanks for reading, and may the wind be in your sails!
