@@ -53,6 +53,8 @@ I was particularly interested in the accuracy of the models used by Met Eireann,
 
 To read about my implementation, check out the [report](https://github.com/Fred-Sheppard/Safety-In-Numbers/releases/tag/v1.0.0) submitted to ISE.
 
+The most important class is src/WeatherAPI. This contains the code running on the Pi at home which queries and uploads the forecast data into a database. The other classes consist of helper classes and scripts related to databases and data comparison.
+
 ## Results
 
 *Note: Throughout this section, "range" refers to the length of time into the future each model predicts.*
