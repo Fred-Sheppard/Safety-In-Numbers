@@ -4,6 +4,17 @@ A statistical analysis on the variation of location-based weather forecasts
 
 ![WindRoses](https://user-images.githubusercontent.com/42094954/231563558-01ccad4c-74d3-4e20-82a0-79fcf79179a9.png)
 
+https://user-images.githubusercontent.com/42094954/232107245-99807d5f-1527-4c43-b769-fc51ed606d93.mp4
+
+<p style="text-align: center; font-size: small"><em>
+Is there any algorithm that matches the weather predicted to the weather that actually happened?<br>
+In other words, is there any way we can gauge the accuracy of different met offices?<br>
+- Joe Duffy, Liveline 07 March 2023, RTE R1
+</em></p>
+
+There is now. Welcome to **Safety in Numbers**
+
+
 ## Summary
 
 This repo relates to my [ISE submission project](https://software-engineering.ie/about-the-ise-portfolio-submission/). The goal of the project is to evaluate the most accurate weather
@@ -15,7 +26,7 @@ be found [here](https://github.com/Fred-Sheppard/Safety-In-Numbers/releases/tag/
 
 ## Motivation
 
-I work as a sailing instuctor. It's an unreal job that allows me to make money doing what I love. As a sailing
+I work as a sailing instuctor. It's an incredible job that allows me to make money doing what I love. As a sailing
 instructor, I have a huge amount of responsibility. I am in charge of a group of up to ten sailors, with a wide variance
 in age, and I am tasked with their safety at all times. A crucial aspect of this is knowing the forecasted weather so
 that decisions can be made that ensure the safety of every sailor. For this, an accurate weather forecast is essential.
