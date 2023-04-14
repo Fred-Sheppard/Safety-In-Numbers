@@ -12,7 +12,7 @@ In other words, is there any way we can gauge the accuracy of different met offi
 - Joe Duffy, Liveline 07 March 2023, RTE R1
 </em></p>
 
-There is now. Welcome to **Safety in Numbers**
+There is now. Welcome to **Safety in Numbers**.
 
 
 ## Summary
